@@ -1,0 +1,29 @@
+name: HDA Availability (prod)
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+jobs:
+  availability-prod:
+    name: Availability (prod)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - run: pip install requests opentelemetry-sdk opentelemetry-exporter-otlp-proto-http
+
+      - name: Configure environment
+        run: |
+          echo "PYTHONPATH=$GITHUB_WORKSPACE/scripts"                          >> $GITHUB_ENV
+          echo "HDA_URL=https://data.eodc.eu"                                  >> $GITHUB_ENV
+          echo "OTEL_ENDPOINT=https://otel.infra.eodc.eu/v1/metrics"           >> $GITHUB_ENV
+          echo "OTEL_API_KEY=${{ secrets.OTEL_API_KEY }}"                      >> $GITHUB_ENV
+
+      - name: Run availability probes
+        run: python scripts/test_hda_availability.py
