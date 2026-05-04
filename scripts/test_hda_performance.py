@@ -1,38 +1,70 @@
 import gevent.monkey
 gevent.monkey.patch_all()
 
-import os, time, logging, gevent
+import os, time, random, logging, gevent
+from datetime import datetime, timedelta
 from locust import HttpUser, task, between
 from locust.env import Environment
 from locust.log import setup_logging
+from shapely.geometry import Polygon, mapping
 from otel_push import record, flush
 
-HDA_URL    = os.environ.get("HDA_URL", "https://data.eodc.eu").rstrip("/")
-VU_STAGES  = [5, 10, 25]
+STAC_URL   = os.environ.get("STAC_URL", "https://stac.eodc.eu/api/v1")
+ENV        = os.environ.get("E2E_ENV", "dev")
+
+VU_STAGES  = [10, 25, 50, 100]
 STAGE_SECS = 60
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s  %(message)s")
 log = logging.getLogger(__name__)
 
 
-class HdaUser(HttpUser):
-    host = HDA_URL
-    wait_time = between(3, 8)
+class StacUser(HttpUser):
+    host = STAC_URL
+    wait_time = between(1, 3)
+    _collections: list = []
+
+    def on_start(self):
+        resp = self.client.get("/collections", name="GET /collections")
+        if resp.status_code == 200:
+            self._collections = [c["id"] for c in resp.json().get("collections", [])]
 
     @task
-    def get_zarr(self):
-        self.client.get(
-            "/collections/S2-L2A-C1/T33UWP/indices/time/.zarray",
-            name="GET_zarray",
-        )
+    def search_post(self):
+        self.client.post("/search", name="POST_search", json={
+            "datetime":    self._random_datetime(),
+            "intersects":  self._random_polygon(),
+            "collections": self._random_collections(),
+            "limit": 100,
+        })
 
     @task
-    def get_geotiff(self):
-        self.client.head(
-            "/collections/SENTINEL1_SIG0_20M/V1M2R3/EQUI7_EU020M/E048N015T3"
-            "/SIG0_20260412T171426__VV_A015_E048N015T3_EU020M_V1M2R3_S1CIWGRDH_TUWIEN.tif",
-            name="HEAD_tif",
-        )
+    def get_items(self):
+        col = random.choice(self._collections) if self._collections else "unknown"
+        self.client.get(f"/collections/{col}/items", params={"limit": 10},
+                        name="GET_collections_id_items")
+
+    @staticmethod
+    def _random_datetime():
+        start = datetime(2015, 1, 1)
+        end   = datetime(2025, 1, 1)
+        delta = int((end - start).total_seconds())
+        dates = sorted(start + timedelta(seconds=random.randrange(delta)) for _ in range(2))
+        return f"{dates[0].isoformat()}Z/{dates[1].isoformat()}Z"
+
+    @staticmethod
+    def _random_polygon():
+        cx, cy = random.uniform(-180, 180), random.uniform(-90, 90)
+        pts = [(max(min(cx + random.uniform(-10, 10), 180), -180),
+                max(min(cy + random.uniform(-10, 10),  90), -90))
+               for _ in range(random.randint(3, 10))]
+        poly = Polygon(pts)
+        return mapping(poly if poly.is_valid else poly.buffer(0))
+
+    def _random_collections(self):
+        if not self._collections:
+            return []
+        return random.sample(self._collections, random.randint(1, min(len(self._collections), 5)))
 
 
 def push_metrics(all_stages):
@@ -50,17 +82,17 @@ def push_metrics(all_stages):
                  "eodc_e2e_perf_vus":                float(vu_count),
                  "eodc_e2e_perf_slowdown_ratio":     ratio,
                  "eodc_e2e_perf_last_run_timestamp": now},
-                {"service": "hda", "endpoint": endpoint, "vus": str(vu_count)},
+                {"env": ENV, "service": "stac", "endpoint": endpoint, "vus": str(vu_count)},
             )
-            log.info("staged  vu=%2d  endpoint=%-20s  p50=%.3fs  p95=%.3fs  rps=%.1f  slowdown=%.2fx",
-                     vu_count, endpoint, s["p50"], s["p95"], s["rps"], ratio)
+            log.info("staged  vu=%3d  endpoint=%-30s  p95=%.3fs  rps=%.1f  slowdown=%.2fx",
+                     vu_count, endpoint, s["p95"], s["rps"], ratio)
 
     flush()
 
 
 def main():
     setup_logging("INFO")
-    env = Environment(user_classes=[HdaUser])
+    env = Environment(user_classes=[StacUser])
     env.create_local_runner()
 
     all_stages = {}
@@ -81,7 +113,7 @@ def main():
             if name not in ("", "Aggregated")
         }
         for name, s in all_stages[vu_count].items():
-            log.info("  %-20s  p50=%.3fs  p95=%.3fs  rps=%.1f  err=%.1f%%",
+            log.info("  %s  p50=%.3fs  p95=%.3fs  rps=%.1f  err=%.1f%%",
                      name, s["p50"], s["p95"], s["rps"], s["err"] * 100)
 
     push_metrics(all_stages)
