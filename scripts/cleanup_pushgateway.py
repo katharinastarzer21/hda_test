@@ -1,13 +1,5 @@
 """
 Delete all Pushgateway groups where service=hda.
-
-Usage:
-    python scripts/cleanup_pushgateway.py
-
-Reads credentials from environment variables:
-    PUSHGATEWAY_URL
-    PUSHGATEWAY_USERNAME
-    PUSHGATEWAY_PASSWORD
 """
 
 import os
