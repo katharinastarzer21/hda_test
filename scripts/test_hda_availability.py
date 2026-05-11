@@ -1,17 +1,3 @@
-"""
-Availability probes for HDA and HDA-Go.
-
-Probes:
-  hda     — HEAD on a known Zarr array metadata file
-  hda_go  — HEAD on a known GeoTIFF file
-
-Env vars:
-  HDA_URL     Base URL (e.g. https://data.eodc.eu)
-  E2E_ENV     prod or dev
-  OTEL_ENDPOINT
-  OTEL_API_KEY
-"""
-
 import os, time, logging, requests
 from otel_push import record, flush
 
