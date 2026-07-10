@@ -1,7 +1,7 @@
 import os, time, logging, requests
 from otel_push import record, flush
 
-HDA_URL = os.environ.get("HDA_URL", "https://data.eodc.eu").rstrip("/")
+HDA_URL = os.environ.get("HDA_URL", "https://dev.hda.eodchosting.eu").rstrip("/")
 TIMEOUT = 20
 
 HDA_PATH    = "/collections/S2-L2A-C1/T33UWP/indices/time/.zarray"

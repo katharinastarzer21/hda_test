@@ -1,9 +1,10 @@
-name: HDA Performance Test
+name: HDA Performance Test (legacy, weekly)
 
 on:
   workflow_dispatch:
-  schedule: 
-   - cron: "0 0 * * *"
+  schedule:
+    # Weekly. Adjust the day/time if Sundays 03:00 UTC isn't a good fit.
+    - cron: "0 3 * * 0"
 
 jobs:
   performance:
