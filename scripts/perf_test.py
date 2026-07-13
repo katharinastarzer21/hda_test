@@ -31,6 +31,11 @@ ERROR_RATE_THRESHOLD = float(os.environ.get("ERROR_RATE_THRESHOLD", 0.05))
 P95_THRESHOLD_SECS   = float(os.environ.get("P95_THRESHOLD_SECS", 5.0))
 BREACH_STAGES_TO_CONFIRM = int(os.environ.get("BREACH_STAGES_TO_CONFIRM", 2))
 
+# a stage whose aggregate RPS falls this far below the best RPS seen so far
+# is a saturation signal in its own right — err rate and p95 can both still
+# look fine while the server is already doing less total work under more load.
+THROUGHPUT_DROP_THRESHOLD = float(os.environ.get("THROUGHPUT_DROP_THRESHOLD", 0.15))
+
 RESULTS_JSON = os.environ.get("RESULTS_JSON", "perf_results.json")
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s  %(message)s")
@@ -100,7 +105,7 @@ def collect_stage_stats(env):
     return stats
 
 
-def stage_breaches(stage_stats):
+def stage_breaches(stage_stats, total_rps, peak_total_rps, peak_total_rps_vu):
     # returns list of reasons if this stage broke a threshold, empty list if all good
     reasons = []
     for endpoint, s in stage_stats.items():
@@ -108,6 +113,15 @@ def stage_breaches(stage_stats):
             reasons.append(f"{endpoint}: error_rate={s['err']:.1%} > {ERROR_RATE_THRESHOLD:.0%}")
         if s["p95"] > P95_THRESHOLD_SECS:
             reasons.append(f"{endpoint}: p95={s['p95']:.2f}s > {P95_THRESHOLD_SECS}s")
+
+    # peak_total_rps is 0 until a first stage has been recorded, nothing to compare yet
+    if peak_total_rps > 0:
+        drop_ratio = (peak_total_rps - total_rps) / peak_total_rps
+        if drop_ratio > THROUGHPUT_DROP_THRESHOLD:
+            reasons.append(
+                f"throughput regression: total_rps={total_rps:.1f} is {drop_ratio:.0%} "
+                f"below peak={peak_total_rps:.1f} rps (seen at {peak_total_rps_vu} VUs)"
+            )
     return reasons
 
 
@@ -174,6 +188,8 @@ def main():
     breach_streak = 0
     breakpoint_info = None
     vu_count = VU_START
+    peak_total_rps = 0.0
+    peak_total_rps_vu = None
 
     while vu_count <= VU_MAX:
         log.info("Stage %d VUs — %ds (%ds warmup excluded)", vu_count, STAGE_SECS, WARMUP_SECS)
@@ -191,17 +207,19 @@ def main():
 
         stage_stats = collect_stage_stats(env)
         all_stages[vu_count] = stage_stats
+        total_rps = sum(s["rps"] for s in stage_stats.values())
         stage_meta[vu_count] = {
             "measured_secs": measured_secs,
             "wall_secs": time.time() - stage_started_at,
             "total_requests": sum(s["num_requests"] for s in stage_stats.values()),
             "total_failures": sum(s["num_failures"] for s in stage_stats.values()),
+            "total_rps": total_rps,
         }
 
         log.info(
-            "  stage took %.1fs measured (%.1fs incl. warmup+spawn) — %d requests, %d failures",
+            "  stage took %.1fs measured (%.1fs incl. warmup+spawn) — %d requests, %d failures, %.1f total rps",
             stage_meta[vu_count]["measured_secs"], stage_meta[vu_count]["wall_secs"],
-            stage_meta[vu_count]["total_requests"], stage_meta[vu_count]["total_failures"],
+            stage_meta[vu_count]["total_requests"], stage_meta[vu_count]["total_failures"], total_rps,
         )
         for name, s in stage_stats.items():
             log.info(
@@ -209,7 +227,10 @@ def main():
                 name, s["p50"], s["p95"], s["p99"], s["rps"], s["throughput_mbps"], s["err"] * 100,
             )
 
-        reasons = stage_breaches(stage_stats)
+        reasons = stage_breaches(stage_stats, total_rps, peak_total_rps, peak_total_rps_vu)
+        if total_rps > peak_total_rps:
+            peak_total_rps = total_rps
+            peak_total_rps_vu = vu_count
         if reasons:
             breach_streak += 1
             log.warning("Stage %d VUs breached thresholds (%d/%d): %s",
