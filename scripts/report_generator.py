@@ -53,6 +53,7 @@ def build_pdf(results, out_path):
     os.makedirs(CHART_DIR, exist_ok=True)
 
     stages = results["stages"]
+    stage_meta = results.get("stage_meta", {})
     endpoints = endpoints_from(stages)
     breakpoint_info = results.get("breakpoint")
     cfg = results.get("config", {})
@@ -110,6 +111,37 @@ def build_pdf(results, out_path):
         story.append(Image(filename, width=16 * cm, height=16 * cm * 3.8 / 6.5))
         story.append(Spacer(1, 10))
     story.append(PageBreak())
+
+    if stage_meta:
+        story.append(Paragraph("Stage timing & volume", styles["Heading2"]))
+        story.append(Spacer(1, 8))
+
+        timing_header = ["VUs", "Measured (s)", "Total (incl. warmup/spawn) (s)", "Requests", "Failures"]
+        timing_rows = [timing_header]
+        for vu in sorted(int(v) for v in stages.keys()):
+            m = stage_meta.get(str(vu))
+            if not m:
+                continue
+            timing_rows.append([
+                str(vu),
+                f"{m['measured_secs']:.1f}",
+                f"{m['wall_secs']:.1f}",
+                str(m["total_requests"]),
+                str(m["total_failures"]),
+            ])
+
+        timing_table = Table(timing_rows, repeatRows=1, colWidths=[2 * cm, 3.5 * cm, 5 * cm, 3 * cm, 3 * cm])
+        timing_table.setStyle(TableStyle([
+            ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#2b2d42")),
+            ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+            ("FONTSIZE", (0, 0), (-1, -1), 8),
+            ("GRID", (0, 0), (-1, -1), 0.25, colors.grey),
+            ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#f2f2f2")]),
+            ("ALIGN", (1, 0), (-1, -1), "RIGHT"),
+            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ]))
+        story.append(timing_table)
+        story.append(Spacer(1, 16))
 
     story.append(Paragraph("Stage details", styles["Heading2"]))
     story.append(Spacer(1, 8))

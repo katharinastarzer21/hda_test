@@ -39,7 +39,10 @@ log = logging.getLogger(__name__)
 
 class HdaUser(HttpUser):
     host = HDA_URL
-    wait_time = between(3, 8)
+    # was between(3, 8): each VU barely made a request a minute, so raising VU
+    # count mostly added idle users instead of concurrent load. Shrinking this
+    # is what actually makes VUs hammer the target simultaneously.
+    wait_time = between(0.1, 0.5)
 
     @task(2)
     def get_zarr(self):
@@ -134,7 +137,7 @@ def push_metrics(all_stages, breakpoint_info):
     flush()
 
 
-def write_results(all_stages, breakpoint_info):
+def write_results(all_stages, stage_meta, breakpoint_info):
     # called after every stage, not just at the end, so a mid-ramp crash
     # (either the target service or the runner) still leaves the stages
     # measured so far on disk instead of losing the whole run.
@@ -154,6 +157,7 @@ def write_results(all_stages, breakpoint_info):
                 },
                 "breakpoint": breakpoint_info,
                 "stages": all_stages,
+                "stage_meta": stage_meta,
             },
             f,
             indent=2,
@@ -166,24 +170,39 @@ def main():
     env.create_local_runner()
 
     all_stages = {}
+    stage_meta = {}
     breach_streak = 0
     breakpoint_info = None
     vu_count = VU_START
 
     while vu_count <= VU_MAX:
         log.info("Stage %d VUs — %ds (%ds warmup excluded)", vu_count, STAGE_SECS, WARMUP_SECS)
+        stage_started_at = time.time()
         env.runner.start(vu_count, spawn_rate=SPAWN_RATE)
 
         gevent.sleep(WARMUP_SECS)
         env.stats.reset_all()  # drop warmup requests, start measuring clean
+        measure_started_at = time.time()
 
         gevent.sleep(max(STAGE_SECS - WARMUP_SECS, 1))
         env.runner.stop()
+        measured_secs = time.time() - measure_started_at
         gevent.sleep(1)
 
         stage_stats = collect_stage_stats(env)
         all_stages[vu_count] = stage_stats
+        stage_meta[vu_count] = {
+            "measured_secs": measured_secs,
+            "wall_secs": time.time() - stage_started_at,
+            "total_requests": sum(s["num_requests"] for s in stage_stats.values()),
+            "total_failures": sum(s["num_failures"] for s in stage_stats.values()),
+        }
 
+        log.info(
+            "  stage took %.1fs measured (%.1fs incl. warmup+spawn) — %d requests, %d failures",
+            stage_meta[vu_count]["measured_secs"], stage_meta[vu_count]["wall_secs"],
+            stage_meta[vu_count]["total_requests"], stage_meta[vu_count]["total_failures"],
+        )
         for name, s in stage_stats.items():
             log.info(
                 "  %-20s  p50=%.3fs  p95=%.3fs  p99=%.3fs  rps=%.1f  thrpt=%.2fMB/s  err=%.1f%%",
@@ -207,10 +226,10 @@ def main():
             }
             log.error("BREAKPOINT confirmed at %d VUs (confirmed at %d VUs): %s",
                        first_breach_vu, vu_count, "; ".join(reasons))
-            write_results(all_stages, breakpoint_info)
+            write_results(all_stages, stage_meta, breakpoint_info)
             break
 
-        write_results(all_stages, breakpoint_info)
+        write_results(all_stages, stage_meta, breakpoint_info)
         vu_count += VU_STEP
 
     push_metrics(all_stages, breakpoint_info)
