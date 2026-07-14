@@ -1,7 +1,7 @@
 import gevent.monkey
 gevent.monkey.patch_all()
 
-import os, json, time, logging, gevent
+import os, json, random, time, logging, gevent
 from locust import HttpUser, task, between
 from locust.env import Environment
 from locust.log import setup_logging
@@ -12,6 +12,25 @@ HDA_URL = os.environ.get("HDA_URL", "https://dev.hda.eodchosting.eu").rstrip("/"
 ZARR_PATH = "/collections/S2-L2A-C1/T33UWP/indices/time/.zarray"
 TIF_PATH  = ("/collections/SENTINEL1_SIG0_20M/V1M2R3/EQUI7_EU020M/E048N015T3"
              "/SIG0_20260412T171426__VV_A015_E048N015T3_EU020M_V1M2R3_S1CIWGRDH_TUWIEN.tif")
+
+# separate, known-size (~257 MB) file for the full-object download task — full
+# GETs on TIF_PATH would also work, but its size is unconfirmed and this task
+# is heavy enough already that we want a number to reason about bandwidth with.
+FULL_TIF_PATH = os.environ.get(
+    "FULL_TIF_PATH",
+    "/collections/sen2like/2025/06/11/EU010M_E049N015T1_20250611T101041_B04.tif",
+)
+
+# pool of large files for the full-download task, one picked at random per
+# request — simulates many different users pulling different big objects
+# instead of everyone hammering the exact same (possibly cached) file.
+# TIF_PATH's real size is unconfirmed; treat it with the same caution as
+# FULL_TIF_PATH's confirmed ~257 MB until it's checked.
+FULL_DOWNLOAD_PATHS = [
+    p.strip() for p in os.environ.get(
+        "FULL_DOWNLOAD_PATHS", f"{FULL_TIF_PATH},{TIF_PATH}"
+    ).split(",") if p.strip()
+]
 
 # stage ramp-up config, all overridable via env vars for quick local test runs
 VU_START     = int(os.environ.get("VU_START", 5))
@@ -75,6 +94,16 @@ class HdaUser(HttpUser):
             headers={"Range": f"bytes=0-{RANGE_CHUNK_BYTES - 1}"},
             name="GET_tif_range_chunk",
         )
+
+    @task(1)
+    def get_geotiff_full(self):
+        # no Range header at all — a real full-object download, picking a
+        # different file per request so this models many different users
+        # pulling different big objects rather than everyone hammering one
+        # (possibly cached) file. Weight is 1 of 8 total, so roughly VU_count/8
+        # of these can be in flight at once at the top of the ramp: at
+        # VU_MAX=295 that's ~37 concurrent 250+ MB downloads at a time.
+        self.client.get(random.choice(FULL_DOWNLOAD_PATHS), name="GET_tif_full")
 
 
 def collect_stage_stats(env):
