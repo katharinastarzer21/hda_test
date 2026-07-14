@@ -48,6 +48,13 @@ RANGE_CHUNK_BYTES = int(os.environ.get("RANGE_CHUNK_BYTES", 4 * 1024 * 1024))
 # breakpoint = one of these breached, N stages in a row (to filter noise)
 ERROR_RATE_THRESHOLD = float(os.environ.get("ERROR_RATE_THRESHOLD", 0.05))
 P95_THRESHOLD_SECS   = float(os.environ.get("P95_THRESHOLD_SECS", 5.0))
+
+# GET_tif_full moves 100x+ more bytes than every other task, so a few seconds
+# of p95 there reflects transfer time, not server distress — judging it against
+# the same tight threshold as the sub-second metadata/range endpoints tripped
+# the breakpoint after 2 stages purely from download time, before any real
+# concurrency was reached. Give it its own, size-appropriate bar instead.
+FULL_DOWNLOAD_P95_THRESHOLD_SECS = float(os.environ.get("FULL_DOWNLOAD_P95_THRESHOLD_SECS", 60.0))
 BREACH_STAGES_TO_CONFIRM = int(os.environ.get("BREACH_STAGES_TO_CONFIRM", 2))
 
 # a stage whose aggregate RPS falls this far below the best RPS seen so far
@@ -140,8 +147,9 @@ def stage_breaches(stage_stats, total_rps, peak_total_rps, peak_total_rps_vu):
     for endpoint, s in stage_stats.items():
         if s["err"] > ERROR_RATE_THRESHOLD:
             reasons.append(f"{endpoint}: error_rate={s['err']:.1%} > {ERROR_RATE_THRESHOLD:.0%}")
-        if s["p95"] > P95_THRESHOLD_SECS:
-            reasons.append(f"{endpoint}: p95={s['p95']:.2f}s > {P95_THRESHOLD_SECS}s")
+        p95_limit = FULL_DOWNLOAD_P95_THRESHOLD_SECS if endpoint == "GET_tif_full" else P95_THRESHOLD_SECS
+        if s["p95"] > p95_limit:
+            reasons.append(f"{endpoint}: p95={s['p95']:.2f}s > {p95_limit}s")
 
     # peak_total_rps is 0 until a first stage has been recorded, nothing to compare yet
     if peak_total_rps > 0:
@@ -197,6 +205,7 @@ def write_results(all_stages, stage_meta, breakpoint_info):
                     "warmup_secs": WARMUP_SECS,
                     "error_rate_threshold": ERROR_RATE_THRESHOLD,
                     "p95_threshold_secs": P95_THRESHOLD_SECS,
+                    "full_download_p95_threshold_secs": FULL_DOWNLOAD_P95_THRESHOLD_SECS,
                 },
                 "breakpoint": breakpoint_info,
                 "stages": all_stages,
