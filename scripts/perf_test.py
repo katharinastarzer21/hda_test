@@ -21,14 +21,90 @@ FULL_TIF_PATH = os.environ.get(
     "/collections/sen2like/2025/06/11/EU010M_E049N015T1_20250611T101041_B04.tif",
 )
 
-# pool of large files for the full-download task, one picked at random per
-# request — simulates many different users pulling different big objects
-# instead of everyone hammering the exact same (possibly cached) file.
-# TIF_PATH's real size is unconfirmed; treat it with the same caution as
-# FULL_TIF_PATH's confirmed ~257 MB until it's checked.
-FULL_DOWNLOAD_PATHS = [
+# pool of large files shared by every data-bearing task (HEAD, range tile,
+# range chunk, full download) — one picked at random per request. Using a
+# single fixed file per task type let a cache warm up after the first ~85 VUs
+# worth of requests in one run (repeat requests kept hitting the exact same
+# object), which masked real backend behavior for the rest of that ramp.
+# Spreading requests across distinct objects keeps that from happening.
+#
+# The 59 paths below were discovered via the STAC API (eodag.dev.services.
+# eodc.eu/collections -> per-collection /items), pulled from 15 different
+# collections (cop_marine ocean models, NASA VIIRS), and every single one was
+# verified with a real request (curl -sL, following redirects) to return
+# HTTP 200 before being added here — of ~119 candidates pulled from the
+# catalog, 31 were 404 (stale/broken hrefs), 17 were 202 "ingestion pending"
+# (same async pattern as the NISAR file we skipped earlier), and 12 were 500
+# (broken downloadLink routes); only working ones made this list. Sizes span
+# ~73 KB to ~185 MB. TIF_PATH/FULL_TIF_PATH's sizes are separately confirmed
+# (unconfirmed / ~257 MB respectively) and kept for continuity with earlier
+# runs. Everything here redirects (302) to object storage on other hosts —
+# requests follows that itself, including for Range/HEAD requests.
+_STAC_DISCOVERED_PATHS = [
+    '/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/GLOBAL_ANALYSIS_FORECAST_BIO_001_028_coordinates/native',
+    '/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/GLOBAL_ANALYSIS_FORECAST_BIO_001_028_mask/native',
+    '/collections/data/cop_marine/BALTICSEA_MULTIYEAR_PHY_003_011/BAL-MYP-NEMO_PHY-DailyMeans-19930105/native',
+    '/collections/data/cop_marine/BALTICSEA_MULTIYEAR_PHY_003_011/BAL-MYP-NEMO_PHY-DailyMeans-19930104/native',
+    '/collections/data/cop_marine/BALTICSEA_MULTIYEAR_PHY_003_011/BAL-MYP-NEMO_PHY-DailyMeans-19930106/native',
+    '/collections/data/cop_marine/BALTICSEA_MULTIYEAR_PHY_003_011/BAL-MYP-NEMO_PHY-DailyMeans-19930102/native',
+    '/collections/data/cop_marine/BALTICSEA_MULTIYEAR_PHY_003_011/BAL-MYP-NEMO_PHY-DailyMeans-19930101/native',
+    '/collections/data/cop_marine/BALTICSEA_ANALYSISFORECAST_PHY_003_006/BAL-NEMO_PHY-MonthlyMeans-202411/native',
+    '/collections/data/cop_marine/BALTICSEA_ANALYSISFORECAST_PHY_003_006/BAL-NEMO_PHY-MonthlyMeans-202410/native',
+    '/collections/data/cop_marine/BALTICSEA_ANALYSISFORECAST_PHY_003_006/BAL-NEMO_PHY-MonthlyMeans-202406/native',
+    '/collections/data/cop_marine/ARCTIC_ANALYSISFORECAST_PHY_002_001/20210709_hr-metno-MODEL-topaz5-ARC-b20210712-fv02.0/native',
+    '/collections/data/cop_marine/ARCTIC_ANALYSISFORECAST_PHY_002_001/20210707_hr-metno-MODEL-topaz5-ARC-b20210712-fv02.0/native',
+    '/collections/data/cop_marine/BALTICSEA_ANALYSISFORECAST_PHY_003_006/BAL-NEMO_PHY-MonthlyMeans-202408/native',
+    '/collections/data/cop_marine/ARCTIC_ANALYSISFORECAST_PHY_002_001/20210705_hr-metno-MODEL-topaz5-ARC-b20210712-fv02.0/native',
+    '/collections/data/cop_marine/ARCTIC_ANALYSISFORECAST_PHY_002_001/20210708_hr-metno-MODEL-topaz5-ARC-b20210712-fv02.0/native',
+    '/collections/data/cop_marine/ARCTIC_ANALYSISFORECAST_PHY_002_001/20210706_hr-metno-MODEL-topaz5-ARC-b20210712-fv02.0/native',
+    '/collections/data/cop_marine/BALTICSEA_MULTIYEAR_PHY_003_011/BAL-MYP-NEMO_PHY-DailyMeans-19930103/native',
+    '/collections/data/cop_marine/ARCTIC_ANALYSISFORECAST_PHY_002_001/20210710_hr-metno-MODEL-topaz5-ARC-b20210712-fv02.0/native',
+    '/collections/data/cop_marine/BALTICSEA_ANALYSISFORECAST_PHY_003_006/BAL-NEMO_PHY-MonthlyMeans-202409/native',
+    '/collections/data/cop_marine/BALTICSEA_ANALYSISFORECAST_PHY_003_006/BAL-NEMO_PHY-MonthlyMeans-202407/native',
+    '/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/mercatorbiomer4v2r1_global_mean_optics_20231130/native',
+    '/collections/data/cop_marine/MEDSEA_ANALYSISFORECAST_PHY_006_013/MED-MFC_006_013_mask_bathy/native',
+    '/collections/data/cop_marine/MEDSEA_ANALYSISFORECAST_PHY_006_013/MED-MFC_006_013_coordinates/native',
+    '/collections/data/cop_marine/MEDSEA_ANALYSISFORECAST_PHY_006_013/MED-MFC_006_013_mdt/native',
+    '/collections/data/cop_marine/MEDSEA_MULTIYEAR_PHY_006_004/MED-MFC_006_004_mdt/native',
+    '/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/mercatorbiomer4v2r1_global_mean_optics_20231129/native',
+    '/collections/data/cop_marine/MEDSEA_MULTIYEAR_PHY_006_004/MED-MFC_006_004_coordinates/native',
+    '/collections/data/cop_marine/NWSHELF_ANALYSISFORECAST_PHY_004_013/metoffice_foam1_amm15_NWS_BED_b20240714_dm20240712/native',
+    '/collections/data/cop_marine/NWSHELF_ANALYSISFORECAST_PHY_004_013/metoffice_foam1_amm15_NWS_BED_b20240716_dm20240714/native',
+    '/collections/data/cop_marine/MEDSEA_MULTIYEAR_PHY_006_004/MED-MFC_006_004_mask_bathy/native',
+    '/collections/data/cop_marine/NWSHELF_ANALYSISFORECAST_PHY_004_013/metoffice_foam1_amm15_NWS_BED_b20240715_dm20240713/native',
+    '/collections/data/cop_marine/GLOBAL_MULTIYEAR_WAV_001_032/WAVERYSV1_bathymeter/native',
+    '/collections/data/cop_marine/NWSHELF_MULTIYEAR_PHY_004_009/metoffice_foam1_amm7_NWS_BED_dm19930102/native',
+    '/collections/data/cop_marine/NWSHELF_ANALYSISFORECAST_PHY_004_013/metoffice_foam1_amm15_NWS_BED_b20240717_dm20240715/native',
+    '/collections/data/cop_marine/NWSHELF_ANALYSISFORECAST_PHY_004_013/metoffice_foam1_amm15_NWS_BED_b20240718_dm20240716/native',
+    '/collections/data/cop_marine/NWSHELF_MULTIYEAR_PHY_004_009/metoffice_foam1_amm7_NWS_BED_dm19930104/native',
+    '/collections/data/cop_marine/NWSHELF_MULTIYEAR_PHY_004_009/metoffice_foam1_amm7_NWS_BED_dm19930103/native',
+    '/collections/data/cop_marine/NWSHELF_ANALYSISFORECAST_PHY_004_013/metoffice_foam1_amm15_NWS_BED_b20240719_dm20240717/native',
+    '/collections/data/cop_marine/NWSHELF_MULTIYEAR_PHY_004_009/metoffice_foam1_amm7_NWS_BED_dm19930105/native',
+    '/collections/data/cop_marine/NWSHELF_MULTIYEAR_PHY_004_009/metoffice_foam1_amm7_NWS_BED_dm19930106/native',
+    '/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/mercatorbiomer4v2r1_global_mean_optics_20231202/native',
+    '/collections/data/cop_marine/NWSHELF_MULTIYEAR_PHY_004_009/metoffice_foam1_amm7_NWS_BED_dm19930101/native',
+    '/collections/data/nasa/VIIRS_JPSS2_Leaf_Area_Index_FPAR_8-Day_L4_Global_500m_SIN_Grid_V002/VJ215A2H.A2026177.h06v03.002.2026185070600/VJ215A2H.A2026177.h06v03.002.2026185070600.h5',
+    '/collections/data/cop_marine/MEDSEA_MULTIYEAR_PHY_006_004/19890101_y-CMCC--PSAL-MFSe3r1-MED-b20220901_re-sv01.00/native',
+    '/collections/data/cop_marine/MEDSEA_MULTIYEAR_PHY_006_004/19880101_y-CMCC--PSAL-MFSe3r1-MED-b20220901_re-sv01.00/native',
+    '/collections/data/nasa/VIIRS_JPSS2_Leaf_Area_Index_FPAR_8-Day_L4_Global_500m_SIN_Grid_V002/VJ215A2H.A2026177.h00v10.002.2026185071658/VJ215A2H.A2026177.h00v10.002.2026185071658.h5',
+    '/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/mercatorbiomer4v2r1_global_mean_optics_20231201/native',
+    '/collections/data/nasa/VIIRS_JPSS2_Leaf_Area_Index_FPAR_8-Day_L4_Global_500m_SIN_Grid_V002/VJ215A2H.A2026177.h12v07.002.2026185071750/VJ215A2H.A2026177.h12v07.002.2026185071750.h5',
+    '/collections/data/nasa/VIIRS_JPSS2_Leaf_Area_Index_FPAR_8-Day_L4_Global_500m_SIN_Grid_V002/VJ215A2H.A2026177.h03v07.002.2026185071751/VJ215A2H.A2026177.h03v07.002.2026185071751.h5',
+    '/collections/data/cop_marine/MEDSEA_MULTIYEAR_PHY_006_004/19870101_y-CMCC--PSAL-MFSe3r1-MED-b20220901_re-sv01.00/native',
+    '/collections/data/cop_marine/GLOBAL_MULTIYEAR_PHY_001_030/mercatorglorys12v1_gl12_mean_19930101_R19930106/native',
+    '/collections/data/cop_marine/GLOBAL_MULTIYEAR_PHY_001_030/mercatorglorys12v1_gl12_mean_19930102_R19930106/native',
+    '/collections/data/cop_marine/GLOBAL_MULTIYEAR_PHY_001_030/mercatorglorys12v1_gl12_mean_19930103_R19930106/native',
+    '/collections/data/cop_marine/GLOBAL_MULTIYEAR_PHY_001_030/mercatorglorys12v1_gl12_mean_19930104_R19930106/native',
+    '/collections/data/cop_marine/GLOBAL_MULTIYEAR_PHY_001_030/mercatorglorys12v1_gl12_mean_19930105_R19930106/native',
+    '/collections/data/cop_marine/GLOBAL_MULTIYEAR_PHY_001_030/mercatorglorys12v1_gl12_mean_19930106_R19930113/native',
+    '/collections/data/cop_marine/MEDSEA_ANALYSISFORECAST_PHY_006_013/20231101_d-CMCC--RFVL-MFSeas10-MEDATL-b20250531_an-sv11.00/native',
+    '/collections/data/cop_marine/MEDSEA_ANALYSISFORECAST_PHY_006_013/20231103_d-CMCC--RFVL-MFSeas10-MEDATL-b20250531_an-sv11.00/native',
+    '/collections/data/cop_marine/MEDSEA_ANALYSISFORECAST_PHY_006_013/20231102_d-CMCC--RFVL-MFSeas10-MEDATL-b20250531_an-sv11.00/native',
+]
+_DEFAULT_DATA_FILE_PATHS = ",".join([FULL_TIF_PATH, TIF_PATH] + _STAC_DISCOVERED_PATHS)
+DATA_FILE_PATHS = [
     p.strip() for p in os.environ.get(
-        "FULL_DOWNLOAD_PATHS", f"{FULL_TIF_PATH},{TIF_PATH}"
+        "DATA_FILE_PATHS", _DEFAULT_DATA_FILE_PATHS
     ).split(",") if p.strip()
 ]
 
@@ -82,13 +158,13 @@ class HdaUser(HttpUser):
     @task(1)
     def head_geotiff(self):
         # cheap header-only check, kept for comparison against the real reads below
-        self.client.head(TIF_PATH, name="HEAD_tif")
+        self.client.head(random.choice(DATA_FILE_PATHS), name="HEAD_tif")
 
     @task(3)
     def get_geotiff_tile(self):
         # single COG tile/overview read — the dominant real-world access pattern
         self.client.get(
-            TIF_PATH,
+            random.choice(DATA_FILE_PATHS),
             headers={"Range": f"bytes=0-{RANGE_TILE_BYTES - 1}"},
             name="GET_tif_range_tile",
         )
@@ -114,7 +190,7 @@ class HdaUser(HttpUser):
     def get_geotiff_chunk(self):
         # larger windowed pull, to see actual throughput degrade under load
         self._download_discarding(
-            TIF_PATH, "GET_tif_range_chunk",
+            random.choice(DATA_FILE_PATHS), "GET_tif_range_chunk",
             headers={"Range": f"bytes=0-{RANGE_CHUNK_BYTES - 1}"},
         )
 
@@ -126,7 +202,7 @@ class HdaUser(HttpUser):
         # (possibly cached) file. Weight is 1 of 8 total, so roughly VU_count/8
         # of these can be in flight at once at the top of the ramp: at
         # VU_MAX=295 that's ~37 concurrent 250+ MB downloads at a time.
-        self._download_discarding(random.choice(FULL_DOWNLOAD_PATHS), "GET_tif_full")
+        self._download_discarding(random.choice(DATA_FILE_PATHS), "GET_tif_full")
 
 
 def collect_stage_stats(env):
