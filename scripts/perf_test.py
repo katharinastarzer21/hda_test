@@ -1,7 +1,7 @@
 import gevent.monkey
 gevent.monkey.patch_all()
 
-import os, json, random, time, logging, gevent
+import os, json, random, resource, time, logging, gevent
 from locust import HttpUser, task, between
 from locust.env import Environment
 from locust.log import setup_logging
@@ -93,13 +93,29 @@ class HdaUser(HttpUser):
             name="GET_tif_range_tile",
         )
 
+    def _download_discarding(self, path, name, headers=None):
+        # stream + discard in fixed-size chunks instead of buffering the whole
+        # body in memory. Plain self.client.get() reads the entire response
+        # into RAM before returning — fine for KB-sized responses, but
+        # GET_tif_full alone is 250+ MB, and with enough of these in flight at
+        # once (more likely than the task's raw weight suggests, since it's
+        # also the slowest task) that's a real way to push a CI runner into
+        # memory pressure as VU count climbs. catch_response=True still times
+        # the full transfer (the request isn't "done" until the loop below
+        # finishes) and still reports non-2xx as a failure, same as before.
+        with self.client.get(path, name=name, headers=headers, stream=True, catch_response=True) as response:
+            if response.status_code >= 400:
+                response.failure(f"status {response.status_code}")
+                return
+            for _ in response.iter_content(chunk_size=1024 * 1024):
+                pass
+
     @task(1)
     def get_geotiff_chunk(self):
         # larger windowed pull, to see actual throughput degrade under load
-        self.client.get(
-            TIF_PATH,
+        self._download_discarding(
+            TIF_PATH, "GET_tif_range_chunk",
             headers={"Range": f"bytes=0-{RANGE_CHUNK_BYTES - 1}"},
-            name="GET_tif_range_chunk",
         )
 
     @task(1)
@@ -110,7 +126,7 @@ class HdaUser(HttpUser):
         # (possibly cached) file. Weight is 1 of 8 total, so roughly VU_count/8
         # of these can be in flight at once at the top of the ramp: at
         # VU_MAX=295 that's ~37 concurrent 250+ MB downloads at a time.
-        self.client.get(random.choice(FULL_DOWNLOAD_PATHS), name="GET_tif_full")
+        self._download_discarding(random.choice(FULL_DOWNLOAD_PATHS), "GET_tif_full")
 
 
 def collect_stage_stats(env):
@@ -246,18 +262,25 @@ def main():
         stage_stats = collect_stage_stats(env)
         all_stages[vu_count] = stage_stats
         total_rps = sum(s["rps"] for s in stage_stats.values())
+        # ru_maxrss is cumulative peak-so-far (not per-stage) on Linux, but
+        # still shows which stage first pushed memory to a new high — the
+        # thing we actually want to see if the process gets killed under load.
+        peak_rss_mb = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024
         stage_meta[vu_count] = {
             "measured_secs": measured_secs,
             "wall_secs": time.time() - stage_started_at,
             "total_requests": sum(s["num_requests"] for s in stage_stats.values()),
             "total_failures": sum(s["num_failures"] for s in stage_stats.values()),
             "total_rps": total_rps,
+            "peak_rss_mb": peak_rss_mb,
         }
 
         log.info(
-            "  stage took %.1fs measured (%.1fs incl. warmup+spawn) — %d requests, %d failures, %.1f total rps",
+            "  stage took %.1fs measured (%.1fs incl. warmup+spawn) — %d requests, %d failures, "
+            "%.1f total rps, %.0fMB peak RSS so far",
             stage_meta[vu_count]["measured_secs"], stage_meta[vu_count]["wall_secs"],
-            stage_meta[vu_count]["total_requests"], stage_meta[vu_count]["total_failures"], total_rps,
+            stage_meta[vu_count]["total_requests"], stage_meta[vu_count]["total_failures"],
+            total_rps, peak_rss_mb,
         )
         for name, s in stage_stats.items():
             log.info(

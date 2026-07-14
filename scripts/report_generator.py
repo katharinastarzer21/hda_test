@@ -116,14 +116,15 @@ def build_pdf(results, out_path):
         story.append(Paragraph("Stage timing & volume", styles["Heading2"]))
         story.append(Spacer(1, 8))
 
-        timing_header = ["VUs", "Measured (s)", "Total (incl. warmup/spawn) (s)", "Requests", "Failures", "Total RPS"]
+        timing_header = ["VUs", "Measured (s)", "Total (incl. warmup/spawn) (s)", "Requests", "Failures", "Total RPS", "Peak RSS (MB)"]
         timing_rows = [timing_header]
         for vu in sorted(int(v) for v in stages.keys()):
             m = stage_meta.get(str(vu))
             if not m:
                 continue
-            # older result files predate total_rps; derive it so the report still renders
+            # older result files predate total_rps/peak_rss_mb; derive/omit so the report still renders
             total_rps = m["total_rps"] if "total_rps" in m else m["total_requests"] / m["measured_secs"]
+            peak_rss = f"{m['peak_rss_mb']:.0f}" if "peak_rss_mb" in m else "n/a"
             timing_rows.append([
                 str(vu),
                 f"{m['measured_secs']:.1f}",
@@ -131,9 +132,10 @@ def build_pdf(results, out_path):
                 str(m["total_requests"]),
                 str(m["total_failures"]),
                 f"{total_rps:.1f}",
+                peak_rss,
             ])
 
-        timing_table = Table(timing_rows, repeatRows=1, colWidths=[1.7 * cm, 3 * cm, 4.3 * cm, 2.5 * cm, 2.5 * cm, 2.5 * cm])
+        timing_table = Table(timing_rows, repeatRows=1, colWidths=[1.4 * cm, 2.5 * cm, 3.8 * cm, 2.2 * cm, 2.2 * cm, 2.2 * cm, 2.5 * cm])
         timing_table.setStyle(TableStyle([
             ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#2b2d42")),
             ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
