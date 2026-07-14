@@ -84,10 +84,10 @@ def build_pdf(results, out_path):
         f"max {cfg.get('vu_max')} VUs, {cfg.get('stage_secs')}s/stage "
         f"({cfg.get('warmup_secs')}s warmup excluded)",
         styles["Normal"]))
-    story.append(Paragraph(
-        f"Breakpoint criteria: error rate &gt; {cfg.get('error_rate_threshold', 0):.0%} "
-        f"or p95 &gt; {cfg.get('p95_threshold_secs')}s",
-        styles["Normal"]))
+    p95_line = f"Breakpoint criteria: error rate &gt; {cfg.get('error_rate_threshold', 0):.0%} or p95 &gt; {cfg.get('p95_threshold_secs')}s"
+    if cfg.get("full_download_p95_threshold_secs"):
+        p95_line += f" ({cfg['full_download_p95_threshold_secs']}s for GET_tif_full, which moves far more data per request)"
+    story.append(Paragraph(p95_line, styles["Normal"]))
     story.append(Spacer(1, 12))
 
     if breakpoint_info:
@@ -116,21 +116,24 @@ def build_pdf(results, out_path):
         story.append(Paragraph("Stage timing & volume", styles["Heading2"]))
         story.append(Spacer(1, 8))
 
-        timing_header = ["VUs", "Measured (s)", "Total (incl. warmup/spawn) (s)", "Requests", "Failures"]
+        timing_header = ["VUs", "Measured (s)", "Total (incl. warmup/spawn) (s)", "Requests", "Failures", "Total RPS"]
         timing_rows = [timing_header]
         for vu in sorted(int(v) for v in stages.keys()):
             m = stage_meta.get(str(vu))
             if not m:
                 continue
+            # older result files predate total_rps; derive it so the report still renders
+            total_rps = m["total_rps"] if "total_rps" in m else m["total_requests"] / m["measured_secs"]
             timing_rows.append([
                 str(vu),
                 f"{m['measured_secs']:.1f}",
                 f"{m['wall_secs']:.1f}",
                 str(m["total_requests"]),
                 str(m["total_failures"]),
+                f"{total_rps:.1f}",
             ])
 
-        timing_table = Table(timing_rows, repeatRows=1, colWidths=[2 * cm, 3.5 * cm, 5 * cm, 3 * cm, 3 * cm])
+        timing_table = Table(timing_rows, repeatRows=1, colWidths=[1.7 * cm, 3 * cm, 4.3 * cm, 2.5 * cm, 2.5 * cm, 2.5 * cm])
         timing_table.setStyle(TableStyle([
             ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#2b2d42")),
             ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
