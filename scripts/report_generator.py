@@ -84,18 +84,25 @@ def build_pdf(results, out_path):
         f"max {cfg.get('vu_max')} VUs, {cfg.get('stage_secs')}s/stage "
         f"({cfg.get('warmup_secs')}s warmup excluded)",
         styles["Normal"]))
-    p95_line = f"Breakpoint criteria: error rate &gt; {cfg.get('error_rate_threshold', 0):.0%} or p95 &gt; {cfg.get('p95_threshold_secs')}s"
-    if cfg.get("full_download_p95_threshold_secs"):
-        p95_line += f" ({cfg['full_download_p95_threshold_secs']}s for GET_tif_full, which moves far more data per request)"
-    story.append(Paragraph(p95_line, styles["Normal"]))
+    story.append(Paragraph(
+        f"Breakpoint criteria: error rate &gt; {cfg.get('error_rate_threshold', 0):.0%}, or aggregate "
+        f"throughput dropping &gt; {cfg.get('throughput_drop_threshold', 0):.0%} below its best-seen value "
+        f"(saturation signal — the server doing less total work despite more concurrent load).",
+        styles["Normal"]))
+    story.append(Paragraph(
+        f"p95 latency (target references: {cfg.get('p95_threshold_secs')}s normal requests, "
+        f"{cfg.get('full_download_p95_threshold_secs')}s full downloads) is measured and charted below "
+        f"but does <b>not</b> stop the ramp — it climbs smoothly with load rather than failing at a "
+        f"clean cutoff, so where it becomes \"too slow\" is a call for whoever owns the SLA, not this test.",
+        styles["SmallGrey"]))
     story.append(Spacer(1, 12))
 
     if breakpoint_info:
         story.append(Paragraph("Result: breakpoint reached", styles["Heading2"]))
         story.append(Paragraph(
-            f"At <b>{breakpoint_info['vus']} VUs</b> the thresholds were breached for the first time "
-            f"(confirmed at {breakpoint_info['confirmed_at_vus']} VUs, 2 stages in a row). "
-            f"Reason: {'; '.join(breakpoint_info['reasons'])}",
+            f"At <b>{breakpoint_info['vus']} VUs</b> an error-rate or throughput-saturation threshold "
+            f"was breached for the first time (confirmed at {breakpoint_info['confirmed_at_vus']} VUs, "
+            f"2 stages in a row). Reason: {'; '.join(breakpoint_info['reasons'])}",
             styles["Normal"]))
     else:
         max_vu = max(int(v) for v in stages.keys())
