@@ -102,7 +102,32 @@ _STAC_DISCOVERED_PATHS = [
     '/collections/data/cop_marine/MEDSEA_ANALYSISFORECAST_PHY_006_013/20231103_d-CMCC--RFVL-MFSeas10-MEDATL-b20250531_an-sv11.00/native',
     '/collections/data/cop_marine/MEDSEA_ANALYSISFORECAST_PHY_006_013/20231102_d-CMCC--RFVL-MFSeas10-MEDATL-b20250531_an-sv11.00/native',
 ]
-_DEFAULT_DATA_FILE_PATHS = ",".join([FULL_TIF_PATH, TIF_PATH] + _STAC_DISCOVERED_PATHS)
+
+# second round: deliberately picked FROM the collections that have ingestion/
+# loading time (NISAR, VIIRS, OPERA/Sentinel-1) rather than the instant-from-
+# S3 cop_marine ones — the point is real file diversity including assets that
+# can be slow to first-byte, not just more always-fast files. A random sample
+# (VIIRS x3, NISAR_L1 x3, NISAR_L2 x2, OPERA x3) out of the ~90 confirmed
+# ingestion-pattern assets found via random_assets.txt. Because these CAN
+# return 202 "ingestion pending", _traced_request/_download_discarding below
+# treat 202 as a real failure — otherwise a cold response's tiny JSON body
+# would silently count as a "successful" download.
+_STAC_DISCOVERED_PATHS_ROUND2 = [
+    '/collections/data/nasa/VIIRS_JPSS2_Leaf_Area_Index_FPAR_8-Day_L4_Global_500m_SIN_Grid_V002/VJ215A2H.A2026185.h31v13.002.2026195145128/VJ215A2H.A2026185.h31v13.002.2026195145128.h5',
+    '/collections/data/nasa/VIIRS_JPSS2_Leaf_Area_Index_FPAR_8-Day_L4_Global_500m_SIN_Grid_V002/VJ215A2H.A2026185.h00v10.002.2026195145152/VJ215A2H.A2026185.h00v10.002.2026195145152.h5',
+    '/collections/data/nasa/VIIRS_JPSS2_Leaf_Area_Index_FPAR_8-Day_L4_Global_500m_SIN_Grid_V002/VJ215A2H.A2026185.h35v08.002.2026195145240/VJ215A2H.A2026185.h35v08.002.2026195145240.h5',
+    '/collections/data/nasa/NISAR_L1_RSLC_BETA_V1_1/NISAR_L1_PR_RSLC_010_165_D_100_2005_DHDH_M_20260120T155930_20260120T155950_X05010_N_P_J_001/NISAR_L1_PR_RSLC_010_165_D_100_2005_DHDH_M_20260120T155930_20260120T155950_X05010_N_P_J_001.h5',
+    '/collections/data/nasa/NISAR_L1_RSLC_BETA_V1_1/NISAR_L1_PR_RSLC_010_164_A_042_0005_NASV_A_20260120T134637_20260120T134710_X05010_N_F_J_001/NISAR_L1_PR_RSLC_010_164_A_042_0005_NASV_A_20260120T134637_20260120T134710_X05010_N_F_J_001.h5',
+    '/collections/data/nasa/NISAR_L1_RSLC_BETA_V1_1/NISAR_L1_PR_RSLC_010_164_A_043_0005_NASV_A_20260120T134709_20260120T134739_X05010_N_F_J_001/NISAR_L1_PR_RSLC_010_164_A_043_0005_NASV_A_20260120T134709_20260120T134739_X05010_N_F_J_001.png',
+    '/collections/data/nasa/NISAR_L2_GCOV_BETA_V1_1/NISAR_L2_PR_GCOV_010_164_A_044_0005_NASV_A_20260120T134738_20260120T134814_X05010_N_F_J_001/NISAR_L2_PR_GCOV_010_164_A_044_0005_NASV_A_20260120T134738_20260120T134814_X05010_N_F_J_001.png',
+    '/collections/data/nasa/NISAR_L2_GCOV_BETA_V1_1/NISAR_L2_PR_GCOV_010_164_A_045_0005_NASV_A_20260120T134813_20260120T134857_X05010_N_F_J_001/NISAR_L2_PR_GCOV_010_164_A_045_0005_NASV_A_20260120T134813_20260120T134857_X05010_N_F_J_001.h5',
+    '/collections/data/nasa/OPERA_L2_RTC-S1_V1/OPERA_L2_RTC-S1_T078-166572-IW3_20260705T013707Z_20260715T021510Z_S1C_30_v1.0/OPERA_L2_RTC-S1_T078-166572-IW3_20260705T013707Z_20260715T021510Z_S1C_30_v1.0.h5',
+    '/collections/data/nasa/OPERA_L2_RTC-S1_V1/OPERA_L2_RTC-S1_T078-166569-IW1_20260705T013657Z_20260715T021510Z_S1C_30_v1.0/OPERA_L2_RTC-S1_T078-166569-IW1_20260705T013657Z_20260715T021510Z_S1C_30_v1.0_BROWSE.png',
+    '/collections/data/nasa/OPERA_L2_RTC-S1_V1/OPERA_L2_RTC-S1_T078-166571-IW1_20260705T013703Z_20260715T021510Z_S1C_30_v1.0/OPERA_L2_RTC-S1_T078-166571-IW1_20260705T013703Z_20260715T021510Z_S1C_30_v1.0_BROWSE.png',
+]
+_DEFAULT_DATA_FILE_PATHS = ",".join(
+    [FULL_TIF_PATH, TIF_PATH] + _STAC_DISCOVERED_PATHS + _STAC_DISCOVERED_PATHS_ROUND2
+)
 DATA_FILE_PATHS = [
     p.strip() for p in os.environ.get(
         "DATA_FILE_PATHS", _DEFAULT_DATA_FILE_PATHS
@@ -227,6 +252,18 @@ class HdaUser(HttpUser):
             ) as response:
                 if response.status_code >= 400:
                     response.failure(f"status {response.status_code}")
+                    _record_error_sample(path, response=response)
+                    return
+                if response.status_code == 202:
+                    # some DATA_FILE_PATHS entries (NISAR/VIIRS/OPERA) can be
+                    # cold and need on-demand ingestion — a 202 here means we
+                    # got the tiny "ingestion requested" JSON stub, not the
+                    # real file. Counting that as a normal 2xx success would
+                    # silently record a KB-sized body as if it were the real
+                    # transfer. Fail it visibly instead; retrying/waiting for
+                    # ingestion is ingestion_download_test.py's job, not this
+                    # ramp's.
+                    response.failure("status 202 (ingestion pending, not the real file)")
                     _record_error_sample(path, response=response)
                     return
                 if consume_body:
