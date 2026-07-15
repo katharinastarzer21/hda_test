@@ -3,6 +3,7 @@ Builds a PDF report from perf_results.json (output of perf_test.py).
 Usage: python report_generator.py perf_results.json report.pdf
 """
 import sys, os, json
+from collections import Counter
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -30,7 +31,7 @@ def endpoints_from(stages):
     return sorted(names)
 
 
-def make_chart(stages, endpoints, metric_key, ylabel, title, filename, as_percent=False):
+def make_chart(stages, endpoints, metric_key, ylabel, title, filename, as_percent=False, total_series=None):
     vus = sorted(int(v) for v in stages.keys())
     plt.figure(figsize=(6.5, 3.8))
     for ep in endpoints:
@@ -39,6 +40,15 @@ def make_chart(stages, endpoints, metric_key, ylabel, title, filename, as_percen
             s = stages.get(str(vu), {}).get(ep)
             ys.append((s[metric_key] * 100 if as_percent else s[metric_key]) if s else None)
         plt.plot(vus, ys, marker="o", label=ep)
+    if total_series:
+        # aggregate across all endpoints, not just another per-endpoint line —
+        # drawn distinctly (black, dashed, thicker) so it reads as "the whole
+        # service" rather than one more thing competing with the per-endpoint
+        # colors. This is what actually shows saturation: per-endpoint RPS can
+        # each look fine while the sum across all of them stops growing.
+        ys = [total_series.get(vu) for vu in vus]
+        plt.plot(vus, ys, marker="s", linestyle="--", color="black", linewidth=2,
+                 label="Total (all endpoints)")
     plt.xlabel("Virtual Users (VUs)")
     plt.ylabel(ylabel)
     plt.title(title)
@@ -64,8 +74,14 @@ def build_pdf(results, out_path):
         ("err", "error rate (%)", "Error rate vs. VUs", f"{CHART_DIR}/error_rate.png", True),
         ("throughput_mbps", "MB/s", "Data throughput vs. VUs", f"{CHART_DIR}/throughput.png", False),
     ]
+    # aggregate RPS across all endpoints, keyed by VU int — this is what
+    # actually shows service-wide saturation (see make_chart's comment)
+    total_rps_by_vu = {
+        int(vu): m["total_rps"] for vu, m in stage_meta.items() if "total_rps" in m
+    }
     for metric_key, ylabel, title, filename, as_pct in charts:
-        make_chart(stages, endpoints, metric_key, ylabel, title, filename, as_pct)
+        total_series = total_rps_by_vu if metric_key == "rps" else None
+        make_chart(stages, endpoints, metric_key, ylabel, title, filename, as_pct, total_series)
 
     styles = getSampleStyleSheet()
     styles.add(ParagraphStyle(name="SmallGrey", fontSize=8, textColor=colors.grey))
@@ -79,11 +95,24 @@ def build_pdf(results, out_path):
     story.append(Paragraph("HDA Performance / Stress Test Report", styles["Title"]))
     story.append(Spacer(1, 4))
     story.append(Paragraph(f"Target: {results.get('target', '?')}", styles["Normal"]))
-    story.append(Paragraph(
-        f"Config: start {cfg.get('vu_start')} VUs, step +{cfg.get('vu_step')}, "
-        f"max {cfg.get('vu_max')} VUs, {cfg.get('stage_secs')}s/stage "
-        f"({cfg.get('warmup_secs')}s warmup excluded)",
-        styles["Normal"]))
+    task_mode = results.get("task_mode", "e2e")
+    if task_mode != "e2e":
+        story.append(Paragraph(
+            f"<b>Task mode: {task_mode}</b> — not the normal mixed end-to-end task set; "
+            f"compare against a separate e2e run, don't read this as full-pipeline behavior.",
+            styles["Normal"]))
+    if results.get("soak_mode"):
+        story.append(Paragraph(
+            f"<b>Soak-test mode:</b> fixed VU list {cfg.get('soak_vus')}, "
+            f"{cfg.get('stage_secs')}s/stage (long stages to separate stable saturation from a "
+            f"transient cache/connection-pool/backend blip at one point in time) — not a ramp.",
+            styles["Normal"]))
+    else:
+        story.append(Paragraph(
+            f"Config: start {cfg.get('vu_start')} VUs, step +{cfg.get('vu_step')}, "
+            f"max {cfg.get('vu_max')} VUs, {cfg.get('stage_secs')}s/stage "
+            f"({cfg.get('warmup_secs')}s warmup excluded)",
+            styles["Normal"]))
     story.append(Paragraph(
         f"Breakpoint criteria: error rate &gt; {cfg.get('error_rate_threshold', 0):.0%}, or aggregate "
         f"throughput dropping &gt; {cfg.get('throughput_drop_threshold', 0):.0%} below its best-seen value "
@@ -102,8 +131,29 @@ def build_pdf(results, out_path):
         story.append(Paragraph(
             f"At <b>{breakpoint_info['vus']} VUs</b> an error-rate or throughput-saturation threshold "
             f"was breached for the first time (confirmed at {breakpoint_info['confirmed_at_vus']} VUs, "
-            f"2 stages in a row). Reason: {'; '.join(breakpoint_info['reasons'])}",
+            f"2 stages in a row). Reason at {breakpoint_info['vus']} VUs: "
+            f"{'; '.join(breakpoint_info['reasons'])}",
             styles["Normal"]))
+        confirming_reasons = breakpoint_info.get("confirming_stage_reasons")
+        if confirming_reasons and confirming_reasons != breakpoint_info["reasons"]:
+            story.append(Paragraph(
+                f"Reason at {breakpoint_info['confirmed_at_vus']} VUs (confirming stage): "
+                f"{'; '.join(confirming_reasons)}",
+                styles["SmallGrey"]))
+        safe_vus = breakpoint_info.get("recommended_safe_vus")
+        if safe_vus is not None:
+            story.append(Paragraph(
+                f"Recommended safe operating capacity: <b>{safe_vus} VUs</b> — the highest concurrency "
+                f"tested with zero threshold breaches, before the first sign of trouble at "
+                f"{breakpoint_info['vus']} VUs. Running continuously at the breakpoint itself leaves no "
+                f"headroom for real-world variance; this is a margin below it, not the breakpoint minus "
+                f"an arbitrary buffer.",
+                styles["Normal"]))
+        else:
+            story.append(Paragraph(
+                "No \"recommended safe capacity\" could be established — even the lowest tested VU count "
+                "already showed a threshold breach. Consider testing lower VU counts to find a clean baseline.",
+                styles["SmallGrey"]))
     else:
         max_vu = max(int(v) for v in stages.keys())
         story.append(Paragraph("Result: no breakpoint reached", styles["Heading2"]))
@@ -182,6 +232,69 @@ def build_pdf(results, out_path):
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
     ]))
     story.append(table)
+
+    error_samples = results.get("error_samples", [])
+    if error_samples:
+        story.append(PageBreak())
+        story.append(Paragraph("Error trace summary", styles["Heading2"]))
+        story.append(Spacer(1, 8))
+        story.append(Paragraph(
+            f"{len(error_samples)} error samples captured across the whole run (not per-stage; "
+            f"may include warmup-period errors). Grouped by which host actually returned the "
+            f"error and whether a redirect had already happened by that point — this is what "
+            f"distinguishes an HDA-origin-resolution problem from an S3-side problem, which a "
+            f"bare status code can't tell you on its own.",
+            styles["SmallGrey"]))
+        story.append(Spacer(1, 6))
+
+        host_counts = Counter()
+        for e in error_samples:
+            host = e.get("final_host") or ("(connection error, no response)" if "exception" in e else "unknown")
+            host_counts[(host, e.get("status"), e.get("redirected"))] += 1
+
+        host_header = ["Response host", "Status", "Redirected first?", "Count"]
+        host_rows = [host_header]
+        for (host, status, redirected), cnt in sorted(host_counts.items(), key=lambda x: -x[1]):
+            host_rows.append([
+                host or "n/a",
+                str(status) if status is not None else "n/a",
+                {True: "yes", False: "no"}.get(redirected, "n/a"),
+                str(cnt),
+            ])
+        host_table = Table(host_rows, repeatRows=1, colWidths=[8 * cm, 2.5 * cm, 3.5 * cm, 2.5 * cm])
+        host_table.setStyle(TableStyle([
+            ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#2b2d42")),
+            ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+            ("FONTSIZE", (0, 0), (-1, -1), 8),
+            ("GRID", (0, 0), (-1, -1), 0.25, colors.grey),
+            ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#f2f2f2")]),
+            ("ALIGN", (1, 0), (-1, -1), "RIGHT"),
+            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ]))
+        story.append(host_table)
+        story.append(Spacer(1, 16))
+
+        file_counts = Counter(e["path"] for e in error_samples)
+        story.append(Paragraph("Most frequently failing files (top 10)", styles["Heading3"]))
+        story.append(Spacer(1, 6))
+        # plain strings don't wrap inside Table cells (they just overflow into
+        # the next column) — these paths are long, so wrap them in Paragraphs
+        path_style = ParagraphStyle(name="PathCell", fontSize=7, leading=9)
+        file_header = ["File path", "Error count"]
+        file_rows = [file_header] + [
+            [Paragraph(path, path_style), str(cnt)] for path, cnt in file_counts.most_common(10)
+        ]
+        file_table = Table(file_rows, repeatRows=1, colWidths=[14.5 * cm, 2.5 * cm])
+        file_table.setStyle(TableStyle([
+            ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#2b2d42")),
+            ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+            ("FONTSIZE", (0, 0), (-1, -1), 7),
+            ("GRID", (0, 0), (-1, -1), 0.25, colors.grey),
+            ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#f2f2f2")]),
+            ("ALIGN", (1, 0), (-1, -1), "RIGHT"),
+            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ]))
+        story.append(file_table)
 
     story.append(Spacer(1, 20))
     story.append(Paragraph(

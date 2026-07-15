@@ -2,6 +2,7 @@ import gevent.monkey
 gevent.monkey.patch_all()
 
 import os, json, random, resource, time, logging, gevent
+from urllib.parse import urlparse
 from locust import HttpUser, task, between
 from locust.env import Environment
 from locust.log import setup_logging
@@ -116,6 +117,15 @@ SPAWN_RATE   = int(os.environ.get("SPAWN_RATE", 10))
 STAGE_SECS   = int(os.environ.get("STAGE_SECS", 90))
 WARMUP_SECS  = int(os.environ.get("WARMUP_SECS", 15))  # excluded from stats, connection setup etc.
 
+# soak-test mode: instead of ramping VU_START->VU_MAX in VU_STEP increments,
+# re-test a fixed list of VU counts (e.g. the breakpoint region found by a
+# previous ramp) for much longer per stage. 90s stages are enough to see a
+# breakpoint during a ramp, but too short to tell stable saturation apart
+# from a transient cache/connection-pool/backend blip at one point in time.
+# e.g. SOAK_VUS=430,455,480,505,530,555 SOAK_STAGE_SECS=600
+SOAK_VUS = [int(v.strip()) for v in os.environ.get("SOAK_VUS", "").split(",") if v.strip()]
+SOAK_STAGE_SECS = int(os.environ.get("SOAK_STAGE_SECS", 600))
+
 # actual data transfer sizes for the GeoTIFF read tasks, not just headers.
 # tile-sized = one COG overview/tile read; chunk-sized = a larger windowed pull.
 RANGE_TILE_BYTES  = int(os.environ.get("RANGE_TILE_BYTES", 256 * 1024))
@@ -142,8 +152,53 @@ THROUGHPUT_DROP_THRESHOLD = float(os.environ.get("THROUGHPUT_DROP_THRESHOLD", 0.
 
 RESULTS_JSON = os.environ.get("RESULTS_JSON", "perf_results.json")
 
+# "e2e" (default): the normal mixed task set below, following redirects all
+# the way to S3 and downloading real bytes. "redirect_only": a separate user
+# class that only measures how fast the origin (dev.hda.eodchosting.eu)
+# issues its 302 and stops there — never touches S3. Run these as two
+# SEPARATE invocations, not mixed into one: mixing them back into one task
+# set would just reintroduce the same "shared weight dilutes the signal"
+# problem that made task frequency (not file size) the real driver of the
+# GET_tif_range_tile breakpoint. Confirmed via curl that ZARR_PATH is served
+# directly (200, no redirect) — architecturally different from the
+# DATA_FILE_PATHS pool, so it's excluded from the redirect_only check.
+TASK_MODE = os.environ.get("TASK_MODE", "e2e")
+
 logging.basicConfig(level=logging.INFO, format="%(asctime)s  %(message)s")
 log = logging.getLogger(__name__)
+
+# structured failure detail for tracing whether errors originate at the
+# origin (dev.hda.eodchosting.eu resolution) or downstream (S3, once
+# redirected) — status codes and Locust's own aggregated error_types alone
+# can't distinguish that, since both show up as the same "404" either way.
+# Capped so a bad run with many failures doesn't blow up perf_results.json.
+ERROR_SAMPLE_LIMIT = int(os.environ.get("ERROR_SAMPLE_LIMIT", 500))
+_error_samples = []
+
+
+def _record_error_sample(path, response=None, exc=None):
+    if len(_error_samples) >= ERROR_SAMPLE_LIMIT:
+        return
+    sample = {"path": path, "time": time.time()}
+    if exc is not None:
+        sample["exception"] = f"{type(exc).__name__}: {exc}"
+    if response is not None:
+        url = getattr(response, "url", None)
+        history = getattr(response, "history", None) or []
+        sample["status"] = getattr(response, "status_code", None)
+        sample["final_url"] = url
+        sample["final_host"] = urlparse(url).netloc if url else None
+        sample["redirected"] = bool(history)
+        if history:
+            sample["redirect_chain"] = [
+                {
+                    "status": getattr(r, "status_code", None),
+                    "url": getattr(r, "url", None),
+                    "location": r.headers.get("Location") if hasattr(r, "headers") else None,
+                }
+                for r in history
+            ]
+    _error_samples.append(sample)
 
 
 class HdaUser(HttpUser):
@@ -153,47 +208,62 @@ class HdaUser(HttpUser):
     # is what actually makes VUs hammer the target simultaneously.
     wait_time = between(0.1, 0.5)
 
+    def _traced_request(self, method, path, name, headers=None, consume_body=False):
+        # every task routes through here so failures are captured uniformly
+        # (see _record_error_sample) — not just the download-heavy ones.
+        # consume_body=True also gets the stream+discard treatment: reading
+        # the whole body into memory is fine for KB-sized responses, but
+        # GET_tif_full alone is 250+ MB, and with enough in flight at once
+        # (more likely than its raw task weight suggests, since it's also
+        # the slowest task) that's a real way to push a CI runner into memory
+        # pressure as VU count climbs. catch_response=True still times the
+        # full transfer either way — the request isn't "done" until the loop
+        # below finishes for streamed requests — and still reports non-2xx
+        # as a failure, same as plain self.client.get() would.
+        request_fn = self.client.get if method == "GET" else self.client.head
+        try:
+            with request_fn(
+                path, name=name, headers=headers, stream=consume_body, catch_response=True
+            ) as response:
+                if response.status_code >= 400:
+                    response.failure(f"status {response.status_code}")
+                    _record_error_sample(path, response=response)
+                    return
+                if consume_body:
+                    for _ in response.iter_content(chunk_size=1024 * 1024):
+                        pass
+        except Exception as exc:
+            # connection-level failures (dropped connections, timeouts) —
+            # Locust's catch_response usually absorbs these into its own
+            # failure accounting without raising, but if one does propagate,
+            # record what we know (path + exception) before letting it go so
+            # existing behavior/stats aren't changed by adding this tracing.
+            _record_error_sample(path, exc=exc)
+            raise
+
     @task(2)
     def get_zarr(self):
-        self.client.get(ZARR_PATH, name="GET_zarray")
+        self._traced_request("GET", ZARR_PATH, "GET_zarray")
 
     @task(1)
     def head_geotiff(self):
         # cheap header-only check, kept for comparison against the real reads below
-        self.client.head(random.choice(DATA_FILE_PATHS), name="HEAD_tif")
+        self._traced_request("HEAD", random.choice(DATA_FILE_PATHS), "HEAD_tif")
 
     @task(3)
     def get_geotiff_tile(self):
         # single COG tile/overview read — the dominant real-world access pattern
-        self.client.get(
-            random.choice(DATA_FILE_PATHS),
+        self._traced_request(
+            "GET", random.choice(DATA_FILE_PATHS), "GET_tif_range_tile",
             headers={"Range": f"bytes=0-{RANGE_TILE_BYTES - 1}"},
-            name="GET_tif_range_tile",
         )
-
-    def _download_discarding(self, path, name, headers=None):
-        # stream + discard in fixed-size chunks instead of buffering the whole
-        # body in memory. Plain self.client.get() reads the entire response
-        # into RAM before returning — fine for KB-sized responses, but
-        # GET_tif_full alone is 250+ MB, and with enough of these in flight at
-        # once (more likely than the task's raw weight suggests, since it's
-        # also the slowest task) that's a real way to push a CI runner into
-        # memory pressure as VU count climbs. catch_response=True still times
-        # the full transfer (the request isn't "done" until the loop below
-        # finishes) and still reports non-2xx as a failure, same as before.
-        with self.client.get(path, name=name, headers=headers, stream=True, catch_response=True) as response:
-            if response.status_code >= 400:
-                response.failure(f"status {response.status_code}")
-                return
-            for _ in response.iter_content(chunk_size=1024 * 1024):
-                pass
 
     @task(1)
     def get_geotiff_chunk(self):
         # larger windowed pull, to see actual throughput degrade under load
-        self._download_discarding(
-            random.choice(DATA_FILE_PATHS), "GET_tif_range_chunk",
-            headers={"Range": f"bytes=0-{RANGE_CHUNK_BYTES - 1}"},
+        self._traced_request(
+            "GET", random.choice(DATA_FILE_PATHS), "GET_tif_range_chunk",
+            headers={"Range": f"bytes=0-{RANGE_CHUNK_BYTES - 1}"}, consume_body=True,
         )
 
     @task(1)
@@ -204,7 +274,37 @@ class HdaUser(HttpUser):
         # (possibly cached) file. Weight is 1 of 8 total, so roughly VU_count/8
         # of these can be in flight at once at the top of the ramp: at
         # VU_MAX=295 that's ~37 concurrent 250+ MB downloads at a time.
-        self._download_discarding(random.choice(DATA_FILE_PATHS), "GET_tif_full")
+        self._traced_request("GET", random.choice(DATA_FILE_PATHS), "GET_tif_full", consume_body=True)
+
+
+class RedirectOnlyUser(HttpUser):
+    # isolates the origin's own resolve-and-redirect step from the actual
+    # S3 transfer that follows it. Every DATA_FILE_PATHS entry is confirmed
+    # (via curl) to redirect (302) rather than serve bytes directly — this
+    # class never follows that redirect, so 100% of its load lands on
+    # whatever the origin's own bottleneck is (proxy, metadata lookup, auth),
+    # uncontaminated by S3's completely separate performance characteristics.
+    host = HDA_URL
+    wait_time = between(0.1, 0.5)
+
+    @task
+    def check_redirect(self):
+        path = random.choice(DATA_FILE_PATHS)
+        with self.client.get(
+            path, name="REDIRECT_only", allow_redirects=False, catch_response=True
+        ) as response:
+            if response.status_code >= 400:
+                response.failure(f"status {response.status_code}")
+                _record_error_sample(path, response=response)
+            elif response.status_code not in (301, 302, 303, 307, 308):
+                # not necessarily wrong — some paths might be served directly —
+                # but worth knowing about since every path here was previously
+                # confirmed to redirect; flag it as a failure so it's visible.
+                response.failure(f"expected a redirect, got status {response.status_code}")
+                _record_error_sample(path, response=response)
+
+
+ACTIVE_USER_CLASS = RedirectOnlyUser if TASK_MODE == "redirect_only" else HdaUser
 
 
 def collect_stage_stats(env):
@@ -282,7 +382,7 @@ def push_metrics(all_stages, breakpoint_info):
     flush()
 
 
-def write_results(all_stages, stage_meta, breakpoint_info):
+def write_results(all_stages, stage_meta, breakpoint_info, stage_secs, soak_mode):
     # called after every stage, not just at the end, so a mid-ramp crash
     # (either the target service or the runner) still leaves the stages
     # measured so far on disk instead of losing the whole run.
@@ -291,11 +391,14 @@ def write_results(all_stages, stage_meta, breakpoint_info):
             {
                 "target": HDA_URL,
                 "timestamp": time.time(),
+                "task_mode": TASK_MODE,
+                "soak_mode": soak_mode,
                 "config": {
                     "vu_start": VU_START,
                     "vu_step": VU_STEP,
                     "vu_max": VU_MAX,
-                    "stage_secs": STAGE_SECS,
+                    "soak_vus": SOAK_VUS or None,
+                    "stage_secs": stage_secs,
                     "warmup_secs": WARMUP_SECS,
                     "error_rate_threshold": ERROR_RATE_THRESHOLD,
                     "throughput_drop_threshold": THROUGHPUT_DROP_THRESHOLD,
@@ -305,6 +408,7 @@ def write_results(all_stages, stage_meta, breakpoint_info):
                 "breakpoint": breakpoint_info,
                 "stages": all_stages,
                 "stage_meta": stage_meta,
+                "error_samples": _error_samples,
             },
             f,
             indent=2,
@@ -313,19 +417,33 @@ def write_results(all_stages, stage_meta, breakpoint_info):
 
 def main():
     setup_logging("INFO")
-    env = Environment(user_classes=[HdaUser])
+    env = Environment(user_classes=[ACTIVE_USER_CLASS])
+    log.info("TASK_MODE=%s -> using %s", TASK_MODE, ACTIVE_USER_CLASS.__name__)
     env.create_local_runner()
 
     all_stages = {}
     stage_meta = {}
     breach_streak = 0
+    breach_streak_reasons = []  # reasons per stage of the CURRENT streak, oldest first
     breakpoint_info = None
-    vu_count = VU_START
     peak_total_rps = 0.0
     peak_total_rps_vu = None
+    last_clean_vu = None       # last stage with zero breach reasons
+    recommended_safe_vus = None  # last clean stage seen before the *first ever* breach
 
-    while vu_count <= VU_MAX:
-        log.info("Stage %d VUs — %ds (%ds warmup excluded)", vu_count, STAGE_SECS, WARMUP_SECS)
+    soak_mode = bool(SOAK_VUS)
+    if soak_mode:
+        vu_sequence = SOAK_VUS
+        stage_secs = SOAK_STAGE_SECS
+        log.info("Soak-test mode: fixed VU list %s, %ds/stage — runs the whole "
+                  "list regardless of breaches, to see stable vs. transient behavior",
+                  SOAK_VUS, SOAK_STAGE_SECS)
+    else:
+        vu_sequence = list(range(VU_START, VU_MAX + 1, VU_STEP))
+        stage_secs = STAGE_SECS
+
+    for vu_count in vu_sequence:
+        log.info("Stage %d VUs — %ds (%ds warmup excluded)", vu_count, stage_secs, WARMUP_SECS)
         stage_started_at = time.time()
         env.runner.start(vu_count, spawn_rate=SPAWN_RATE)
 
@@ -333,7 +451,7 @@ def main():
         env.stats.reset_all()  # drop warmup requests, start measuring clean
         measure_started_at = time.time()
 
-        gevent.sleep(max(STAGE_SECS - WARMUP_SECS, 1))
+        gevent.sleep(max(stage_secs - WARMUP_SECS, 1))
         env.runner.stop()
         measured_secs = time.time() - measure_started_at
         gevent.sleep(1)
@@ -371,27 +489,50 @@ def main():
         if total_rps > peak_total_rps:
             peak_total_rps = total_rps
             peak_total_rps_vu = vu_count
+
         if reasons:
+            if recommended_safe_vus is None:
+                # first time anything has ever breached — the last clean stage
+                # before this is "tested this much concurrency with zero
+                # issues," a defensible headroom number distinct from the
+                # eventual (confirmed) breakpoint further up the ramp.
+                recommended_safe_vus = last_clean_vu
             breach_streak += 1
+            breach_streak_reasons.append((vu_count, reasons))
             log.warning("Stage %d VUs breached thresholds (%d/%d): %s",
                         vu_count, breach_streak, BREACH_STAGES_TO_CONFIRM, "; ".join(reasons))
         else:
             breach_streak = 0
+            breach_streak_reasons = []
+            last_clean_vu = vu_count
 
         if breach_streak >= BREACH_STAGES_TO_CONFIRM and breakpoint_info is None:
-            first_breach_vu = vu_count - VU_STEP * (BREACH_STAGES_TO_CONFIRM - 1)
+            # reasons from the stage where the streak actually STARTED, not
+            # from whichever stage happened to confirm it (those can differ —
+            # e.g. VU 530 breached on a 6.0s p95 but the confirming stage at
+            # 555 only re-breached at 5.1s; reporting 555's number next to
+            # 530's label was the exact mismatch this fixes).
+            first_breach_vu, first_breach_reasons = breach_streak_reasons[0]
             breakpoint_info = {
                 "vus": first_breach_vu,
                 "confirmed_at_vus": vu_count,
-                "reasons": reasons,
+                "reasons": first_breach_reasons,
+                "confirming_stage_reasons": reasons,
+                "recommended_safe_vus": recommended_safe_vus,
             }
-            log.error("BREAKPOINT confirmed at %d VUs (confirmed at %d VUs): %s",
-                       first_breach_vu, vu_count, "; ".join(reasons))
-            write_results(all_stages, stage_meta, breakpoint_info)
-            break
+            log.error(
+                "BREAKPOINT confirmed at %d VUs (confirmed at %d VUs): %s "
+                "(recommended safe operating capacity: %s VUs)",
+                first_breach_vu, vu_count, "; ".join(first_breach_reasons), recommended_safe_vus,
+            )
+            write_results(all_stages, stage_meta, breakpoint_info, stage_secs, soak_mode)
+            if not soak_mode:
+                # a ramp stops once it has its answer; a soak run's whole point
+                # is to sit in this region for a while, so it keeps going
+                # through the rest of the fixed VU list even past this point.
+                break
 
-        write_results(all_stages, stage_meta, breakpoint_info)
-        vu_count += VU_STEP
+        write_results(all_stages, stage_meta, breakpoint_info, stage_secs, soak_mode)
 
     push_metrics(all_stages, breakpoint_info)
     log.info("Results written to %s", RESULTS_JSON)
