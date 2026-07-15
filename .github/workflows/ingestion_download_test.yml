@@ -15,7 +15,7 @@ jobs:
         with:
           python-version: "3.11"
 
-      - run: pip install requests reportlab matplotlib
+      - run: pip install requests gevent reportlab matplotlib
 
       - name: Configure environment
         run: |
