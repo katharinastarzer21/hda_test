@@ -1,2 +1,5 @@
 requests
 prometheus-client
+gevent
+reportlab
+matplotlib

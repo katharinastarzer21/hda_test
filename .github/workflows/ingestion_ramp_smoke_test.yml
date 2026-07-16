@@ -1,0 +1,77 @@
+name: HDA Ingestion Ramp Smoke Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      ramp_levels:
+        description: "Comma-separated ascending VU counts, e.g. 1,5,10,15,20"
+        required: false
+        default: "1,3,5"
+      target_collections:
+        description: "Comma-separated STAC collection IDs (blank = script default: VIIRS + NISAR_L1 + NISAR_L2 + OPERA)"
+        required: false
+        default: ""
+      static_asset_paths:
+        description: "Comma-separated HDA paths to use instead of STAC discovery (for collections not in the STAC catalog, e.g. SENTINEL1_SIG0_20M). Blank = normal STAC discovery."
+        required: false
+        default: ""
+      items_per_collection:
+        description: "STAC page size per datetime window while discovering fresh assets"
+        required: false
+        default: "40"
+      keep_downloads_sample:
+        description: "Keep this many successful downloads on disk for spot-checking (0 = delete all, same as before)"
+        required: false
+        default: "0"
+
+jobs:
+  ramp:
+    name: Ingestion ramp smoke test
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - run: pip install requests gevent reportlab matplotlib
+
+      - name: Configure environment
+        run: |
+          echo "HDA_URL=https://dev.hda.eodchosting.eu"                       >> $GITHUB_ENV
+          echo "RAMP_LEVELS=${{ inputs.ramp_levels }}"                        >> $GITHUB_ENV
+          echo "TARGET_COLLECTIONS=${{ inputs.target_collections }}"          >> $GITHUB_ENV
+          echo "STATIC_ASSET_PATHS=${{ inputs.static_asset_paths }}"          >> $GITHUB_ENV
+          echo "ITEMS_PER_COLLECTION=${{ inputs.items_per_collection }}"      >> $GITHUB_ENV
+          echo "KEEP_DOWNLOADS_SAMPLE=${{ inputs.keep_downloads_sample }}"    >> $GITHUB_ENV
+          echo "KEEP_DOWNLOADS_DIR=${{ runner.temp }}/hda_ramp_kept"          >> $GITHUB_ENV
+          echo "DOWNLOAD_DIR=${{ runner.temp }}/hda_ramp_test"                >> $GITHUB_ENV
+          echo "RESULTS_JSON=ingestion_ramp_results.json"                    >> $GITHUB_ENV
+
+      # writes ingestion_ramp_results.json after every stage (see
+      # ingestion_ramp_smoke_test.py) — a run killed by the job timeout still
+      # leaves the stages completed so far on disk for the report step below.
+      - name: Run ingestion ramp smoke test
+        run: python scripts/ingestion_ramp_smoke_test.py
+
+      - name: Generate report
+        if: always()
+        run: |
+          if [ -f ingestion_ramp_results.json ]; then
+            python scripts/ingestion_ramp_report_generator.py ingestion_ramp_results.json result.pdf
+          else
+            echo "No ingestion_ramp_results.json — test was killed before completing a single stage."
+          fi
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hda-ingestion-ramp-results
+          path: |
+            ingestion_ramp_results.json
+            result.pdf
+          if-no-files-found: warn
+          retention-days: 90
