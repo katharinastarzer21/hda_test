@@ -23,12 +23,23 @@ on:
         description: "Keep this many successful downloads on disk for spot-checking (0 = delete all, same as before)"
         required: false
         default: "0"
+      download_timeout_secs:
+        description: "Raise for large-file collections (e.g. NISAR .h5 can be multi-GB; a single one took 204s with zero concurrency)"
+        required: false
+        default: "300"
+      max_ingest_wait_secs:
+        description: "Hard give-up on ingestion polling, per attempt"
+        required: false
+        default: "300"
 
 jobs:
   ramp:
     name: Ingestion ramp smoke test
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    # generous: MAX_INGEST_WAIT_SECS + DOWNLOAD_TIMEOUT_SECS + 30s buffer is the
+    # per-stage join timeout in the script, and large-file collections (NISAR)
+    # can need both pushed well above the 300s/300s defaults.
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@v4
 
@@ -48,6 +59,8 @@ jobs:
           echo "KEEP_DOWNLOADS_SAMPLE=${{ inputs.keep_downloads_sample }}"    >> $GITHUB_ENV
           echo "KEEP_DOWNLOADS_DIR=${{ runner.temp }}/hda_ramp_kept"          >> $GITHUB_ENV
           echo "DOWNLOAD_DIR=${{ runner.temp }}/hda_ramp_test"                >> $GITHUB_ENV
+          echo "DOWNLOAD_TIMEOUT_SECS=${{ inputs.download_timeout_secs }}"    >> $GITHUB_ENV
+          echo "MAX_INGEST_WAIT_SECS=${{ inputs.max_ingest_wait_secs }}"      >> $GITHUB_ENV
           echo "RESULTS_JSON=ingestion_ramp_results.json"                    >> $GITHUB_ENV
 
       # writes ingestion_ramp_results.json after every stage (see
