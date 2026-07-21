@@ -1,56 +1,6 @@
-"""
-Small, careful ramp test for HDA's on-demand "ingestion" path (the
-Airflow-backed FederatedEodagRouter: NASA VIIRS/NISAR/OPERA, cop_cds
-timeseries, etc. — the collections where a click has to wait for a redirect,
-an Airflow DAG run, and only then serves the real file).
-
-Run this BEFORE perf_test.py / ingestion_download_test.py at real concurrency.
-Its only job is to answer, at a small and slow scale (default 1 -> 3 -> 5
-concurrent downloads): does the cold-start path work at all right now, and
-does the client-side polling actually recognize the transition when it does?
-
-Two bugs in ingestion_download_test.py motivated a fresh script rather than
-patching that one in place:
-
-  1. Its poll step is `session.get(url, timeout=30)` with no `stream=True`.
-     That is fine while the backend answers 202. But once the asset becomes
-     ready, the backend replies with a 302 redirect straight to a presigned
-     S3 URL (see federated_eodag.py get_asset()), requests follows it
-     transparently, and the SAME "just checking status" call is now a full,
-     non-streamed download of the real object with only a 30s timeout. For
-     multi-GB NISAR/OPERA assets that reliably blows up mid-transfer. This
-     is not hypothetical — ingestion_results_small.json has a poll_exception
-     reading "IncompleteRead(7568408576 bytes read, 4880285696 more
-     expected)" at waited_secs=0.0: ingestion had actually finished, the test
-     just filed the real success as a generic failure. This script's poll
-     step uses allow_redirects=False and never follows past the origin's own
-     response — 202 (still ingesting), 302 (ready, federated/Airflow path),
-     or 200 (ready, direct-serve collections that never go through Airflow
-     at all) are all visible from the origin alone, with zero bytes of body
-     ever read during polling. The real transfer happens exactly once, in a
-     separate streamed request, only after a poll has confirmed readiness.
-
-  2. Its asset pool is a static list hardcoded in the script. The first time
-     any entry is hit, ingestion completes and that S3 object is warm
-     forever — every later run, and every later/higher-concurrency stage
-     within the very same run, increasingly draws already-warm files with no
-     way to tell warm and cold apart (see concurrency level 5 in that same
-     results file: avg_ingest_wait_secs 0.0 across the board — not because
-     ingestion got fast, because everything there was already warm). This
-     script pulls a fresh item pool from the STAC API right before running,
-     samples WITHOUT replacement so one stage can't reuse another's assets,
-     and additionally remembers every path it has ever used in a small local
-     cache file so re-running this script during debugging doesn't silently
-     retest the same warm handful. Every result is tagged "cold" (saw a 202
-     before becoming ready) or "warm" (ready on the very first poll) so the
-     two are never averaged together.
-
-This deliberately does NOT try to distinguish "Airflow never got the
-trigger" from "Airflow is just slow" — it can't see Airflow directly. What it
-DOES give you: for every attempt, first_status, poll_count, time-to-ready,
-and download time, so a run where several assets sit at 202 for the full
-MAX_INGEST_WAIT_SECS without ever transitioning is visible as exactly that,
-separately from assets that transition promptly.
+"""Small ramp test for HDA's Airflow-backed on-demand ingestion path
+(FederatedEodagRouter: NASA VIIRS/NISAR/OPERA etc.) — does cold-start
+ingestion work, and does polling recognize readiness correctly.
 
 Usage: python ingestion_ramp_smoke_test.py
 """
@@ -72,32 +22,21 @@ from gevent.pool import Pool
 HDA_URL = os.environ.get("HDA_URL", "https://dev.hda.eodchosting.eu").rstrip("/")
 STAC_URL = os.environ.get("HDA_STAC_URL", "https://eodag.dev.services.eodc.eu").rstrip("/")
 
-# ramp is deliberately small and ascending, not the wide sweep perf_test.py
-# does — the point is a sanity check, not a breakpoint search.
 RAMP_LEVELS = [int(v.strip()) for v in os.environ.get("RAMP_LEVELS", "1,3,5").split(",") if v.strip()]
 
-# same split as ingestion_download_test.py: ACCEPTABLE is "still a fine user
-# experience", MAX is "give up, this attempt failed".
 ACCEPTABLE_INGEST_WAIT_SECS = float(os.environ.get("ACCEPTABLE_INGEST_WAIT_SECS", 180))
 MAX_INGEST_WAIT_SECS = float(os.environ.get("MAX_INGEST_WAIT_SECS", 300))
 POLL_INTERVAL_SECS = float(os.environ.get("POLL_INTERVAL_SECS", 15))
 DOWNLOAD_TIMEOUT_SECS = float(os.environ.get("DOWNLOAD_TIMEOUT_SECS", 300))
 DOWNLOAD_DIR = os.environ.get("DOWNLOAD_DIR", "/tmp/hda_ingestion_ramp_test")
 
-# every successful download is deleted right after its size-check by default
-# (same reasoning as ingestion_download_test.py — don't fill the disk at high
-# concurrency). Set KEEP_DOWNLOADS_SAMPLE>0 to keep that many of the FIRST
-# successful downloads on disk (under KEEP_DOWNLOADS_DIR) for manual spot
-# checks, without keeping every single one at higher VU counts.
+# KEEP_DOWNLOADS_SAMPLE>0 keeps that many of the FIRST successful downloads
+# on disk (under KEEP_DOWNLOADS_DIR) for spot checks; 0 deletes all of them.
 KEEP_DOWNLOADS_SAMPLE = int(os.environ.get("KEEP_DOWNLOADS_SAMPLE", 0))
 KEEP_DOWNLOADS_DIR = os.environ.get("KEEP_DOWNLOADS_DIR", os.path.join(DOWNLOAD_DIR, "kept"))
 _kept_downloads_count = 0
 _kept_downloads_lock = Semaphore()
 
-# collections known to go through the Airflow-backed FederatedEodagRouter
-# (cold-start pattern) — override with TARGET_COLLECTIONS to add direct-serve
-# collections too; those will just come back tagged "warm" every time, which
-# is itself a useful baseline to compare against.
 _DEFAULT_TARGET_COLLECTIONS = ",".join([
     "VIIRS_JPSS2_Leaf_Area_Index_FPAR_8-Day_L4_Global_500m_SIN_Grid_V002",
     "NISAR_L1_RSLC_BETA_V1_1",
@@ -109,34 +48,17 @@ TARGET_COLLECTIONS = [
     if c.strip()
 ]
 ITEMS_PER_COLLECTION = int(os.environ.get("ITEMS_PER_COLLECTION", 40))
-# safety bound on how many STAC pages to walk per collection while paginating
-# for fresh assets — real collections can have millions of items, so without
-# this a min_needed that's simply unreachable (e.g. every remaining item's
-# assets are already in the seen-cache) would loop forever instead of giving
-# up with whatever it found.
 MAX_STAC_PAGES = int(os.environ.get("MAX_STAC_PAGES", 50))
-# size, in days, of each backward-stepping datetime window used to pull a
-# fresh slice of items — see fetch_fresh_pool() for why datetime windows are
-# used instead of limit/next-link pagination.
 STAC_WINDOW_DAYS = int(os.environ.get("STAC_WINDOW_DAYS", 7))
 
 RESULTS_JSON = os.environ.get("RESULTS_JSON", "ingestion_ramp_results.json")
 
-# escape hatch for collections that aren't in the STAC catalog at all (e.g.
-# SENTINEL1_SIG0_20M — a real, working DirectFilepathRouter collection, but
-# its provider isn't in EODAG_PROVIDERS_WHITELIST so fetch_fresh_pool() has
-# no STAC entry point to query). When set, this is used verbatim instead of
-# STAC discovery, cycled to fill however many attempts the ramp needs.
-# Reusing the same path(s) repeatedly is fine for direct-serve collections
-# specifically — there's no cold/warm S3-staging state to bias, unlike the
-# NASA/CMR-backed ones this script was originally built for.
+# for collections not in the STAC catalog (e.g. SENTINEL1_SIG0_20M) — used
+# verbatim instead of STAC discovery, cycled to fill the ramp's needs.
 STATIC_ASSET_PATHS = [
     p.strip() for p in os.environ.get("STATIC_ASSET_PATHS", "").split(",") if p.strip()
 ]
 
-# persists across runs so re-running this script while debugging doesn't
-# keep re-selecting (and re-"proving fast") the same already-warmed handful
-# of assets STAC happens to return first.
 SEEN_CACHE_FILE = os.environ.get("SEEN_CACHE_FILE", "ingestion_ramp_seen.json")
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s  %(message)s")
@@ -156,28 +78,13 @@ def save_seen(seen):
 
 
 def fetch_fresh_pool(seen, min_needed=0):
-    # mirrors search_collection.py's approach (STAC -> per-collection items
-    # -> asset hrefs) but scoped to TARGET_COLLECTIONS and filtered against
-    # the seen-cache so this always returns genuinely untested paths.
-    #
-    # Does NOT use the STAC "next" link for pagination — for NASA/CMR-backed
-    # collections routed through eodc_cmr_nasa_nisar's CMRSearch plugin
-    # (eodag_cmr.py), eodag core pops `limit`/`next_page_token(_key)` out of
-    # kwargs and stores them only as PreparedSearch attributes
-    # (prep.limit/prep.next_page_token), but the plugin reads them back out
-    # of a plain params dict that never receives them (it checks
-    # getattr(prep, "kwargs", {}), which doesn't exist on PreparedSearch) —
-    # so every call silently falls back to the hardcoded default of 20 items
-    # with no real search-after cursor forwarded to CMR, regardless of
-    # `limit=` or of following `next`. Confirmed live: limit=80 still only
-    # returns 20 items, sortby=-datetime returns the identical 20, and the
-    # `next` link (present/absent inconsistently) is a dead end either way.
-    #
-    # `datetime` range filters, by contrast, are NOT stripped by core and do
-    # reach CMR as a real temporal filter — so distinct time windows are the
-    # only lever that currently returns different items. We step backward in
-    # STAC_WINDOW_DAYS-sized windows from "now" until enough fresh assets are
-    # collected or MAX_STAC_PAGES windows have been tried.
+    # Uses `datetime` windows, not `limit`/`next` pagination: for NASA/CMR
+    # collections (eodc_cmr_nasa_nisar's CMRSearch plugin), eodag core stores
+    # limit/next_page_token only on PreparedSearch attributes the plugin
+    # never reads, so every call silently returns the same first 20 items
+    # regardless of limit or next. `datetime` isn't affected by that bug and
+    # reaches CMR as a real filter, so distinct time windows are the only
+    # reliable way to get fresh items.
     pool = []
     now = datetime.now(timezone.utc)
     for cid in TARGET_COLLECTIONS:
@@ -209,12 +116,13 @@ def fetch_fresh_pool(seen, min_needed=0):
                         continue
                     parsed = urlparse(urljoin(STAC_URL, href))
                     if HDA_URL not in f"{parsed.scheme}://{parsed.netloc}":
-                        continue  # not an HDA-served asset, not relevant here
+                        continue
                     if parsed.path in seen:
                         continue
                     collection_fresh.append(parsed.path)
+                    break  # one asset per item — siblings share an ingestion job
 
-            window_end = window_start  # step further back in time next iteration
+            window_end = window_start
 
             if min_needed and len(collection_fresh) >= min_needed:
                 break
@@ -228,10 +136,6 @@ def fetch_fresh_pool(seen, min_needed=0):
 
 
 def _maybe_keep_download(tmp_path, rec, path):
-    # keeps only the first KEEP_DOWNLOADS_SAMPLE successful downloads across
-    # the whole run (not per-stage) so a KEEP_DOWNLOADS_SAMPLE=3 at VU=20
-    # doesn't accidentally keep 3 per stage x N stages. Returns True if this
-    # file was kept (caller must not delete tmp_path in that case).
     global _kept_downloads_count
     if KEEP_DOWNLOADS_SAMPLE <= 0 or rec.get("outcome") != "success":
         return False
@@ -260,9 +164,8 @@ def attempt_one(path, tag):
     while True:
         poll_count += 1
         try:
-            # allow_redirects=False is the whole point: this reads only the
-            # origin's own status (202 / 302 / 200), zero response body,
-            # never transits to S3 during polling. See module docstring.
+            # allow_redirects=False: only reads the origin's own status
+            # (202/302/200), never transits to S3 during polling.
             resp = session.get(url, timeout=30, allow_redirects=False)
         except requests.RequestException as exc:
             rec["outcome"] = f"poll_exception: {exc}"
@@ -305,16 +208,13 @@ def attempt_one(path, tag):
 
     if not ready:
         rec["outcome"] = "ingestion_timeout"
-        log.warning("[%s] %s gave up after %.0fs, never left 202 — possible trigger "
-                    "failure, see AirflowIngestionClient.trigger_ingestion", tag, path, waited)
+        log.warning("[%s] %s gave up after %.0fs, never left 202", tag, path, waited)
         return rec
 
     os.makedirs(DOWNLOAD_DIR, exist_ok=True)
     tmp_path = os.path.join(DOWNLOAD_DIR, f"dl_{os.getpid()}_{time.time_ns()}.bin")
     dl_started = time.time()
     try:
-        # the ONE place a response body is ever read — default
-        # allow_redirects=True here so this follows the 302 to S3 for real.
         with session.get(url, stream=True, timeout=DOWNLOAD_TIMEOUT_SECS) as resp:
             if resp.status_code >= 400:
                 rec["outcome"] = f"download_failed_status_{resp.status_code}"
@@ -463,8 +363,7 @@ def main():
         )
 
         if summary["succeeded"] == 0 and n > RAMP_LEVELS[0]:
-            log.warning("Zero successes at %d concurrent — stopping the ramp early, "
-                        "no point testing higher concurrency until this is understood.", n)
+            log.warning("Zero successes at %d concurrent — stopping the ramp early.", n)
             break
 
     log.info("Done. Results written to %s (seen-asset cache: %s)", RESULTS_JSON, SEEN_CACHE_FILE)
