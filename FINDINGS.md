@@ -1,6 +1,6 @@
 # HDA ingestion ramp — results
 
-Target: `dev.hda.eodchosting.eu` · Collection: `OPERA_L2_RTC-S1_V1` · 2026-07-16
+Target: `dev.hda.eodchosting.eu` · Collection: OPERA
 
 ## Ramp 1: 1 → 5 → 10 → 15 → 20 VUs
 
