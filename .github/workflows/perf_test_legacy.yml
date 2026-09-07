@@ -24,7 +24,7 @@ jobs:
         run: |
           echo "PYTHONPATH=$GITHUB_WORKSPACE/scripts"                          >> $GITHUB_ENV
           echo "HDA_URL=https://data.eodc.eu"                                  >> $GITHUB_ENV
-          echo "OTEL_ENDPOINT=https://otel.infra.eodc.eu/v1/metrics"           >> $GITHUB_ENV
+          echo "OTEL_ENDPOINT=https://otel.observability.eodc.eu/v1/metrics"           >> $GITHUB_ENV
           echo "OTEL_API_KEY=${{ secrets.OTEL_API_KEY }}"                      >> $GITHUB_ENV
 
       - name: Run performance test
