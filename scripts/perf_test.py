@@ -310,9 +310,46 @@ class RedirectOnlyUser(HttpUser):
                 _record_error_sample(path, response=response)
 
 
+class PathsUser(HttpUser):
+    # TASK_MODE=paths: one endpoint per HDA delivery path (scripts/hda_targets.py),
+    # equal weight, so every path gets its own p50/p95/rps/error line per stage.
+    # Unlike HdaUser, bodies are NOT streamed: requests reads the whole body
+    # inside the timed call, so latency here = time to the LAST byte (incl. the
+    # redirect hop for *_follow). Bodies are at most ~14 MB, fine in memory.
+    host = HDA_URL
+    wait_time = between(0.1, 0.5)
+
+    def _hit(self, name, path, follow, expected):
+        with self.client.get(path, name=name, allow_redirects=follow, catch_response=True) as response:
+            if response.status_code != expected:
+                response.failure(f"status {response.status_code}, expected {expected}")
+                _record_error_sample(path, response=response)
+            else:
+                response.success()  # expected 403/404 on the status targets are a success
+
+    @task
+    def hit_random_path(self):
+        self._hit(*random.choice(PATH_PLAN))
+
+
+def _build_path_plan():
+    from hda_targets import TARGETS
+    plan = []
+    for name, path, kind, expected in TARGETS:
+        if kind == "redirect":
+            plan.append((f"P_{name}_302", path, False, 302))
+            plan.append((f"P_{name}_follow", path, True, 200))
+        else:
+            plan.append((f"P_{name}", path, False, expected))
+    return plan
+
+
+PATH_PLAN = _build_path_plan()
+
 ACTIVE_USER_CLASS = {
     "redirect_only": RedirectOnlyUser,
     "sig0_only": Sig0OnlyUser,
+    "paths": PathsUser,
 }.get(TASK_MODE, HdaUser)
 
 
@@ -408,7 +445,8 @@ def write_results(all_stages, stage_meta, breakpoint_info, stage_secs, soak_mode
                 "breakpoint": breakpoint_info,
                 "stages": all_stages,
                 "stage_meta": stage_meta,
-                "data_file_paths": SIG0_PATHS if TASK_MODE == "sig0_only" else DATA_FILE_PATHS,
+                "data_file_paths": (PATH_PLAN if TASK_MODE == "paths"
+                                    else SIG0_PATHS if TASK_MODE == "sig0_only" else DATA_FILE_PATHS),
                 "dropped_paths": DROPPED_PATHS,
                 "error_samples": _error_samples,
             },
@@ -449,7 +487,7 @@ def precheck_paths(paths):
 
 def main():
     setup_logging("INFO")
-    if os.environ.get("PRECHECK_PATHS", "1") == "1":
+    if os.environ.get("PRECHECK_PATHS", "1") == "1" and TASK_MODE != "paths":
         precheck_paths(SIG0_PATHS if TASK_MODE == "sig0_only" else DATA_FILE_PATHS)
     env = Environment(user_classes=[ACTIVE_USER_CLASS])
     log.info("TASK_MODE=%s -> using %s", TASK_MODE, ACTIVE_USER_CLASS.__name__)

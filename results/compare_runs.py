@@ -21,6 +21,10 @@ def load(path):
 runs = [load(p) for p in sys.argv[1:]]
 common = sorted(set.intersection(*(set(map(int, r[1])) for r in runs)))
 print(f"common stages (VUs): {common}\n")
+# TASK_MODE=paths runs (P_* endpoints, timed to the last byte): compare all of them
+names = sorted({ep for r in runs for st in r[1].values() for ep in st})
+if any(n.startswith("P_") for n in names):
+    ENDPOINTS = [n for n in names if n.startswith("P_")]
 
 for ep in ENDPOINTS:
     print(f"{ep}  p50 / p95 [s]")

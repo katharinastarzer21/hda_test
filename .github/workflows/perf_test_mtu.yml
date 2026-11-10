@@ -1,18 +1,22 @@
 name: HDA Performance Test (MTU comparison)
 
-# manual only. Defaults = gentle ramp for comparing against the July 2026
-# baselines (results/baseline_2026-07): same stage points 5, 30, 55, 80, 105, 130
-# as the July 5->800 ramps, ~9 min of load instead of up to 90.
-# Compare: python results/compare_runs.py results/baseline_2026-07/*_vu800.json <downloaded perf_results.json>
+# Manual only. One run gives an overview per HDA delivery path:
+#   1. net_diag before: prod + dev, every delivery path (scripts/hda_targets.py),
+#      DNS/TCP/TLS/TTFB/total, TCP mss/pmtu/retransmits, tracepath, DF pings
+#   2. mixed ramp on dev (TASK_MODE=e2e, 5->130 VUs) — comparable to July 2026
+#   3. per-path ramp on dev (TASK_MODE=paths, 5->55 VUs), timed to the last byte
+#   4. net_diag after: dev again, to see if it recovered
+#   5. step summary with all tables + artifact with all raw JSON
+# ~25 min, load only on dev, prod only gets the light sequential diagnostics.
 on:
   workflow_dispatch:
     inputs:
       vu_max:
-        description: "max VUs (July baseline went up to 800)"
+        description: "mixed ramp: max VUs (July baseline went up to 800)"
         default: "130"
-      vu_step:
-        description: "VU step (keep 25 to match the July stage points)"
-        default: "25"
+      paths_vu_max:
+        description: "per-path ramp: max VUs"
+        default: "55"
       label:
         description: "label for the artifact, e.g. after_mtu"
         default: "after_mtu"
@@ -21,7 +25,15 @@ jobs:
   performance:
     name: Performance
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 75
+    env:
+      PYTHONPATH: ${{ github.workspace }}/scripts
+      HDA_URL: https://dev.hda.eodchosting.eu
+      VU_STEP: "25"
+      SPAWN_RATE: "25"
+      OTEL_ENDPOINT: https://otel.observability.eodc.eu/v1/metrics
+      OTEL_API_KEY: ${{ secrets.OTEL_API_KEY }}
+      OUT: out
     steps:
       - uses: actions/checkout@v4
 
@@ -29,28 +41,53 @@ jobs:
         with:
           python-version: "3.11"
 
-      - run: pip install requests opentelemetry-sdk opentelemetry-exporter-otlp-proto-http locust
+      - run: |
+          pip install requests opentelemetry-sdk opentelemetry-exporter-otlp-proto-http locust
+          sudo apt-get install -y -qq iputils-tracepath >/dev/null || true
+          mkdir -p $OUT
 
-      - name: Configure environment
+      - name: Diagnostics before load (prod + dev)
+        continue-on-error: true
         run: |
-          echo "PYTHONPATH=$GITHUB_WORKSPACE/scripts"                          >> $GITHUB_ENV
-          echo "HDA_URL=https://dev.hda.eodchosting.eu"                        >> $GITHUB_ENV
-          echo "VU_MAX=${{ inputs.vu_max }}"                                   >> $GITHUB_ENV
-          echo "VU_STEP=${{ inputs.vu_step }}"                                 >> $GITHUB_ENV
-          echo "SPAWN_RATE=25"                                                 >> $GITHUB_ENV
-          echo "OTEL_ENDPOINT=https://otel.observability.eodc.eu/v1/metrics"   >> $GITHUB_ENV
-          echo "OTEL_API_KEY=${{ secrets.OTEL_API_KEY }}"                      >> $GITHUB_ENV
+          python scripts/net_diag.py 1_before https://data.eodc.eu $OUT/net_diag_1_before_prod.json
+          python scripts/net_diag.py 1_before https://dev.hda.eodchosting.eu $OUT/net_diag_1_before_dev.json
 
-      - name: Run performance test
+      - name: TCP counters before
+        run: nstat -az | grep -E '^(TcpOutSegs|TcpRetransSegs|TcpInSegs|TcpInErrs|TcpExtTCPTimeouts|TcpExtTCPLostRetransmit|TcpExtTCPSlowStartRetrans|TcpExtTCPFastRetrans)\s' > $OUT/nstat_before.txt || true
+
+      - name: Mixed ramp on dev (comparable to July)
+        continue-on-error: true
+        env:
+          VU_MAX: ${{ inputs.vu_max }}
+          RESULTS_JSON: out/perf_results_e2e.json
         run: python scripts/perf_test.py
 
-      # if: always() — results are written after every stage, upload them even
-      # if the run was killed mid-ramp.
+      - name: Per-path ramp on dev
+        continue-on-error: true
+        env:
+          TASK_MODE: paths
+          VU_MAX: ${{ inputs.paths_vu_max }}
+          RESULTS_JSON: out/perf_results_paths.json
+        run: python scripts/perf_test.py
+
+      - name: TCP counters after
+        if: always()
+        run: nstat -az | grep -E '^(TcpOutSegs|TcpRetransSegs|TcpInSegs|TcpInErrs|TcpExtTCPTimeouts|TcpExtTCPLostRetransmit|TcpExtTCPSlowStartRetrans|TcpExtTCPFastRetrans)\s' > $OUT/nstat_after.txt || true
+
+      - name: Diagnostics after load (dev)
+        if: always()
+        continue-on-error: true
+        run: python scripts/net_diag.py 2_after https://dev.hda.eodchosting.eu $OUT/net_diag_2_after_dev.json
+
+      - name: Summary
+        if: always()
+        run: python scripts/make_summary.py $OUT | tee $OUT/summary.md >> $GITHUB_STEP_SUMMARY
+
       - name: Upload results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: hda-perf-${{ inputs.label }}-${{ github.run_id }}
-          path: perf_results.json
+          path: out/
           if-no-files-found: warn
           retention-days: 90
