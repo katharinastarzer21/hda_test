@@ -102,6 +102,11 @@ def summarize(samples, expected):
             "tls": med([x["time_appconnect"] - x["time_connect"] for x in ok]),
             "ttfb": med([x["time_starttransfer"] for x in ok]),
             "total": med([x["time_total"] for x in ok]),
+            # TTFB minus connection setup minus one round trip (TCP connect time
+            # ~ 1 RTT) = roughly what the servers spent on the request. Makes
+            # runs from near and far GitHub runners comparable.
+            "server": med([max(0.0, x["time_starttransfer"] - x["time_appconnect"]
+                               - (x["time_connect"] - x["time_namelookup"])) for x in ok]),
         }
         s["p90_total_s"] = sorted(x["time_total"] for x in ok)[max(0, int(len(ok) * 0.9) - 1)]
         s["max_total_s"] = max(x["time_total"] for x in ok)
@@ -126,6 +131,15 @@ def main():
     except Exception as e:
         res["resolved_ips"] = str(e)
     res["runner_ip_link"] = run(["ip", "-o", "link"])[1]
+    # GitHub-hosted runners are Azure VMs: the instance metadata service tells
+    # the region, which explains most of the RTT differences between runs.
+    rc, meta = run(["curl", "-s", "-m", "3", "-H", "Metadata:true",
+                    "http://169.254.169.254/metadata/instance/compute?api-version=2021-02-01"], timeout=10)
+    try:
+        m = json.loads(meta)
+        res["runner_location"] = {"region": m.get("location"), "vm_size": m.get("vmSize"), "zone": m.get("zone")}
+    except Exception:
+        res["runner_location"] = {"region": "unknown (not an Azure VM / metadata blocked)"}
 
     # (result name, url, follow, expected status)
     plan = []
@@ -152,9 +166,13 @@ def main():
         json.dump(res, f, indent=2)
 
     # markdown summary
+    loc = res["runner_location"]
     md = [f"### net_diag `{label}` — {base} ({res['utc']}, {REPEATS}× each, fresh connection per request)", "",
-          "| path | what | status | DNS | TCP | TLS | TTFB | total (median) | p90 | max | MB/s | TCP mss/pmtu/retrans |",
-          "|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|"]
+          f"runner region: **{loc.get('region')}** ({loc.get('vm_size', '')}) · "
+          f"RTT ≈ TCP connect of apisix_404: "
+          f"**{(res['paths'].get('apisix_404', {}).get('summary', {}).get('median_s', {}).get('tcp') or 0) * 1000:.0f} ms**", "",
+          "| path | what | status | DNS | TCP | TLS | TTFB | server ≈ | total (median) | p90 | max | MB/s | TCP mss/pmtu/retrans |",
+          "|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|"]
     for name, r in res["paths"].items():
         s = r["summary"]
         m = s.get("median_s", {})
@@ -164,7 +182,7 @@ def main():
         tcp_s = f"{tcp['mss']}/{tcp['pmtu']}/{tcp['retrans_total']}" if tcp else ""
         mbs = f"{s['median_MBps']:.1f}" if s.get("size_bytes", 0) > 1_000_000 else ""
         md.append(f"| {name} | {DESCRIPTIONS.get(name, '')} | {codes} | {f(m.get('dns'))} | {f(m.get('tcp'))} | {f(m.get('tls'))} | "
-                  f"{f(m.get('ttfb'))} | **{f(m.get('total'))}** | {f(s.get('p90_total_s'))} | {f(s.get('max_total_s'))} | {mbs} | {tcp_s} |")
+                  f"{f(m.get('ttfb'))} | {f(m.get('server'))} | **{f(m.get('total'))}** | {f(s.get('p90_total_s'))} | {f(s.get('max_total_s'))} | {mbs} | {tcp_s} |")
     md += ["", f"tracepath pmtu: {res['tracepath_pmtu'] or 'n/a'} · DF ping: "
            + ", ".join(f"{k + 28} B {'ok' if v['ok'] else 'fail'}" for k, v in res["ping_df"].items())
            + f" · resolved: {res['resolved_ips']}", ""]

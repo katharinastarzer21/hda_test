@@ -9,6 +9,11 @@ name: HDA Performance Test (MTU comparison)
 #   5. step summary with all tables + artifact with all raw JSON
 # ~25 min, load only on dev, prod only gets the light sequential diagnostics.
 on:
+  # Repeated today (2026-11-10) to see how much results vary between GitHub
+  # runners (region/RTT is in the summary). cron has no year: this would fire
+  # again on 10 Nov 2027 — delete the schedule block once the runs are in.
+  schedule:
+    - cron: "0 10-22/2 10 11 *"
   workflow_dispatch:
     inputs:
       vu_max:
@@ -58,7 +63,7 @@ jobs:
       - name: Mixed ramp on dev (comparable to July)
         continue-on-error: true
         env:
-          VU_MAX: ${{ inputs.vu_max }}
+          VU_MAX: ${{ inputs.vu_max || '130' }}
           RESULTS_JSON: out/perf_results_e2e.json
         run: python scripts/perf_test.py
 
@@ -66,7 +71,7 @@ jobs:
         continue-on-error: true
         env:
           TASK_MODE: paths
-          VU_MAX: ${{ inputs.paths_vu_max }}
+          VU_MAX: ${{ inputs.paths_vu_max || '55' }}
           RESULTS_JSON: out/perf_results_paths.json
         run: python scripts/perf_test.py
 
@@ -87,7 +92,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: hda-perf-${{ inputs.label }}-${{ github.run_id }}
+          name: hda-perf-${{ inputs.label || 'scheduled' }}-${{ github.run_id }}
           path: out/
           if-no-files-found: warn
           retention-days: 90
