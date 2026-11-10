@@ -1,8 +1,0 @@
-TcpInSegs                       115724             0.0
-TcpOutSegs                      95618              0.0
-TcpRetransSegs                  1                  0.0
-TcpInErrs                       0                  0.0
-TcpExtTCPLostRetransmit         0                  0.0
-TcpExtTCPFastRetrans            0                  0.0
-TcpExtTCPSlowStartRetrans       0                  0.0
-TcpExtTCPTimeouts               1                  0.0

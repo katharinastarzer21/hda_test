@@ -1,63 +1,63 @@
 ## HDA performance overview
 
-Delivery paths: APISIX → nginx-static (EODC disk) · APISIX → hda-go (EOPF Zarr) · APISIX → HDA app → 302 to external provider (CloudFerro S3) or to EODC Ceph S3 (federated). Same target list for every run (scripts/hda_targets.py), so runs can be compared over time.
+Delivery paths: APISIX -> nginx-static (EODC disk) · APISIX -> hda-go (EOPF Zarr) · APISIX -> HDA app -> 302 to external provider (CloudFerro S3) or to EODC Ceph S3 (federated). Same target list for every run (scripts/hda_targets.py), so runs can be compared over time.
 
 ### net_diag `1_before` — https://dev.hda.eodchosting.eu (2026-11-10T12:22:57+00:00, 10× each, fresh connection per request)
 
-runner region: **westus2** (Standard_D4ads_v6) · RTT ≈ TCP connect of apisix_404: **159 ms**
+runner region: westus2 (Standard_D4ads_v6) · RTT approx. TCP connect of apisix_404: 159 ms
 
-| path | what | status | DNS | TCP | TLS | TTFB | server ≈ | total (median) | p90 | max | MB/s | TCP mss/pmtu/retrans |
+| path | what | status | DNS | TCP | TLS | TTFB | server approx. | total (median) | p90 | max | MB/s | TCP mss/pmtu/retrans |
 |---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
-| nginx_zarray | APISIX → nginx-static, small file from EODC disk | 200 | 93 ms | 161 ms | 164 ms | 653 ms | 114 ms | **653 ms** | 968 ms | 1077 ms |  |  |
-| nginx_png_16k | APISIX → nginx-static, 16 KB png from EODC disk | 200 | 6 ms | 162 ms | 167 ms | 681 ms | 162 ms | **682 ms** | 866 ms | 1028 ms |  |  |
-| nginx_sig0_14M | APISIX → nginx-static, 14 MB GeoTIFF from EODC disk | 200 | 42 ms | 157 ms | 161 ms | 560 ms | 24 ms | **2291 ms** | 2434 ms | 2503 ms | 6.2 | ['1424']/['1500']/0 |
-| nginx_403_nodisk | APISIX → nginx-static regex reject, no disk access | 403 | 3 ms | 159 ms | 163 ms | 598 ms | 95 ms | **599 ms** | 729 ms | 857 ms |  |  |
-| apisix_404 | APISIX only (unknown collection) | 404 | 4 ms | 159 ms | 163 ms | 493 ms | 5 ms | **493 ms** | 515 ms | 545 ms |  |  |
-| go_eopf_zarr | APISIX → hda-go, EOPF Zarr zarr.json | 200 | 4 ms | 157 ms | 162 ms | 504 ms | 4 ms | **1297 ms** | 1340 ms | 1466 ms |  |  |
-| ext_cloudferro_302 | APISIX → HDA app, 302 to external provider | 302 | 4 ms | 163 ms | 167 ms | 502 ms | 4 ms | **502 ms** | 511 ms | 512 ms |  |  |
-| ext_cloudferro_follow | … followed to CloudFerro S3 (external, 2.3 MB) | 200 | 166 ms | 316 ms | 329 ms | 1191 ms | 43 ms | **2271 ms** | 2291 ms | 2298 ms | 1.0 |  |
-| fed_ceph_8M_302 | APISIX → HDA app (federated), 302 presigned URL | 302 | 3 ms | 160 ms | 163 ms | 580 ms | 92 ms | **580 ms** | 640 ms | 804 ms |  |  |
-| fed_ceph_8M_follow | … followed to EODC Ceph S3 objects.eodc.eu (8 MB) | 200 | 58 ms | 325 ms | 336 ms | 1163 ms | 106 ms | **2612 ms** | 2874 ms | 3031 ms | 3.2 | ['1424']/['1500']/0 |
+| nginx_zarray | APISIX -> nginx-static, small file from EODC disk | 200 | 93 ms | 161 ms | 164 ms | 653 ms | 114 ms | 653 ms | 968 ms | 1077 ms |  |  |
+| nginx_png_16k | APISIX -> nginx-static, 16 KB png from EODC disk | 200 | 6 ms | 162 ms | 167 ms | 681 ms | 162 ms | 682 ms | 866 ms | 1028 ms |  |  |
+| nginx_sig0_14M | APISIX -> nginx-static, 14 MB GeoTIFF from EODC disk | 200 | 42 ms | 157 ms | 161 ms | 560 ms | 24 ms | 2291 ms | 2434 ms | 2503 ms | 6.2 | ['1424']/['1500']/0 |
+| nginx_403_nodisk | APISIX -> nginx-static regex reject, no disk access | 403 | 3 ms | 159 ms | 163 ms | 598 ms | 95 ms | 599 ms | 729 ms | 857 ms |  |  |
+| apisix_404 | APISIX only (unknown collection) | 404 | 4 ms | 159 ms | 163 ms | 493 ms | 5 ms | 493 ms | 515 ms | 545 ms |  |  |
+| go_eopf_zarr | APISIX -> hda-go, EOPF Zarr zarr.json | 200 | 4 ms | 157 ms | 162 ms | 504 ms | 4 ms | 1297 ms | 1340 ms | 1466 ms |  |  |
+| ext_cloudferro_302 | APISIX -> HDA app, 302 to external provider | 302 | 4 ms | 163 ms | 167 ms | 502 ms | 4 ms | 502 ms | 511 ms | 512 ms |  |  |
+| ext_cloudferro_follow | ... followed to CloudFerro S3 (external, 2.3 MB) | 200 | 166 ms | 316 ms | 329 ms | 1191 ms | 43 ms | 2271 ms | 2291 ms | 2298 ms | 1.0 |  |
+| fed_ceph_8M_302 | APISIX -> HDA app (federated), 302 presigned URL | 302 | 3 ms | 160 ms | 163 ms | 580 ms | 92 ms | 580 ms | 640 ms | 804 ms |  |  |
+| fed_ceph_8M_follow | ... followed to EODC Ceph S3 objects.eodc.eu (8 MB) | 200 | 58 ms | 325 ms | 336 ms | 1163 ms | 106 ms | 2612 ms | 2874 ms | 3031 ms | 3.2 | ['1424']/['1500']/0 |
 
 tracepath pmtu: ['1500', '1500', '1500'] · DF ping: 1500 B fail, 1428 B fail, 1228 B fail · resolved: ['193.170.203.244']
 
 
 ### net_diag `1_before` — https://data.eodc.eu (2026-11-10T12:19:01+00:00, 10× each, fresh connection per request)
 
-runner region: **westus2** (Standard_D4ads_v6) · RTT ≈ TCP connect of apisix_404: **156 ms**
+runner region: westus2 (Standard_D4ads_v6) · RTT approx. TCP connect of apisix_404: 156 ms
 
-| path | what | status | DNS | TCP | TLS | TTFB | server ≈ | total (median) | p90 | max | MB/s | TCP mss/pmtu/retrans |
+| path | what | status | DNS | TCP | TLS | TTFB | server approx. | total (median) | p90 | max | MB/s | TCP mss/pmtu/retrans |
 |---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
-| nginx_zarray | APISIX → nginx-static, small file from EODC disk | 200 | 83 ms | 159 ms | 167 ms | 1409 ms | 740 ms | **1409 ms** | 1910 ms | 2347 ms |  |  |
-| nginx_png_16k | APISIX → nginx-static, 16 KB png from EODC disk | 200 | 37 ms | 162 ms | 176 ms | 1833 ms | 708 ms | **1833 ms** | 3089 ms | 3297 ms |  |  |
-| nginx_sig0_14M | APISIX → nginx-static, 14 MB GeoTIFF from EODC disk | 200 | 4 ms | 162 ms | 171 ms | 640 ms | 113 ms | **2456 ms** | 2585 ms | 9781 ms | 5.8 | ['1424', '1428']/['1500']/0 |
-| nginx_403_nodisk | APISIX → nginx-static regex reject, no disk access | 403 | 3 ms | 164 ms | 195 ms | 1441 ms | 856 ms | **1441 ms** | 2025 ms | 2289 ms |  |  |
-| apisix_404 | APISIX only (unknown collection) | 404 | 3 ms | 156 ms | 168 ms | 504 ms | 16 ms | **504 ms** | 590 ms | 622 ms |  |  |
-| go_eopf_zarr | APISIX → hda-go, EOPF Zarr zarr.json | 200 | 3 ms | 158 ms | 167 ms | 536 ms | 43 ms | **1318 ms** | 1371 ms | 1920 ms |  |  |
-| ext_cloudferro_302 | APISIX → HDA app, 302 to external provider | 302 | 3 ms | 159 ms | 169 ms | 525 ms | 25 ms | **525 ms** | 585 ms | 600 ms |  |  |
-| ext_cloudferro_follow | … followed to CloudFerro S3 (external, 2.3 MB) | 200 | 7 ms | 317 ms | 342 ms | 1053 ms | 45 ms | **2161 ms** | 2316 ms | 2522 ms | 1.1 |  |
-| fed_ceph_8M_302 | APISIX → HDA app (federated), 302 presigned URL | 302 | 4 ms | 159 ms | 168 ms | 672 ms | 142 ms | **672 ms** | 705 ms | 791 ms |  |  |
-| fed_ceph_8M_follow | … followed to EODC Ceph S3 objects.eodc.eu (8 MB) | 200 | 64 ms | 325 ms | 346 ms | 1240 ms | 209 ms | **2721 ms** | 2815 ms | 2830 ms | 3.0 | ['1424']/['1500']/0 |
+| nginx_zarray | APISIX -> nginx-static, small file from EODC disk | 200 | 83 ms | 159 ms | 167 ms | 1409 ms | 740 ms | 1409 ms | 1910 ms | 2347 ms |  |  |
+| nginx_png_16k | APISIX -> nginx-static, 16 KB png from EODC disk | 200 | 37 ms | 162 ms | 176 ms | 1833 ms | 708 ms | 1833 ms | 3089 ms | 3297 ms |  |  |
+| nginx_sig0_14M | APISIX -> nginx-static, 14 MB GeoTIFF from EODC disk | 200 | 4 ms | 162 ms | 171 ms | 640 ms | 113 ms | 2456 ms | 2585 ms | 9781 ms | 5.8 | ['1424', '1428']/['1500']/0 |
+| nginx_403_nodisk | APISIX -> nginx-static regex reject, no disk access | 403 | 3 ms | 164 ms | 195 ms | 1441 ms | 856 ms | 1441 ms | 2025 ms | 2289 ms |  |  |
+| apisix_404 | APISIX only (unknown collection) | 404 | 3 ms | 156 ms | 168 ms | 504 ms | 16 ms | 504 ms | 590 ms | 622 ms |  |  |
+| go_eopf_zarr | APISIX -> hda-go, EOPF Zarr zarr.json | 200 | 3 ms | 158 ms | 167 ms | 536 ms | 43 ms | 1318 ms | 1371 ms | 1920 ms |  |  |
+| ext_cloudferro_302 | APISIX -> HDA app, 302 to external provider | 302 | 3 ms | 159 ms | 169 ms | 525 ms | 25 ms | 525 ms | 585 ms | 600 ms |  |  |
+| ext_cloudferro_follow | ... followed to CloudFerro S3 (external, 2.3 MB) | 200 | 7 ms | 317 ms | 342 ms | 1053 ms | 45 ms | 2161 ms | 2316 ms | 2522 ms | 1.1 |  |
+| fed_ceph_8M_302 | APISIX -> HDA app (federated), 302 presigned URL | 302 | 4 ms | 159 ms | 168 ms | 672 ms | 142 ms | 672 ms | 705 ms | 791 ms |  |  |
+| fed_ceph_8M_follow | ... followed to EODC Ceph S3 objects.eodc.eu (8 MB) | 200 | 64 ms | 325 ms | 346 ms | 1240 ms | 209 ms | 2721 ms | 2815 ms | 2830 ms | 3.0 | ['1424']/['1500']/0 |
 
 tracepath pmtu: ['1500', '1500', '1500'] · DF ping: 1500 B fail, 1428 B fail, 1228 B fail · resolved: ['193.170.203.244']
 
 
 ### net_diag `2_after` — https://dev.hda.eodchosting.eu (2026-11-10T12:54:21+00:00, 10× each, fresh connection per request)
 
-runner region: **westus2** (Standard_D4ads_v6) · RTT ≈ TCP connect of apisix_404: **160 ms**
+runner region: westus2 (Standard_D4ads_v6) · RTT approx. TCP connect of apisix_404: 160 ms
 
-| path | what | status | DNS | TCP | TLS | TTFB | server ≈ | total (median) | p90 | max | MB/s | TCP mss/pmtu/retrans |
+| path | what | status | DNS | TCP | TLS | TTFB | server approx. | total (median) | p90 | max | MB/s | TCP mss/pmtu/retrans |
 |---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
-| nginx_zarray | APISIX → nginx-static, small file from EODC disk | 200 | 4 ms | 160 ms | 205 ms | 904 ms | 365 ms | **904 ms** | 1376 ms | 1383 ms |  |  |
-| nginx_png_16k | APISIX → nginx-static, 16 KB png from EODC disk | 200 | 4 ms | 162 ms | 174 ms | 709 ms | 196 ms | **709 ms** | 934 ms | 1412 ms |  |  |
-| nginx_sig0_14M | APISIX → nginx-static, 14 MB GeoTIFF from EODC disk | 200 | 3 ms | 164 ms | 181 ms | 743 ms | 222 ms | **2618 ms** | 2756 ms | 2787 ms | 5.5 | ['1424']/['1500']/0 |
-| nginx_403_nodisk | APISIX → nginx-static regex reject, no disk access | 403 | 3 ms | 163 ms | 203 ms | 653 ms | 126 ms | **653 ms** | 890 ms | 996 ms |  |  |
-| apisix_404 | APISIX only (unknown collection) | 404 | 4 ms | 160 ms | 187 ms | 581 ms | 43 ms | **581 ms** | 605 ms | 616 ms |  |  |
-| go_eopf_zarr | APISIX → hda-go, EOPF Zarr zarr.json | 200 | 3 ms | 156 ms | 164 ms | 532 ms | 40 ms | **1286 ms** | 1341 ms | 1405 ms |  |  |
-| ext_cloudferro_302 | APISIX → HDA app, 302 to external provider | 302 | 3 ms | 161 ms | 168 ms | 513 ms | 6 ms | **513 ms** | 553 ms | 573 ms |  |  |
-| ext_cloudferro_follow | … followed to CloudFerro S3 (external, 2.3 MB) | 200 | 7 ms | 317 ms | 327 ms | 998 ms | 11 ms | **2105 ms** | 2171 ms | 2438 ms | 1.1 |  |
-| fed_ceph_8M_302 | APISIX → HDA app (federated), 302 presigned URL | 302 | 79 ms | 162 ms | 164 ms | 659 ms | 89 ms | **659 ms** | 802 ms | 893 ms |  |  |
-| fed_ceph_8M_follow | … followed to EODC Ceph S3 objects.eodc.eu (8 MB) | 200 | 143 ms | 322 ms | 327 ms | 1259 ms | 132 ms | **2730 ms** | 2849 ms | 3011 ms | 3.0 | ['1424']/['1500']/0 |
+| nginx_zarray | APISIX -> nginx-static, small file from EODC disk | 200 | 4 ms | 160 ms | 205 ms | 904 ms | 365 ms | 904 ms | 1376 ms | 1383 ms |  |  |
+| nginx_png_16k | APISIX -> nginx-static, 16 KB png from EODC disk | 200 | 4 ms | 162 ms | 174 ms | 709 ms | 196 ms | 709 ms | 934 ms | 1412 ms |  |  |
+| nginx_sig0_14M | APISIX -> nginx-static, 14 MB GeoTIFF from EODC disk | 200 | 3 ms | 164 ms | 181 ms | 743 ms | 222 ms | 2618 ms | 2756 ms | 2787 ms | 5.5 | ['1424']/['1500']/0 |
+| nginx_403_nodisk | APISIX -> nginx-static regex reject, no disk access | 403 | 3 ms | 163 ms | 203 ms | 653 ms | 126 ms | 653 ms | 890 ms | 996 ms |  |  |
+| apisix_404 | APISIX only (unknown collection) | 404 | 4 ms | 160 ms | 187 ms | 581 ms | 43 ms | 581 ms | 605 ms | 616 ms |  |  |
+| go_eopf_zarr | APISIX -> hda-go, EOPF Zarr zarr.json | 200 | 3 ms | 156 ms | 164 ms | 532 ms | 40 ms | 1286 ms | 1341 ms | 1405 ms |  |  |
+| ext_cloudferro_302 | APISIX -> HDA app, 302 to external provider | 302 | 3 ms | 161 ms | 168 ms | 513 ms | 6 ms | 513 ms | 553 ms | 573 ms |  |  |
+| ext_cloudferro_follow | ... followed to CloudFerro S3 (external, 2.3 MB) | 200 | 7 ms | 317 ms | 327 ms | 998 ms | 11 ms | 2105 ms | 2171 ms | 2438 ms | 1.1 |  |
+| fed_ceph_8M_302 | APISIX -> HDA app (federated), 302 presigned URL | 302 | 79 ms | 162 ms | 164 ms | 659 ms | 89 ms | 659 ms | 802 ms | 893 ms |  |  |
+| fed_ceph_8M_follow | ... followed to EODC Ceph S3 objects.eodc.eu (8 MB) | 200 | 143 ms | 322 ms | 327 ms | 1259 ms | 132 ms | 2730 ms | 2849 ms | 3011 ms | 3.0 | ['1424']/['1500']/0 |
 
 tracepath pmtu: ['1500', '1500', '1500'] · DF ping: 1500 B fail, 1428 B fail, 1228 B fail · resolved: ['193.170.203.244']
 
