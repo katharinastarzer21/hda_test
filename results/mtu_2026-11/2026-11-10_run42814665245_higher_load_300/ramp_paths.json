@@ -1,0 +1,1032 @@
+{
+  "target": "https://dev.hda.eodchosting.eu",
+  "timestamp": 1794315260.5019958,
+  "task_mode": "paths",
+  "soak_mode": false,
+  "config": {
+    "vu_start": 5,
+    "vu_step": 25,
+    "vu_max": 130,
+    "soak_vus": null,
+    "stage_secs": 90,
+    "warmup_secs": 15,
+    "error_rate_threshold": 0.05,
+    "throughput_drop_threshold": 0.15,
+    "p95_threshold_secs": 5.0,
+    "full_download_p95_threshold_secs": 60.0
+  },
+  "breakpoint": null,
+  "stages": {
+    "5": {
+      "P_nginx_png_16k": {
+        "p50": 0.2,
+        "p90": 0.39,
+        "p95": 0.4,
+        "p99": 0.52,
+        "rps": 0.4811005353990286,
+        "err": 0.0,
+        "num_requests": 36,
+        "num_failures": 0,
+        "throughput_mbps": 0.007972316972097302,
+        "error_types": {}
+      },
+      "P_nginx_403_nodisk": {
+        "p50": 0.18,
+        "p90": 0.23,
+        "p95": 0.25,
+        "p99": 0.26,
+        "rps": 0.45437272787686034,
+        "err": 0.0,
+        "num_requests": 34,
+        "num_failures": 0,
+        "throughput_mbps": 6.951902736515963e-05,
+        "error_types": {}
+      },
+      "P_go_eopf_zarr": {
+        "p50": 0.5,
+        "p90": 0.97,
+        "p95": 1.0,
+        "p99": 1.0,
+        "rps": 0.4811005353990286,
+        "err": 0.0,
+        "num_requests": 36,
+        "num_failures": 0,
+        "throughput_mbps": 0.2381760365573201,
+        "error_types": {}
+      },
+      "P_nginx_zarray": {
+        "p50": 0.17,
+        "p90": 0.23,
+        "p95": 0.25,
+        "p99": 0.32,
+        "rps": 0.6013756692487857,
+        "err": 0.0,
+        "num_requests": 45,
+        "num_failures": 0,
+        "throughput_mbps": 0.00019063608715186507,
+        "error_types": {}
+      },
+      "P_nginx_sig0_14M": {
+        "p50": 1.5,
+        "p90": 2.0,
+        "p95": 2.3,
+        "p99": 5.8,
+        "rps": 0.6414673805320381,
+        "err": 0.0,
+        "num_requests": 48,
+        "num_failures": 0,
+        "throughput_mbps": 9.180605457023626,
+        "error_types": {}
+      },
+      "P_fed_ceph_8M_302": {
+        "p50": 0.25,
+        "p90": 0.29,
+        "p95": 0.29,
+        "p99": 0.33,
+        "rps": 0.6414673805320381,
+        "err": 0.0,
+        "num_requests": 48,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "P_fed_ceph_8M_follow": {
+        "p50": 1.9,
+        "p90": 2.0,
+        "p95": 2.2,
+        "p99": 4.2,
+        "rps": 0.5479200542044492,
+        "err": 0.0,
+        "num_requests": 41,
+        "num_failures": 0,
+        "throughput_mbps": 4.5293351027965265,
+        "error_types": {}
+      },
+      "P_apisix_404": {
+        "p50": 0.16,
+        "p90": 0.17,
+        "p95": 0.17,
+        "p99": 0.18,
+        "rps": 0.4009171128325238,
+        "err": 0.0,
+        "num_requests": 30,
+        "num_failures": 0,
+        "throughput_mbps": 8.820176482315522e-06,
+        "error_types": {}
+      },
+      "P_ext_cloudferro_follow": {
+        "p50": 0.43,
+        "p90": 1.8,
+        "p95": 1.8,
+        "p99": 1.8,
+        "rps": 0.5211922466822809,
+        "err": 0.0,
+        "num_requests": 39,
+        "num_failures": 0,
+        "throughput_mbps": 1.2250305830996537,
+        "error_types": {}
+      },
+      "P_ext_cloudferro_302": {
+        "p50": 0.16,
+        "p90": 0.17,
+        "p95": 0.17,
+        "p99": 0.19,
+        "rps": 0.41428101659360794,
+        "err": 0.0,
+        "num_requests": 31,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      }
+    },
+    "30": {
+      "P_apisix_404": {
+        "p50": 0.19,
+        "p90": 0.24,
+        "p95": 0.27,
+        "p99": 0.32,
+        "rps": 2.9748035107542656,
+        "err": 0.0,
+        "num_requests": 223,
+        "num_failures": 0,
+        "throughput_mbps": 6.544567723659384e-05,
+        "error_types": {}
+      },
+      "P_ext_cloudferro_302": {
+        "p50": 0.19,
+        "p90": 0.24,
+        "p95": 0.27,
+        "p99": 0.32,
+        "rps": 2.8947639544111015,
+        "err": 0.0,
+        "num_requests": 217,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "P_nginx_zarray": {
+        "p50": 0.28,
+        "p90": 0.44,
+        "p95": 0.53,
+        "p99": 0.62,
+        "rps": 3.1215426973833997,
+        "err": 0.0,
+        "num_requests": 234,
+        "num_failures": 0,
+        "throughput_mbps": 0.0009895290350705377,
+        "error_types": {}
+      },
+      "P_nginx_403_nodisk": {
+        "p50": 0.28,
+        "p90": 0.47,
+        "p95": 0.53,
+        "p99": 0.62,
+        "rps": 3.0281632149830418,
+        "err": 0.0,
+        "num_requests": 227,
+        "num_failures": 0,
+        "throughput_mbps": 0.00046330897189240537,
+        "error_types": {}
+      },
+      "P_nginx_png_16k": {
+        "p50": 0.34,
+        "p90": 0.51,
+        "p95": 0.59,
+        "p99": 0.69,
+        "rps": 3.228262105840952,
+        "err": 0.0,
+        "num_requests": 242,
+        "num_failures": 0,
+        "throughput_mbps": 0.05349553135589041,
+        "error_types": {}
+      },
+      "P_fed_ceph_8M_302": {
+        "p50": 0.31,
+        "p90": 0.39,
+        "p95": 0.42,
+        "p99": 0.47,
+        "rps": 2.881424028353907,
+        "err": 0.0,
+        "num_requests": 216,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "P_go_eopf_zarr": {
+        "p50": 0.68,
+        "p90": 1.0,
+        "p95": 1.0,
+        "p99": 1.1,
+        "rps": 2.9748035107542656,
+        "err": 0.0,
+        "num_requests": 223,
+        "num_failures": 0,
+        "throughput_mbps": 1.4727211000515605,
+        "error_types": {}
+      },
+      "P_ext_cloudferro_follow": {
+        "p50": 0.49,
+        "p90": 1.8,
+        "p95": 1.9,
+        "p99": 2.0,
+        "rps": 3.228262105840952,
+        "err": 0.008264462809917356,
+        "num_requests": 242,
+        "num_failures": 2,
+        "throughput_mbps": 7.525123790866812,
+        "error_types": {
+          "GET P_ext_cloudferro_follow: status 0, expected 200": 2
+        }
+      },
+      "P_nginx_sig0_14M": {
+        "p50": 1.9,
+        "p90": 2.3,
+        "p95": 3.0,
+        "p99": 4.0,
+        "rps": 3.0948628452690117,
+        "err": 0.0,
+        "num_requests": 232,
+        "num_failures": 0,
+        "throughput_mbps": 44.29331184767435,
+        "error_types": {}
+      },
+      "P_fed_ceph_8M_follow": {
+        "p50": 1.9,
+        "p90": 2.0,
+        "p95": 2.1,
+        "p99": 2.3,
+        "rps": 3.0281632149830418,
+        "err": 0.0,
+        "num_requests": 227,
+        "num_failures": 0,
+        "throughput_mbps": 25.032056850947257,
+        "error_types": {}
+      }
+    },
+    "55": {
+      "P_ext_cloudferro_302": {
+        "p50": 0.18,
+        "p90": 0.23,
+        "p95": 0.24,
+        "p99": 0.66,
+        "rps": 5.10695923014414,
+        "err": 0.0,
+        "num_requests": 383,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "P_nginx_zarray": {
+        "p50": 0.43,
+        "p90": 1.0,
+        "p95": 1.2,
+        "p99": 1.5,
+        "rps": 5.293636591037137,
+        "err": 0.0,
+        "num_requests": 397,
+        "num_failures": 0,
+        "throughput_mbps": 0.0016780827993587723,
+        "error_types": {}
+      },
+      "P_fed_ceph_8M_302": {
+        "p50": 0.28,
+        "p90": 0.35,
+        "p95": 0.41,
+        "p99": 0.47,
+        "rps": 5.520316243550062,
+        "err": 0.0,
+        "num_requests": 414,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "P_apisix_404": {
+        "p50": 0.18,
+        "p90": 0.23,
+        "p95": 0.25,
+        "p99": 0.4,
+        "rps": 5.293636591037137,
+        "err": 0.0,
+        "num_requests": 397,
+        "num_failures": 0,
+        "throughput_mbps": 0.00011646000500281701,
+        "error_types": {}
+      },
+      "P_nginx_png_16k": {
+        "p50": 0.5,
+        "p90": 1.1,
+        "p95": 1.3,
+        "p99": 1.7,
+        "rps": 4.786940897184715,
+        "err": 0.0,
+        "num_requests": 359,
+        "num_failures": 0,
+        "throughput_mbps": 0.07932439760724791,
+        "error_types": {}
+      },
+      "P_nginx_403_nodisk": {
+        "p50": 0.41,
+        "p90": 1.0,
+        "p95": 1.2,
+        "p99": 1.6,
+        "rps": 5.080291035730855,
+        "err": 0.0,
+        "num_requests": 381,
+        "num_failures": 0,
+        "throughput_mbps": 0.0007772845284668208,
+        "error_types": {}
+      },
+      "P_go_eopf_zarr": {
+        "p50": 0.69,
+        "p90": 1.0,
+        "p95": 1.0,
+        "p99": 1.1,
+        "rps": 5.2803024938304945,
+        "err": 0.0,
+        "num_requests": 396,
+        "num_failures": 0,
+        "throughput_mbps": 2.614092954108194,
+        "error_types": {}
+      },
+      "P_nginx_sig0_14M": {
+        "p50": 1.9,
+        "p90": 2.8,
+        "p95": 3.5,
+        "p99": 4.5,
+        "rps": 5.200297910590638,
+        "err": 0.0,
+        "num_requests": 390,
+        "num_failures": 0,
+        "throughput_mbps": 74.42605006121977,
+        "error_types": {}
+      },
+      "P_fed_ceph_8M_follow": {
+        "p50": 1.9,
+        "p90": 2.0,
+        "p95": 2.3,
+        "p99": 2.5,
+        "rps": 5.333638882657065,
+        "err": 0.0,
+        "num_requests": 400,
+        "num_failures": 0,
+        "throughput_mbps": 44.09007779781849,
+        "error_types": {}
+      },
+      "P_ext_cloudferro_follow": {
+        "p50": 0.48,
+        "p90": 1.8,
+        "p95": 1.9,
+        "p99": 1.9,
+        "rps": 5.013620549697641,
+        "err": 0.005319148936170213,
+        "num_requests": 376,
+        "num_failures": 2,
+        "throughput_mbps": 11.721527307002205,
+        "error_types": {
+          "GET P_ext_cloudferro_follow: status 0, expected 200": 2
+        }
+      }
+    },
+    "80": {
+      "P_apisix_404": {
+        "p50": 0.19,
+        "p90": 0.23,
+        "p95": 0.24,
+        "p99": 0.28,
+        "rps": 7.222478070761734,
+        "err": 0.0,
+        "num_requests": 542,
+        "num_failures": 0,
+        "throughput_mbps": 0.00015889451755675817,
+        "error_types": {}
+      },
+      "P_fed_ceph_8M_302": {
+        "p50": 0.29,
+        "p90": 0.35,
+        "p95": 0.38,
+        "p99": 0.44,
+        "rps": 6.902663543643133,
+        "err": 0.0,
+        "num_requests": 518,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "P_nginx_403_nodisk": {
+        "p50": 0.81,
+        "p90": 1.7,
+        "p95": 2.1,
+        "p99": 2.9,
+        "rps": 6.702779464194007,
+        "err": 0.0,
+        "num_requests": 503,
+        "num_failures": 0,
+        "throughput_mbps": 0.0010255252580216832,
+        "error_types": {}
+      },
+      "P_ext_cloudferro_302": {
+        "p50": 0.18,
+        "p90": 0.23,
+        "p95": 0.24,
+        "p99": 0.32,
+        "rps": 6.382964937075407,
+        "err": 0.0,
+        "num_requests": 479,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "P_nginx_png_16k": {
+        "p50": 0.87,
+        "p90": 1.8,
+        "p95": 2.0,
+        "p99": 2.8,
+        "rps": 6.529546595338099,
+        "err": 0.0,
+        "num_requests": 490,
+        "num_failures": 0,
+        "throughput_mbps": 0.10820111663134763,
+        "error_types": {}
+      },
+      "P_nginx_zarray": {
+        "p50": 0.83,
+        "p90": 1.7,
+        "p95": 1.9,
+        "p99": 2.5,
+        "rps": 6.8493611224567,
+        "err": 0.0,
+        "num_requests": 514,
+        "num_failures": 0,
+        "throughput_mbps": 0.002171247475818774,
+        "error_types": {}
+      },
+      "P_go_eopf_zarr": {
+        "p50": 0.94,
+        "p90": 1.0,
+        "p95": 1.0,
+        "p99": 1.1,
+        "rps": 7.195826860168517,
+        "err": 0.0,
+        "num_requests": 540,
+        "num_failures": 0,
+        "throughput_mbps": 3.5624020245293266,
+        "error_types": {}
+      },
+      "P_ext_cloudferro_follow": {
+        "p50": 0.51,
+        "p90": 1.8,
+        "p95": 1.9,
+        "p99": 1.9,
+        "rps": 6.51622099004149,
+        "err": 0.0081799591002045,
+        "num_requests": 489,
+        "num_failures": 4,
+        "throughput_mbps": 15.19069585806111,
+        "error_types": {
+          "GET P_ext_cloudferro_follow: status 0, expected 200": 4
+        }
+      },
+      "P_nginx_sig0_14M": {
+        "p50": 1.9,
+        "p90": 2.1,
+        "p95": 2.3,
+        "p99": 3.2,
+        "rps": 6.915989148939741,
+        "err": 0.0,
+        "num_requests": 519,
+        "num_failures": 0,
+        "throughput_mbps": 98.980820612906,
+        "error_types": {}
+      },
+      "P_fed_ceph_8M_follow": {
+        "p50": 1.9,
+        "p90": 2.1,
+        "p95": 2.4,
+        "p99": 3.2,
+        "rps": 6.942640359532958,
+        "err": 0.0,
+        "num_requests": 521,
+        "num_failures": 0,
+        "throughput_mbps": 57.390753350288996,
+        "error_types": {}
+      }
+    },
+    "105": {
+      "P_apisix_404": {
+        "p50": 0.19,
+        "p90": 0.23,
+        "p95": 0.24,
+        "p99": 0.27,
+        "rps": 8.582604637380514,
+        "err": 0.0,
+        "num_requests": 644,
+        "num_failures": 0,
+        "throughput_mbps": 0.0001888173020223713,
+        "error_types": {}
+      },
+      "P_ext_cloudferro_302": {
+        "p50": 0.19,
+        "p90": 0.24,
+        "p95": 0.25,
+        "p99": 0.29,
+        "rps": 9.009069464082652,
+        "err": 0.0,
+        "num_requests": 676,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "P_nginx_zarray": {
+        "p50": 0.97,
+        "p90": 2.2,
+        "p95": 2.5,
+        "p99": 3.3,
+        "rps": 7.942907397327308,
+        "err": 0.0,
+        "num_requests": 596,
+        "num_failures": 0,
+        "throughput_mbps": 0.0025179016449527565,
+        "error_types": {}
+      },
+      "P_fed_ceph_8M_302": {
+        "p50": 0.3,
+        "p90": 0.38,
+        "p95": 0.42,
+        "p99": 0.46,
+        "rps": 8.382699249863887,
+        "err": 0.0,
+        "num_requests": 629,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "P_nginx_403_nodisk": {
+        "p50": 0.88,
+        "p90": 2.1,
+        "p95": 2.4,
+        "p99": 3.2,
+        "rps": 7.969561448996191,
+        "err": 0.0,
+        "num_requests": 598,
+        "num_failures": 0,
+        "throughput_mbps": 0.0012193429016964172,
+        "error_types": {}
+      },
+      "P_go_eopf_zarr": {
+        "p50": 0.93,
+        "p90": 1.0,
+        "p95": 1.1,
+        "p99": 1.1,
+        "rps": 8.569277611546072,
+        "err": 0.0,
+        "num_requests": 643,
+        "num_failures": 0,
+        "throughput_mbps": 4.242349420760056,
+        "error_types": {}
+      },
+      "P_nginx_png_16k": {
+        "p50": 1.0,
+        "p90": 2.3,
+        "p95": 2.8,
+        "p99": 3.5,
+        "rps": 8.142812784843935,
+        "err": 0.0,
+        "num_requests": 611,
+        "num_failures": 0,
+        "throughput_mbps": 0.13493455065764887,
+        "error_types": {}
+      },
+      "P_ext_cloudferro_follow": {
+        "p50": 0.53,
+        "p90": 1.9,
+        "p95": 2.0,
+        "p99": 2.2,
+        "rps": 8.196120888181701,
+        "err": 0.008130081300813009,
+        "num_requests": 615,
+        "num_failures": 5,
+        "throughput_mbps": 19.107860377920513,
+        "error_types": {
+          "GET P_ext_cloudferro_follow: status 0, expected 200": 5
+        }
+      },
+      "P_nginx_sig0_14M": {
+        "p50": 1.9,
+        "p90": 2.8,
+        "p95": 3.4,
+        "p99": 4.4,
+        "rps": 8.582604637380514,
+        "err": 0.0015527950310559005,
+        "num_requests": 644,
+        "num_failures": 1,
+        "throughput_mbps": 122.64249305357814,
+        "error_types": {
+          "GET P_nginx_sig0_14M: status 502, expected 200": 1
+        }
+      },
+      "P_fed_ceph_8M_follow": {
+        "p50": 1.9,
+        "p90": 2.1,
+        "p95": 2.4,
+        "p99": 3.3,
+        "rps": 8.049523604002841,
+        "err": 0.0,
+        "num_requests": 604,
+        "num_failures": 0,
+        "throughput_mbps": 66.54071071250675,
+        "error_types": {}
+      }
+    },
+    "130": {
+      "P_apisix_404": {
+        "p50": 0.34,
+        "p90": 0.69,
+        "p95": 0.79,
+        "p99": 1.2,
+        "rps": 7.731122645654363,
+        "err": 0.0,
+        "num_requests": 580,
+        "num_failures": 0,
+        "throughput_mbps": 0.00017008469820439597,
+        "error_types": {}
+      },
+      "P_nginx_403_nodisk": {
+        "p50": 0.65,
+        "p90": 1.2,
+        "p95": 1.4,
+        "p99": 1.7,
+        "rps": 8.264303517768457,
+        "err": 0.0,
+        "num_requests": 620,
+        "num_failures": 0,
+        "throughput_mbps": 0.001264438438218574,
+        "error_types": {}
+      },
+      "P_nginx_zarray": {
+        "p50": 0.65,
+        "p90": 1.2,
+        "p95": 1.4,
+        "p99": 1.8,
+        "rps": 8.210985430557047,
+        "err": 0.0,
+        "num_requests": 616,
+        "num_failures": 0,
+        "throughput_mbps": 0.0026028823814865836,
+        "error_types": {}
+      },
+      "P_fed_ceph_8M_302": {
+        "p50": 0.52,
+        "p90": 0.9,
+        "p95": 1.1,
+        "p99": 1.5,
+        "rps": 8.464246344811242,
+        "err": 0.0,
+        "num_requests": 635,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "P_nginx_png_16k": {
+        "p50": 0.74,
+        "p90": 1.3,
+        "p95": 1.5,
+        "p99": 1.8,
+        "rps": 8.077690212528523,
+        "err": 0.0,
+        "num_requests": 606,
+        "num_failures": 0,
+        "throughput_mbps": 0.13385540451181016,
+        "error_types": {}
+      },
+      "P_ext_cloudferro_302": {
+        "p50": 0.35,
+        "p90": 0.73,
+        "p95": 0.96,
+        "p99": 1.3,
+        "rps": 8.784154868079698,
+        "err": 0.0,
+        "num_requests": 659,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "P_go_eopf_zarr": {
+        "p50": 1.0,
+        "p90": 1.4,
+        "p95": 1.6,
+        "p99": 2.1,
+        "rps": 8.384269213994129,
+        "err": 0.0,
+        "num_requests": 629,
+        "num_failures": 0,
+        "throughput_mbps": 4.150758238426004,
+        "error_types": {}
+      },
+      "P_ext_cloudferro_follow": {
+        "p50": 1.8,
+        "p90": 2.2,
+        "p95": 2.4,
+        "p99": 2.8,
+        "rps": 8.410928257599833,
+        "err": 0.00792393026941363,
+        "num_requests": 631,
+        "num_failures": 5,
+        "throughput_mbps": 19.612722663380826,
+        "error_types": {
+          "GET P_ext_cloudferro_follow: status 0, expected 200": 5
+        }
+      },
+      "P_fed_ceph_8M_follow": {
+        "p50": 2.2,
+        "p90": 2.8,
+        "p95": 2.9,
+        "p99": 4.5,
+        "rps": 8.144337821542786,
+        "err": 0.0,
+        "num_requests": 611,
+        "num_failures": 0,
+        "throughput_mbps": 67.32448447740643,
+        "error_types": {}
+      },
+      "P_nginx_sig0_14M": {
+        "p50": 4.4,
+        "p90": 7.0,
+        "p95": 8.0,
+        "p99": 9.4,
+        "rps": 8.317621604979866,
+        "err": 0.0,
+        "num_requests": 624,
+        "num_failures": 0,
+        "throughput_mbps": 119.04081893112246,
+        "error_types": {}
+      }
+    }
+  },
+  "stage_meta": {
+    "5": {
+      "measured_secs": 75.03015613555908,
+      "wall_secs": 91.03236675262451,
+      "total_requests": 388,
+      "total_failures": 0,
+      "total_rps": 5.185194659300642,
+      "peak_rss_mb": 382.90625
+    },
+    "30": {
+      "measured_secs": 75.0073447227478,
+      "wall_secs": 91.0132839679718,
+      "total_requests": 2283,
+      "total_failures": 2,
+      "total_rps": 30.455051188573943,
+      "peak_rss_mb": 1490.99609375
+    },
+    "55": {
+      "measured_secs": 75.01343536376953,
+      "wall_secs": 91.01672315597534,
+      "total_requests": 3893,
+      "total_failures": 2,
+      "total_rps": 51.909640425459884,
+      "peak_rss_mb": 1952.02734375
+    },
+    "80": {
+      "measured_secs": 75.05933213233948,
+      "wall_secs": 91.06063628196716,
+      "total_requests": 5115,
+      "total_failures": 4,
+      "total_rps": 68.16047109215178,
+      "peak_rss_mb": 2825.3046875
+    },
+    "105": {
+      "measured_secs": 75.066082239151,
+      "wall_secs": 91.06759023666382,
+      "total_requests": 6260,
+      "total_failures": 6,
+      "total_rps": 83.42718172360561,
+      "peak_rss_mb": 3478.08203125
+    },
+    "130": {
+      "measured_secs": 75.03914952278137,
+      "wall_secs": 91.05051970481873,
+      "total_requests": 6211,
+      "total_failures": 5,
+      "total_rps": 82.78965991751595,
+      "peak_rss_mb": 4174.44140625
+    }
+  },
+  "data_file_paths": [
+    [
+      "P_nginx_zarray",
+      "/collections/S2-L2A-C1/T33UWP/indices/time/.zarray",
+      false,
+      200
+    ],
+    [
+      "P_nginx_png_16k",
+      "/collections/TOP4EO/BFW/forest_mask/THUMB/UTM32_10_10.png",
+      false,
+      200
+    ],
+    [
+      "P_nginx_sig0_14M",
+      "/collections/SENTINEL1_SIG0_20M/V1M2R3/EQUI7_EU020M/E048N015T3/SIG0_20260412T171426__VV_A015_E048N015T3_EU020M_V1M2R3_S1CIWGRDH_TUWIEN.tif",
+      false,
+      200
+    ],
+    [
+      "P_nginx_403_nodisk",
+      "/collections/ARA/__regex_fail__",
+      false,
+      403
+    ],
+    [
+      "P_apisix_404",
+      "/collections/doesnotexist/x.tif",
+      false,
+      404
+    ],
+    [
+      "P_go_eopf_zarr",
+      "/collections/EOPF_ZARR/products/cpm_v300/S02MSIL2A/2026/09/06/S2B_MSIL2A_20260906T100019_N0512_R122_T35WNU_20260906T134813.zarr/zarr.json",
+      false,
+      200
+    ],
+    [
+      "P_ext_cloudferro_302",
+      "/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/GLOBAL_ANALYSIS_FORECAST_BIO_001_028_mask/native",
+      false,
+      302
+    ],
+    [
+      "P_ext_cloudferro_follow",
+      "/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/GLOBAL_ANALYSIS_FORECAST_BIO_001_028_mask/native",
+      true,
+      200
+    ],
+    [
+      "P_fed_ceph_8M_302",
+      "/collections/data/nasa/OPERA_L2_RTC-S1_V1/OPERA_L2_RTC-S1_T078-166569-IW1_20260705T013657Z_20260715T021510Z_S1C_30_v1.0/OPERA_L2_RTC-S1_T078-166569-IW1_20260705T013657Z_20260715T021510Z_S1C_30_v1.0_BROWSE.png",
+      false,
+      302
+    ],
+    [
+      "P_fed_ceph_8M_follow",
+      "/collections/data/nasa/OPERA_L2_RTC-S1_V1/OPERA_L2_RTC-S1_T078-166569-IW1_20260705T013657Z_20260715T021510Z_S1C_30_v1.0/OPERA_L2_RTC-S1_T078-166569-IW1_20260705T013657Z_20260715T021510Z_S1C_30_v1.0_BROWSE.png",
+      true,
+      200
+    ]
+  ],
+  "dropped_paths": [],
+  "error_samples": [
+    {
+      "path": "/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/GLOBAL_ANALYSIS_FORECAST_BIO_001_028_mask/native",
+      "time": 1794314829.2457528,
+      "status": 0,
+      "final_url": null,
+      "final_host": null,
+      "redirected": false
+    },
+    {
+      "path": "/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/GLOBAL_ANALYSIS_FORECAST_BIO_001_028_mask/native",
+      "time": 1794314832.846641,
+      "status": 0,
+      "final_url": null,
+      "final_host": null,
+      "redirected": false
+    },
+    {
+      "path": "/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/GLOBAL_ANALYSIS_FORECAST_BIO_001_028_mask/native",
+      "time": 1794314918.4378974,
+      "status": 0,
+      "final_url": null,
+      "final_host": null,
+      "redirected": false
+    },
+    {
+      "path": "/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/GLOBAL_ANALYSIS_FORECAST_BIO_001_028_mask/native",
+      "time": 1794314951.9762247,
+      "status": 0,
+      "final_url": null,
+      "final_host": null,
+      "redirected": false
+    },
+    {
+      "path": "/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/GLOBAL_ANALYSIS_FORECAST_BIO_001_028_mask/native",
+      "time": 1794315026.723115,
+      "status": 0,
+      "final_url": null,
+      "final_host": null,
+      "redirected": false
+    },
+    {
+      "path": "/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/GLOBAL_ANALYSIS_FORECAST_BIO_001_028_mask/native",
+      "time": 1794315028.640982,
+      "status": 0,
+      "final_url": null,
+      "final_host": null,
+      "redirected": false
+    },
+    {
+      "path": "/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/GLOBAL_ANALYSIS_FORECAST_BIO_001_028_mask/native",
+      "time": 1794315065.4708645,
+      "status": 0,
+      "final_url": null,
+      "final_host": null,
+      "redirected": false
+    },
+    {
+      "path": "/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/GLOBAL_ANALYSIS_FORECAST_BIO_001_028_mask/native",
+      "time": 1794315069.5351422,
+      "status": 0,
+      "final_url": null,
+      "final_host": null,
+      "redirected": false
+    },
+    {
+      "path": "/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/GLOBAL_ANALYSIS_FORECAST_BIO_001_028_mask/native",
+      "time": 1794315117.8216827,
+      "status": 0,
+      "final_url": null,
+      "final_host": null,
+      "redirected": false
+    },
+    {
+      "path": "/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/GLOBAL_ANALYSIS_FORECAST_BIO_001_028_mask/native",
+      "time": 1794315128.1267598,
+      "status": 0,
+      "final_url": null,
+      "final_host": null,
+      "redirected": false
+    },
+    {
+      "path": "/collections/SENTINEL1_SIG0_20M/V1M2R3/EQUI7_EU020M/E048N015T3/SIG0_20260412T171426__VV_A015_E048N015T3_EU020M_V1M2R3_S1CIWGRDH_TUWIEN.tif",
+      "time": 1794315141.8308709,
+      "status": 502,
+      "final_url": "https://dev.hda.eodchosting.eu/collections/SENTINEL1_SIG0_20M/V1M2R3/EQUI7_EU020M/E048N015T3/SIG0_20260412T171426__VV_A015_E048N015T3_EU020M_V1M2R3_S1CIWGRDH_TUWIEN.tif",
+      "final_host": "dev.hda.eodchosting.eu",
+      "redirected": false
+    },
+    {
+      "path": "/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/GLOBAL_ANALYSIS_FORECAST_BIO_001_028_mask/native",
+      "time": 1794315155.8066444,
+      "status": 0,
+      "final_url": null,
+      "final_host": null,
+      "redirected": false
+    },
+    {
+      "path": "/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/GLOBAL_ANALYSIS_FORECAST_BIO_001_028_mask/native",
+      "time": 1794315159.4396887,
+      "status": 0,
+      "final_url": null,
+      "final_host": null,
+      "redirected": false
+    },
+    {
+      "path": "/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/GLOBAL_ANALYSIS_FORECAST_BIO_001_028_mask/native",
+      "time": 1794315161.5470846,
+      "status": 0,
+      "final_url": null,
+      "final_host": null,
+      "redirected": false
+    },
+    {
+      "path": "/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/GLOBAL_ANALYSIS_FORECAST_BIO_001_028_mask/native",
+      "time": 1794315206.0831735,
+      "status": 0,
+      "final_url": null,
+      "final_host": null,
+      "redirected": false
+    },
+    {
+      "path": "/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/GLOBAL_ANALYSIS_FORECAST_BIO_001_028_mask/native",
+      "time": 1794315213.8839226,
+      "status": 0,
+      "final_url": null,
+      "final_host": null,
+      "redirected": false
+    },
+    {
+      "path": "/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/GLOBAL_ANALYSIS_FORECAST_BIO_001_028_mask/native",
+      "time": 1794315224.0930314,
+      "status": 0,
+      "final_url": null,
+      "final_host": null,
+      "redirected": false
+    },
+    {
+      "path": "/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/GLOBAL_ANALYSIS_FORECAST_BIO_001_028_mask/native",
+      "time": 1794315230.0777946,
+      "status": 0,
+      "final_url": null,
+      "final_host": null,
+      "redirected": false
+    },
+    {
+      "path": "/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/GLOBAL_ANALYSIS_FORECAST_BIO_001_028_mask/native",
+      "time": 1794315257.2810192,
+      "status": 0,
+      "final_url": null,
+      "final_host": null,
+      "redirected": false
+    }
+  ]
+}

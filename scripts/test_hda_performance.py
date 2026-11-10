@@ -65,7 +65,7 @@ def main():
 
     all_stages = {}
     for vu_count in VU_STAGES:
-        log.info("Stage %d VUs — %ds", vu_count, STAGE_SECS)
+        log.info("Stage %d VUs - %ds", vu_count, STAGE_SECS)
         env.stats.reset_all()
         env.runner.start(vu_count, spawn_rate=10)
         gevent.sleep(STAGE_SECS)

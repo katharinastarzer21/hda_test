@@ -51,4 +51,4 @@ def flush():
         if ok:
             log.info("otel metrics flushed to %s", OTEL_ENDPOINT)
         else:
-            log.error("otel export FAILED — metrics not delivered to %s", OTEL_ENDPOINT)
+            log.error("otel export FAILED - metrics not delivered to %s", OTEL_ENDPOINT)

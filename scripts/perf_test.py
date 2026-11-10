@@ -152,7 +152,7 @@ SIG0_PATHS = [
 ]
 SIG0_SAME_FILE = os.environ.get("SIG0_SAME_FILE", "false").strip().lower() == "true"
 
-# "full" (default): whole-object GET. "range": small windowed read instead —
+# "full" (default): whole-object GET. "range": small windowed read instead -
 # models opening many files and pulling a small value out of each.
 SIG0_ACCESS_MODE = os.environ.get("SIG0_ACCESS_MODE", "full").strip().lower()
 
@@ -229,7 +229,7 @@ class TracedRequestMixin:
                     _record_error_sample(path, response=response)
                     return
                 if response.status_code == 202:
-                    # ingestion-pending stub, not the real file — count as failure
+                    # ingestion-pending stub, not the real file - count as failure
                     response.failure("status 202 (ingestion pending, not the real file)")
                     _record_error_sample(path, response=response)
                     return
@@ -291,7 +291,7 @@ class Sig0OnlyUser(TracedRequestMixin, HttpUser):
 
 class RedirectOnlyUser(HttpUser):
     # every DATA_FILE_PATHS entry redirects (302) except TIF_PATH (SIG0,
-    # DirectFilepathRouter — serves straight from disk, 200 not 302). That
+    # DirectFilepathRouter - serves straight from disk, 200 not 302). That
     # one entry always fails here by design; use TASK_MODE=sig0_only for it.
     host = HDA_URL
     wait_time = between(0.1, 0.5)
@@ -311,11 +311,8 @@ class RedirectOnlyUser(HttpUser):
 
 
 class PathsUser(HttpUser):
-    # TASK_MODE=paths: one endpoint per HDA delivery path (scripts/hda_targets.py),
-    # equal weight, so every path gets its own p50/p95/rps/error line per stage.
-    # Unlike HdaUser, bodies are NOT streamed: requests reads the whole body
-    # inside the timed call, so latency here = time to the LAST byte (incl. the
-    # redirect hop for *_follow). Bodies are at most ~14 MB, fine in memory.
+    # TASK_MODE=paths: one endpoint per delivery path (hda_targets.py),
+    # no streaming, so response time includes the full download
     host = HDA_URL
     wait_time = between(0.1, 0.5)
 
@@ -325,7 +322,7 @@ class PathsUser(HttpUser):
                 response.failure(f"status {response.status_code}, expected {expected}")
                 _record_error_sample(path, response=response)
             else:
-                response.success()  # expected 403/404 on the status targets are a success
+                response.success()
 
     @task
     def hit_random_path(self):
@@ -459,11 +456,7 @@ DROPPED_PATHS = []
 
 
 def precheck_paths(paths):
-    # files disappear or become restricted over time (Nov 2026: 11x 404, 15x 403
-    # out of 72). A missing file counts as a request failure and would end the
-    # ramp with a fake "breakpoint", so drop every path that doesn't return 200
-    # once before the ramp starts (in place). Used and dropped paths go into the
-    # results JSON so runs with a different file set are recognisable.
+    # drop files that are gone or restricted (404/403), otherwise they count as errors
     import requests
     kept = []
     s = requests.Session()
@@ -479,7 +472,7 @@ def precheck_paths(paths):
     log.info("Path precheck: %d of %d paths return 200, %d dropped",
              len(kept), len(paths), len(paths) - len(kept))
     for d in DROPPED_PATHS:
-        log.info("  dropped (%s): %s", d["status"], d["path"])
+        log.info("dropped (%s): %s", d["status"], d["path"])
     if not kept:
         raise SystemExit("no usable paths left after precheck")
     paths[:] = kept
@@ -513,7 +506,7 @@ def main():
         stage_secs = STAGE_SECS
 
     for vu_count in vu_sequence:
-        log.info("Stage %d VUs — %ds (%ds warmup excluded)", vu_count, stage_secs, WARMUP_SECS)
+        log.info("Stage %d VUs - %ds (%ds warmup excluded)", vu_count, stage_secs, WARMUP_SECS)
         stage_started_at = time.time()
         env.runner.start(vu_count, spawn_rate=SPAWN_RATE)
 
@@ -540,7 +533,7 @@ def main():
         }
 
         log.info(
-            "  stage took %.1fs measured (%.1fs incl. warmup+spawn) — %d requests, %d failures, "
+            "  stage took %.1fs measured (%.1fs incl. warmup+spawn) - %d requests, %d failures, "
             "%.1f total rps, %.0fMB peak RSS so far",
             stage_meta[vu_count]["measured_secs"], stage_meta[vu_count]["wall_secs"],
             stage_meta[vu_count]["total_requests"], stage_meta[vu_count]["total_failures"],

@@ -1,29 +1,16 @@
 name: HDA Performance Test (MTU comparison)
 
-# Manual only. One run gives an overview per HDA delivery path:
-#   1. net_diag before: prod + dev, every delivery path (scripts/hda_targets.py),
-#      DNS/TCP/TLS/TTFB/total, TCP mss/pmtu/retransmits, tracepath, DF pings
-#   2. mixed ramp on dev (TASK_MODE=e2e, 5->130 VUs) — comparable to July 2026
-#   3. per-path ramp on dev (TASK_MODE=paths, 5->55 VUs), timed to the last byte
-#   4. net_diag after: dev again, to see if it recovered
-#   5. step summary with all tables + artifact with all raw JSON
-# ~25 min, load only on dev, prod only gets the light sequential diagnostics.
 on:
-  # Repeated today (2026-11-10) to see how much results vary between GitHub
-  # runners (region/RTT is in the summary). cron has no year: this would fire
-  # again on 10 Nov 2027 — delete the schedule block once the runs are in.
-  schedule:
-    - cron: "0 10-22/2 10 11 *"
   workflow_dispatch:
     inputs:
       vu_max:
-        description: "mixed ramp: max VUs (July baseline went up to 800)"
+        description: "mixed ramp: max VUs"
         default: "130"
       paths_vu_max:
         description: "per-path ramp: max VUs"
         default: "55"
       label:
-        description: "label for the artifact, e.g. after_mtu"
+        description: "artifact label"
         default: "after_mtu"
 
 jobs:
@@ -60,10 +47,10 @@ jobs:
       - name: TCP counters before
         run: nstat -az | grep -E '^(TcpOutSegs|TcpRetransSegs|TcpInSegs|TcpInErrs|TcpExtTCPTimeouts|TcpExtTCPLostRetransmit|TcpExtTCPSlowStartRetrans|TcpExtTCPFastRetrans)\s' > $OUT/nstat_before.txt || true
 
-      - name: Mixed ramp on dev (comparable to July)
+      - name: Mixed ramp on dev
         continue-on-error: true
         env:
-          VU_MAX: ${{ inputs.vu_max || '130' }}
+          VU_MAX: ${{ inputs.vu_max }}
           RESULTS_JSON: out/perf_results_e2e.json
         run: python scripts/perf_test.py
 
@@ -71,7 +58,7 @@ jobs:
         continue-on-error: true
         env:
           TASK_MODE: paths
-          VU_MAX: ${{ inputs.paths_vu_max || '55' }}
+          VU_MAX: ${{ inputs.paths_vu_max }}
           RESULTS_JSON: out/perf_results_paths.json
         run: python scripts/perf_test.py
 
@@ -92,7 +79,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: hda-perf-${{ inputs.label || 'scheduled' }}-${{ github.run_id }}
+          name: hda-perf-${{ inputs.label }}-${{ github.run_id }}
           path: out/
           if-no-files-found: warn
           retention-days: 90

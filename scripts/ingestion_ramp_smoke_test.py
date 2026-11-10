@@ -1,5 +1,5 @@
 """Small ramp test for HDA's Airflow-backed on-demand ingestion path
-(FederatedEodagRouter: NASA VIIRS/NISAR/OPERA etc.) — does cold-start
+(FederatedEodagRouter: NASA VIIRS/NISAR/OPERA etc.) - does cold-start
 ingestion work, and does polling recognize readiness correctly.
 
 Usage: python ingestion_ramp_smoke_test.py
@@ -53,7 +53,7 @@ STAC_WINDOW_DAYS = int(os.environ.get("STAC_WINDOW_DAYS", 7))
 
 RESULTS_JSON = os.environ.get("RESULTS_JSON", "ingestion_ramp_results.json")
 
-# for collections not in the STAC catalog (e.g. SENTINEL1_SIG0_20M) — used
+# for collections not in the STAC catalog (e.g. SENTINEL1_SIG0_20M) - used
 # verbatim instead of STAC discovery, cycled to fill the ramp's needs.
 STATIC_ASSET_PATHS = [
     p.strip() for p in os.environ.get("STATIC_ASSET_PATHS", "").split(",") if p.strip()
@@ -120,7 +120,7 @@ def fetch_fresh_pool(seen, min_needed=0):
                     if parsed.path in seen:
                         continue
                     collection_fresh.append(parsed.path)
-                    break  # one asset per item — siblings share an ingestion job
+                    break  # one asset per item - siblings share an ingestion job
 
             window_end = window_start
 
@@ -321,7 +321,7 @@ def main():
     needed = sum(RAMP_LEVELS)
 
     if STATIC_ASSET_PATHS:
-        log.info("STATIC_ASSET_PATHS set (%d path(s)) — skipping STAC discovery entirely, "
+        log.info("STATIC_ASSET_PATHS set (%d path(s)) - skipping STAC discovery entirely, "
                   "cycling this list to fill all %d attempts.", len(STATIC_ASSET_PATHS), needed)
         pool = [STATIC_ASSET_PATHS[i % len(STATIC_ASSET_PATHS)] for i in range(needed)]
     else:
@@ -330,7 +330,7 @@ def main():
                   len(pool), needed)
         if len(pool) < needed:
             log.warning(
-                "Not enough fresh assets for the full ramp (%d < %d) — later stages will run "
+                "Not enough fresh assets for the full ramp (%d < %d) - later stages will run "
                 "with fewer VUs than requested, or delete %s to reuse older assets.",
                 len(pool), needed, SEEN_CACHE_FILE,
             )
@@ -363,7 +363,7 @@ def main():
         )
 
         if summary["succeeded"] == 0 and n > RAMP_LEVELS[0]:
-            log.warning("Zero successes at %d concurrent — stopping the ramp early.", n)
+            log.warning("Zero successes at %d concurrent - stopping the ramp early.", n)
             break
 
     log.info("Done. Results written to %s (seen-asset cache: %s)", RESULTS_JSON, SEEN_CACHE_FILE)

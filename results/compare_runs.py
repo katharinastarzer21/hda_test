@@ -1,13 +1,5 @@
-"""Compare perf_test.py runs stage by stage (e.g. July baseline vs. after the MTU change).
-
-Only endpoints whose numbers mean the same thing across runs are compared:
-GET_zarray, HEAD_tif, GET_tif_range_tile (latency = full response, small bodies)
-and throughput per stage. GET_tif_range_chunk / GET_tif_full latencies are only
-time-to-headers (stream=True), and the file mix changed (path precheck), so they
-are left out of the latency table.
-
-Usage: python results/compare_runs.py results/baseline_2026-07/*.json results/mtu_2026-11/*.json
-"""
+# compare perf_test.py runs stage by stage
+# usage: python results/compare_runs.py results/baseline_2026-07/*.json <run.json> ...
 import json, os, sys
 
 ENDPOINTS = ["GET_zarray", "HEAD_tif", "GET_tif_range_tile"]
@@ -21,7 +13,6 @@ def load(path):
 runs = [load(p) for p in sys.argv[1:]]
 common = sorted(set.intersection(*(set(map(int, r[1])) for r in runs)))
 print(f"common stages (VUs): {common}\n")
-# TASK_MODE=paths runs (P_* endpoints, timed to the last byte): compare all of them
 names = sorted({ep for r in runs for st in r[1].values() for ep in st})
 if any(n.startswith("P_") for n in names):
     ENDPOINTS = [n for n in names if n.startswith("P_")]
