@@ -1,0 +1,658 @@
+{
+  "target": "https://dev.hda.eodchosting.eu",
+  "timestamp": 1794297990.3903482,
+  "task_mode": "e2e",
+  "soak_mode": false,
+  "config": {
+    "vu_start": 5,
+    "vu_step": 25,
+    "vu_max": 130,
+    "soak_vus": null,
+    "stage_secs": 90,
+    "warmup_secs": 15,
+    "error_rate_threshold": 0.05,
+    "throughput_drop_threshold": 0.15,
+    "p95_threshold_secs": 5.0,
+    "full_download_p95_threshold_secs": 60.0
+  },
+  "breakpoint": null,
+  "stages": {
+    "5": {
+      "GET_zarray": {
+        "p50": 0.15,
+        "p90": 0.24,
+        "p95": 0.27,
+        "p99": 0.29,
+        "rps": 1.7361353647525353,
+        "err": 0.0,
+        "num_requests": 130,
+        "num_failures": 0,
+        "throughput_mbps": 0.0005503549106265536,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.27,
+        "p90": 0.31,
+        "p95": 0.33,
+        "p99": 0.66,
+        "rps": 2.6309128219711497,
+        "err": 0.0,
+        "num_requests": 197,
+        "num_failures": 0,
+        "throughput_mbps": 0.626287902492775,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.31,
+        "p90": 0.46,
+        "p95": 0.48,
+        "p99": 0.59,
+        "rps": 0.8814225697974409,
+        "err": 0.0,
+        "num_requests": 66,
+        "num_failures": 0,
+        "throughput_mbps": 211.4426876611458,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.28,
+        "p90": 0.33,
+        "p95": 0.35,
+        "p99": 0.36,
+        "rps": 1.001616556588001,
+        "err": 0.0,
+        "num_requests": 75,
+        "num_failures": 0,
+        "throughput_mbps": 3.45775482159105,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 0.13,
+        "p90": 0.13,
+        "p95": 0.13,
+        "p99": 0.14,
+        "rps": 0.7612285830068808,
+        "err": 0.0,
+        "num_requests": 57,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      }
+    },
+    "30": {
+      "HEAD_tif": {
+        "p50": 0.3,
+        "p90": 0.63,
+        "p95": 0.72,
+        "p99": 0.92,
+        "rps": 3.014425654030809,
+        "err": 0.0,
+        "num_requests": 226,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_zarray": {
+        "p50": 0.35,
+        "p90": 0.69,
+        "p95": 0.77,
+        "p99": 0.9,
+        "rps": 5.441971977188364,
+        "err": 0.0,
+        "num_requests": 408,
+        "num_failures": 0,
+        "throughput_mbps": 0.0017251051167687112,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.73,
+        "p90": 1.3,
+        "p95": 1.4,
+        "p99": 1.7,
+        "rps": 7.882856466956674,
+        "err": 0.001692047377326565,
+        "num_requests": 591,
+        "num_failures": 1,
+        "throughput_mbps": 1.9291473877675742,
+        "error_types": {
+          "GET GET_tif_range_tile: Remote end closed connection without response": 1
+        }
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.65,
+        "p90": 1.3,
+        "p95": 1.4,
+        "p99": 1.7,
+        "rps": 2.974411154198542,
+        "err": 0.0,
+        "num_requests": 223,
+        "num_failures": 0,
+        "throughput_mbps": 10.331855097000972,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.71,
+        "p90": 1.3,
+        "p95": 1.4,
+        "p99": 1.8,
+        "rps": 2.8677058213124957,
+        "err": 0.0,
+        "num_requests": 215,
+        "num_failures": 0,
+        "throughput_mbps": 834.979421433053,
+        "error_types": {}
+      }
+    },
+    "55": {
+      "HEAD_tif": {
+        "p50": 0.74,
+        "p90": 1.1,
+        "p95": 1.1,
+        "p99": 1.2,
+        "rps": 3.649304755951802,
+        "err": 0.0,
+        "num_requests": 276,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_zarray": {
+        "p50": 0.71,
+        "p90": 1.1,
+        "p95": 1.1,
+        "p99": 1.3,
+        "rps": 7.496941292118376,
+        "err": 0.0,
+        "num_requests": 567,
+        "num_failures": 0,
+        "throughput_mbps": 0.002376530389601525,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 1.3,
+        "p90": 2.0,
+        "p95": 2.2,
+        "p99": 2.3,
+        "rps": 10.590917063468817,
+        "err": 0.0,
+        "num_requests": 801,
+        "num_failures": 0,
+        "throughput_mbps": 2.5387589632039695,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 1.4,
+        "p90": 2.2,
+        "p95": 2.3,
+        "p99": 2.3,
+        "rps": 3.3187517889271825,
+        "err": 0.0,
+        "num_requests": 251,
+        "num_failures": 0,
+        "throughput_mbps": 10.448632879128077,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 1.3,
+        "p90": 1.9,
+        "p95": 2.1,
+        "p99": 2.3,
+        "rps": 3.847636536166574,
+        "err": 0.0,
+        "num_requests": 291,
+        "num_failures": 0,
+        "throughput_mbps": 899.9489263910839,
+        "error_types": {}
+      }
+    },
+    "80": {
+      "GET_zarray": {
+        "p50": 1.1,
+        "p90": 1.5,
+        "p95": 1.5,
+        "p99": 1.6,
+        "rps": 6.634194499603225,
+        "err": 0.0,
+        "num_requests": 503,
+        "num_failures": 0,
+        "throughput_mbps": 0.0021030396563742225,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 1.2,
+        "p90": 1.5,
+        "p95": 1.6,
+        "p99": 1.6,
+        "rps": 3.4819629182808183,
+        "err": 0.0,
+        "num_requests": 264,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 2.1,
+        "p90": 2.9,
+        "p95": 3.0,
+        "p99": 3.1,
+        "rps": 3.2313671021924257,
+        "err": 0.0,
+        "num_requests": 245,
+        "num_failures": 0,
+        "throughput_mbps": 799.7787598467274,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 2.2,
+        "p90": 2.9,
+        "p95": 3.1,
+        "p99": 5.4,
+        "rps": 9.852372348317315,
+        "err": 0.008032128514056224,
+        "num_requests": 747,
+        "num_failures": 6,
+        "throughput_mbps": 2.3620821209859573,
+        "error_types": {
+          "GET GET_tif_range_tile: Remote end closed connection without response": 6
+        }
+      },
+      "GET_tif_range_chunk": {
+        "p50": 2.2,
+        "p90": 2.9,
+        "p95": 3.1,
+        "p99": 5.0,
+        "rps": 3.2313671021924257,
+        "err": 0.0,
+        "num_requests": 245,
+        "num_failures": 0,
+        "throughput_mbps": 10.503726084546106,
+        "error_types": {}
+      }
+    },
+    "105": {
+      "GET_zarray": {
+        "p50": 1.3,
+        "p90": 1.6,
+        "p95": 1.7,
+        "p99": 1.9,
+        "rps": 5.946637190430865,
+        "err": 0.0,
+        "num_requests": 453,
+        "num_failures": 0,
+        "throughput_mbps": 0.0018850839893665842,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 1.3,
+        "p90": 1.7,
+        "p95": 1.8,
+        "p99": 1.9,
+        "rps": 3.5968622299736355,
+        "err": 0.0,
+        "num_requests": 274,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 2.7,
+        "p90": 3.4,
+        "p95": 3.6,
+        "p99": 6.1,
+        "rps": 9.35971813858103,
+        "err": 0.004207573632538569,
+        "num_requests": 713,
+        "num_failures": 3,
+        "throughput_mbps": 2.2565222639569624,
+        "error_types": {
+          "GET GET_tif_range_tile: Remote end closed connection without response": 3
+        }
+      },
+      "GET_tif_range_chunk": {
+        "p50": 2.6,
+        "p90": 3.3,
+        "p95": 3.4,
+        "p99": 4.4,
+        "rps": 3.0717728533351485,
+        "err": 0.0,
+        "num_requests": 234,
+        "num_failures": 0,
+        "throughput_mbps": 9.756954172390767,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 2.6,
+        "p90": 3.3,
+        "p95": 3.4,
+        "p99": 5.1,
+        "rps": 3.176790728662846,
+        "err": 0.0,
+        "num_requests": 242,
+        "num_failures": 0,
+        "throughput_mbps": 811.947308254935,
+        "error_types": {}
+      }
+    },
+    "130": {
+      "GET_zarray": {
+        "p50": 1.4,
+        "p90": 1.6,
+        "p95": 1.7,
+        "p99": 1.8,
+        "rps": 7.239936953024848,
+        "err": 0.0,
+        "num_requests": 560,
+        "num_failures": 0,
+        "throughput_mbps": 0.0022950600141088766,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 1.3,
+        "p90": 1.6,
+        "p95": 1.7,
+        "p99": 1.7,
+        "rps": 3.8785376534061684,
+        "err": 0.0,
+        "num_requests": 300,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 2.7,
+        "p90": 3.3,
+        "p95": 4.3,
+        "p99": 5.8,
+        "rps": 11.144331524120389,
+        "err": 0.009280742459396751,
+        "num_requests": 862,
+        "num_failures": 8,
+        "throughput_mbps": 2.680498795051141,
+        "error_types": {
+          "GET GET_tif_range_tile: Remote end closed connection without response": 8
+        }
+      },
+      "GET_tif_full": {
+        "p50": 2.6,
+        "p90": 3.2,
+        "p95": 3.4,
+        "p99": 5.0,
+        "rps": 3.5036123469102387,
+        "err": 0.0,
+        "num_requests": 271,
+        "num_failures": 0,
+        "throughput_mbps": 879.2393639372327,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 2.7,
+        "p90": 3.3,
+        "p95": 3.4,
+        "p99": 4.7,
+        "rps": 4.046607618387102,
+        "err": 0.0,
+        "num_requests": 313,
+        "num_failures": 0,
+        "throughput_mbps": 13.164188270046019,
+        "error_types": {}
+      }
+    }
+  },
+  "stage_meta": {
+    "5": {
+      "measured_secs": 75.02366137504578,
+      "wall_secs": 91.02545213699341,
+      "total_requests": 525,
+      "total_failures": 0,
+      "total_rps": 7.011315896116008,
+      "peak_rss_mb": 73.0703125
+    },
+    "30": {
+      "measured_secs": 75.04754614830017,
+      "wall_secs": 91.15556168556213,
+      "total_requests": 1663,
+      "total_failures": 1,
+      "total_rps": 22.181371073686883,
+      "peak_rss_mb": 99.71484375
+    },
+    "55": {
+      "measured_secs": 75.6332437992096,
+      "wall_secs": 91.77922010421753,
+      "total_requests": 2186,
+      "total_failures": 0,
+      "total_rps": 28.903551436632753,
+      "peak_rss_mb": 119.9453125
+    },
+    "80": {
+      "measured_secs": 75.8505437374115,
+      "wall_secs": 91.90302157402039,
+      "total_requests": 2004,
+      "total_failures": 6,
+      "total_rps": 26.431263970586212,
+      "peak_rss_mb": 146.16015625
+    },
+    "105": {
+      "measured_secs": 76.32628798484802,
+      "wall_secs": 92.42938160896301,
+      "total_requests": 1916,
+      "total_failures": 3,
+      "total_rps": 25.151781140983523,
+      "peak_rss_mb": 190.9375
+    },
+    "130": {
+      "measured_secs": 77.41068696975708,
+      "wall_secs": 93.76503729820251,
+      "total_requests": 2306,
+      "total_failures": 8,
+      "total_rps": 29.813026095848745,
+      "peak_rss_mb": 224.25
+    }
+  },
+  "data_file_paths": [
+    "/collections/SENTINEL1_SIG0_20M/V1M2R3/EQUI7_EU020M/E048N015T3/SIG0_20260412T171426__VV_A015_E048N015T3_EU020M_V1M2R3_S1CIWGRDH_TUWIEN.tif",
+    "/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/GLOBAL_ANALYSIS_FORECAST_BIO_001_028_coordinates/native",
+    "/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/GLOBAL_ANALYSIS_FORECAST_BIO_001_028_mask/native",
+    "/collections/data/cop_marine/BALTICSEA_MULTIYEAR_PHY_003_011/BAL-MYP-NEMO_PHY-DailyMeans-19930105/native",
+    "/collections/data/cop_marine/BALTICSEA_MULTIYEAR_PHY_003_011/BAL-MYP-NEMO_PHY-DailyMeans-19930104/native",
+    "/collections/data/cop_marine/BALTICSEA_MULTIYEAR_PHY_003_011/BAL-MYP-NEMO_PHY-DailyMeans-19930106/native",
+    "/collections/data/cop_marine/BALTICSEA_MULTIYEAR_PHY_003_011/BAL-MYP-NEMO_PHY-DailyMeans-19930102/native",
+    "/collections/data/cop_marine/BALTICSEA_MULTIYEAR_PHY_003_011/BAL-MYP-NEMO_PHY-DailyMeans-19930101/native",
+    "/collections/data/cop_marine/BALTICSEA_ANALYSISFORECAST_PHY_003_006/BAL-NEMO_PHY-MonthlyMeans-202411/native",
+    "/collections/data/cop_marine/BALTICSEA_ANALYSISFORECAST_PHY_003_006/BAL-NEMO_PHY-MonthlyMeans-202410/native",
+    "/collections/data/cop_marine/ARCTIC_ANALYSISFORECAST_PHY_002_001/20210709_hr-metno-MODEL-topaz5-ARC-b20210712-fv02.0/native",
+    "/collections/data/cop_marine/ARCTIC_ANALYSISFORECAST_PHY_002_001/20210707_hr-metno-MODEL-topaz5-ARC-b20210712-fv02.0/native",
+    "/collections/data/cop_marine/ARCTIC_ANALYSISFORECAST_PHY_002_001/20210705_hr-metno-MODEL-topaz5-ARC-b20210712-fv02.0/native",
+    "/collections/data/cop_marine/ARCTIC_ANALYSISFORECAST_PHY_002_001/20210708_hr-metno-MODEL-topaz5-ARC-b20210712-fv02.0/native",
+    "/collections/data/cop_marine/ARCTIC_ANALYSISFORECAST_PHY_002_001/20210706_hr-metno-MODEL-topaz5-ARC-b20210712-fv02.0/native",
+    "/collections/data/cop_marine/BALTICSEA_MULTIYEAR_PHY_003_011/BAL-MYP-NEMO_PHY-DailyMeans-19930103/native",
+    "/collections/data/cop_marine/ARCTIC_ANALYSISFORECAST_PHY_002_001/20210710_hr-metno-MODEL-topaz5-ARC-b20210712-fv02.0/native",
+    "/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/mercatorbiomer4v2r1_global_mean_optics_20231130/native",
+    "/collections/data/cop_marine/MEDSEA_ANALYSISFORECAST_PHY_006_013/MED-MFC_006_013_mask_bathy/native",
+    "/collections/data/cop_marine/MEDSEA_ANALYSISFORECAST_PHY_006_013/MED-MFC_006_013_coordinates/native",
+    "/collections/data/cop_marine/MEDSEA_ANALYSISFORECAST_PHY_006_013/MED-MFC_006_013_mdt/native",
+    "/collections/data/cop_marine/MEDSEA_MULTIYEAR_PHY_006_004/MED-MFC_006_004_mdt/native",
+    "/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/mercatorbiomer4v2r1_global_mean_optics_20231129/native",
+    "/collections/data/cop_marine/MEDSEA_MULTIYEAR_PHY_006_004/MED-MFC_006_004_coordinates/native",
+    "/collections/data/cop_marine/MEDSEA_MULTIYEAR_PHY_006_004/MED-MFC_006_004_mask_bathy/native",
+    "/collections/data/cop_marine/GLOBAL_MULTIYEAR_WAV_001_032/WAVERYSV1_bathymeter/native",
+    "/collections/data/cop_marine/NWSHELF_MULTIYEAR_PHY_004_009/metoffice_foam1_amm7_NWS_BED_dm19930102/native",
+    "/collections/data/cop_marine/NWSHELF_MULTIYEAR_PHY_004_009/metoffice_foam1_amm7_NWS_BED_dm19930104/native",
+    "/collections/data/cop_marine/NWSHELF_MULTIYEAR_PHY_004_009/metoffice_foam1_amm7_NWS_BED_dm19930103/native",
+    "/collections/data/cop_marine/NWSHELF_MULTIYEAR_PHY_004_009/metoffice_foam1_amm7_NWS_BED_dm19930105/native",
+    "/collections/data/cop_marine/NWSHELF_MULTIYEAR_PHY_004_009/metoffice_foam1_amm7_NWS_BED_dm19930106/native",
+    "/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/mercatorbiomer4v2r1_global_mean_optics_20231202/native",
+    "/collections/data/cop_marine/NWSHELF_MULTIYEAR_PHY_004_009/metoffice_foam1_amm7_NWS_BED_dm19930101/native",
+    "/collections/data/cop_marine/MEDSEA_MULTIYEAR_PHY_006_004/19890101_y-CMCC--PSAL-MFSe3r1-MED-b20220901_re-sv01.00/native",
+    "/collections/data/cop_marine/MEDSEA_MULTIYEAR_PHY_006_004/19880101_y-CMCC--PSAL-MFSe3r1-MED-b20220901_re-sv01.00/native",
+    "/collections/data/cop_marine/GLOBAL_ANALYSISFORECAST_BGC_001_028/mercatorbiomer4v2r1_global_mean_optics_20231201/native",
+    "/collections/data/cop_marine/MEDSEA_MULTIYEAR_PHY_006_004/19870101_y-CMCC--PSAL-MFSe3r1-MED-b20220901_re-sv01.00/native",
+    "/collections/data/cop_marine/GLOBAL_MULTIYEAR_PHY_001_030/mercatorglorys12v1_gl12_mean_19930101_R19930106/native",
+    "/collections/data/cop_marine/GLOBAL_MULTIYEAR_PHY_001_030/mercatorglorys12v1_gl12_mean_19930102_R19930106/native",
+    "/collections/data/cop_marine/GLOBAL_MULTIYEAR_PHY_001_030/mercatorglorys12v1_gl12_mean_19930103_R19930106/native",
+    "/collections/data/cop_marine/GLOBAL_MULTIYEAR_PHY_001_030/mercatorglorys12v1_gl12_mean_19930104_R19930106/native",
+    "/collections/data/cop_marine/GLOBAL_MULTIYEAR_PHY_001_030/mercatorglorys12v1_gl12_mean_19930105_R19930106/native",
+    "/collections/data/cop_marine/GLOBAL_MULTIYEAR_PHY_001_030/mercatorglorys12v1_gl12_mean_19930106_R19930113/native",
+    "/collections/data/cop_marine/MEDSEA_ANALYSISFORECAST_PHY_006_013/20231101_d-CMCC--RFVL-MFSeas10-MEDATL-b20250531_an-sv11.00/native",
+    "/collections/data/cop_marine/MEDSEA_ANALYSISFORECAST_PHY_006_013/20231103_d-CMCC--RFVL-MFSeas10-MEDATL-b20250531_an-sv11.00/native",
+    "/collections/data/cop_marine/MEDSEA_ANALYSISFORECAST_PHY_006_013/20231102_d-CMCC--RFVL-MFSeas10-MEDATL-b20250531_an-sv11.00/native"
+  ],
+  "dropped_paths": [
+    {
+      "path": "/collections/sen2like/2025/06/11/EU010M_E049N015T1_20250611T101041_B04.tif",
+      "status": 404
+    },
+    {
+      "path": "/collections/data/cop_marine/BALTICSEA_ANALYSISFORECAST_PHY_003_006/BAL-NEMO_PHY-MonthlyMeans-202406/native",
+      "status": 404
+    },
+    {
+      "path": "/collections/data/cop_marine/BALTICSEA_ANALYSISFORECAST_PHY_003_006/BAL-NEMO_PHY-MonthlyMeans-202408/native",
+      "status": 404
+    },
+    {
+      "path": "/collections/data/cop_marine/BALTICSEA_ANALYSISFORECAST_PHY_003_006/BAL-NEMO_PHY-MonthlyMeans-202409/native",
+      "status": 404
+    },
+    {
+      "path": "/collections/data/cop_marine/BALTICSEA_ANALYSISFORECAST_PHY_003_006/BAL-NEMO_PHY-MonthlyMeans-202407/native",
+      "status": 404
+    },
+    {
+      "path": "/collections/data/nasa/VIIRS_JPSS2_Leaf_Area_Index_FPAR_8-Day_L4_Global_500m_SIN_Grid_V002/VJ215A2H.A2026177.h06v03.002.2026185070600/VJ215A2H.A2026177.h06v03.002.2026185070600.h5",
+      "status": 403
+    },
+    {
+      "path": "/collections/data/nasa/VIIRS_JPSS2_Leaf_Area_Index_FPAR_8-Day_L4_Global_500m_SIN_Grid_V002/VJ215A2H.A2026177.h00v10.002.2026185071658/VJ215A2H.A2026177.h00v10.002.2026185071658.h5",
+      "status": 403
+    },
+    {
+      "path": "/collections/data/nasa/VIIRS_JPSS2_Leaf_Area_Index_FPAR_8-Day_L4_Global_500m_SIN_Grid_V002/VJ215A2H.A2026177.h12v07.002.2026185071750/VJ215A2H.A2026177.h12v07.002.2026185071750.h5",
+      "status": 403
+    },
+    {
+      "path": "/collections/data/nasa/VIIRS_JPSS2_Leaf_Area_Index_FPAR_8-Day_L4_Global_500m_SIN_Grid_V002/VJ215A2H.A2026177.h03v07.002.2026185071751/VJ215A2H.A2026177.h03v07.002.2026185071751.h5",
+      "status": 403
+    },
+    {
+      "path": "/collections/data/nasa/VIIRS_JPSS2_Leaf_Area_Index_FPAR_8-Day_L4_Global_500m_SIN_Grid_V002/VJ215A2H.A2026185.h31v13.002.2026195145128/VJ215A2H.A2026185.h31v13.002.2026195145128.h5",
+      "status": 403
+    },
+    {
+      "path": "/collections/data/nasa/VIIRS_JPSS2_Leaf_Area_Index_FPAR_8-Day_L4_Global_500m_SIN_Grid_V002/VJ215A2H.A2026185.h00v10.002.2026195145152/VJ215A2H.A2026185.h00v10.002.2026195145152.h5",
+      "status": 403
+    },
+    {
+      "path": "/collections/data/nasa/VIIRS_JPSS2_Leaf_Area_Index_FPAR_8-Day_L4_Global_500m_SIN_Grid_V002/VJ215A2H.A2026185.h35v08.002.2026195145240/VJ215A2H.A2026185.h35v08.002.2026195145240.h5",
+      "status": 403
+    },
+    {
+      "path": "/collections/data/nasa/NISAR_L1_RSLC_BETA_V1_1/NISAR_L1_PR_RSLC_010_165_D_100_2005_DHDH_M_20260120T155930_20260120T155950_X05010_N_P_J_001/NISAR_L1_PR_RSLC_010_165_D_100_2005_DHDH_M_20260120T155930_20260120T155950_X05010_N_P_J_001.h5",
+      "status": 403
+    },
+    {
+      "path": "/collections/data/nasa/NISAR_L1_RSLC_BETA_V1_1/NISAR_L1_PR_RSLC_010_164_A_042_0005_NASV_A_20260120T134637_20260120T134710_X05010_N_F_J_001/NISAR_L1_PR_RSLC_010_164_A_042_0005_NASV_A_20260120T134637_20260120T134710_X05010_N_F_J_001.h5",
+      "status": 403
+    },
+    {
+      "path": "/collections/data/nasa/NISAR_L1_RSLC_BETA_V1_1/NISAR_L1_PR_RSLC_010_164_A_043_0005_NASV_A_20260120T134709_20260120T134739_X05010_N_F_J_001/NISAR_L1_PR_RSLC_010_164_A_043_0005_NASV_A_20260120T134709_20260120T134739_X05010_N_F_J_001.png",
+      "status": 403
+    },
+    {
+      "path": "/collections/data/nasa/NISAR_L2_GCOV_BETA_V1_1/NISAR_L2_PR_GCOV_010_164_A_044_0005_NASV_A_20260120T134738_20260120T134814_X05010_N_F_J_001/NISAR_L2_PR_GCOV_010_164_A_044_0005_NASV_A_20260120T134738_20260120T134814_X05010_N_F_J_001.png",
+      "status": 403
+    },
+    {
+      "path": "/collections/data/nasa/NISAR_L2_GCOV_BETA_V1_1/NISAR_L2_PR_GCOV_010_164_A_045_0005_NASV_A_20260120T134813_20260120T134857_X05010_N_F_J_001/NISAR_L2_PR_GCOV_010_164_A_045_0005_NASV_A_20260120T134813_20260120T134857_X05010_N_F_J_001.h5",
+      "status": 403
+    },
+    {
+      "path": "/collections/data/nasa/OPERA_L2_RTC-S1_V1/OPERA_L2_RTC-S1_T078-166572-IW3_20260705T013707Z_20260715T021510Z_S1C_30_v1.0/OPERA_L2_RTC-S1_T078-166572-IW3_20260705T013707Z_20260715T021510Z_S1C_30_v1.0.h5",
+      "status": 403
+    },
+    {
+      "path": "/collections/data/nasa/OPERA_L2_RTC-S1_V1/OPERA_L2_RTC-S1_T078-166569-IW1_20260705T013657Z_20260715T021510Z_S1C_30_v1.0/OPERA_L2_RTC-S1_T078-166569-IW1_20260705T013657Z_20260715T021510Z_S1C_30_v1.0_BROWSE.png",
+      "status": 403
+    },
+    {
+      "path": "/collections/data/nasa/OPERA_L2_RTC-S1_V1/OPERA_L2_RTC-S1_T078-166571-IW1_20260705T013703Z_20260715T021510Z_S1C_30_v1.0/OPERA_L2_RTC-S1_T078-166571-IW1_20260705T013703Z_20260715T021510Z_S1C_30_v1.0_BROWSE.png",
+      "status": 403
+    }
+  ],
+  "error_samples": [
+    {
+      "path": "/collections/data/cop_marine/ARCTIC_ANALYSISFORECAST_PHY_002_001/20210710_hr-metno-MODEL-topaz5-ARC-b20210712-fv02.0/native",
+      "time": 1794297793.4289865,
+      "exception": "AttributeError: 'NoneType' object has no attribute 'read'"
+    },
+    {
+      "path": "/collections/data/cop_marine/BALTICSEA_MULTIYEAR_PHY_003_011/BAL-MYP-NEMO_PHY-DailyMeans-19930105/native",
+      "time": 1794297795.0392594,
+      "exception": "AttributeError: 'NoneType' object has no attribute 'read'"
+    },
+    {
+      "path": "/collections/data/cop_marine/NWSHELF_MULTIYEAR_PHY_004_009/metoffice_foam1_amm7_NWS_BED_dm19930104/native",
+      "time": 1794297839.18076,
+      "exception": "AttributeError: 'NoneType' object has no attribute 'read'"
+    },
+    {
+      "path": "/collections/data/cop_marine/BALTICSEA_MULTIYEAR_PHY_003_011/BAL-MYP-NEMO_PHY-DailyMeans-19930102/native",
+      "time": 1794297840.8375638,
+      "exception": "AttributeError: 'NoneType' object has no attribute 'read'"
+    },
+    {
+      "path": "/collections/data/cop_marine/MEDSEA_MULTIYEAR_PHY_006_004/MED-MFC_006_004_coordinates/native",
+      "time": 1794297840.872094,
+      "exception": "AttributeError: 'NoneType' object has no attribute 'read'"
+    },
+    {
+      "path": "/collections/data/cop_marine/MEDSEA_ANALYSISFORECAST_PHY_006_013/MED-MFC_006_013_mask_bathy/native",
+      "time": 1794297850.1535606,
+      "exception": "AttributeError: 'NoneType' object has no attribute 'read'"
+    },
+    {
+      "path": "/collections/data/cop_marine/GLOBAL_MULTIYEAR_PHY_001_030/mercatorglorys12v1_gl12_mean_19930102_R19930106/native",
+      "time": 1794297852.0120287,
+      "exception": "AttributeError: 'NoneType' object has no attribute 'read'"
+    },
+    {
+      "path": "/collections/data/cop_marine/ARCTIC_ANALYSISFORECAST_PHY_002_001/20210706_hr-metno-MODEL-topaz5-ARC-b20210712-fv02.0/native",
+      "time": 1794297854.3001053,
+      "exception": "AttributeError: 'NoneType' object has no attribute 'read'"
+    },
+    {
+      "path": "/collections/data/cop_marine/MEDSEA_MULTIYEAR_PHY_006_004/19890101_y-CMCC--PSAL-MFSe3r1-MED-b20220901_re-sv01.00/native",
+      "time": 1794297857.6293337,
+      "exception": "AttributeError: 'NoneType' object has no attribute 'read'"
+    },
+    {
+      "path": "/collections/data/cop_marine/NWSHELF_MULTIYEAR_PHY_004_009/metoffice_foam1_amm7_NWS_BED_dm19930106/native",
+      "time": 1794297936.7742631,
+      "exception": "AttributeError: 'NoneType' object has no attribute 'read'"
+    },
+    {
+      "path": "/collections/data/cop_marine/BALTICSEA_ANALYSISFORECAST_PHY_003_006/BAL-NEMO_PHY-MonthlyMeans-202411/native",
+      "time": 1794297955.399928,
+      "exception": "AttributeError: 'NoneType' object has no attribute 'read'"
+    },
+    {
+      "path": "/collections/data/cop_marine/BALTICSEA_ANALYSISFORECAST_PHY_003_006/BAL-NEMO_PHY-MonthlyMeans-202410/native",
+      "time": 1794297955.8801684,
+      "exception": "AttributeError: 'NoneType' object has no attribute 'read'"
+    },
+    {
+      "path": "/collections/data/cop_marine/BALTICSEA_ANALYSISFORECAST_PHY_003_006/BAL-NEMO_PHY-MonthlyMeans-202410/native",
+      "time": 1794297960.3266838,
+      "exception": "AttributeError: 'NoneType' object has no attribute 'read'"
+    },
+    {
+      "path": "/collections/data/cop_marine/BALTICSEA_MULTIYEAR_PHY_003_011/BAL-MYP-NEMO_PHY-DailyMeans-19930101/native",
+      "time": 1794297970.0090246,
+      "exception": "AttributeError: 'NoneType' object has no attribute 'read'"
+    },
+    {
+      "path": "/collections/data/cop_marine/GLOBAL_MULTIYEAR_WAV_001_032/WAVERYSV1_bathymeter/native",
+      "time": 1794297988.177947,
+      "exception": "AttributeError: 'NoneType' object has no attribute 'read'"
+    }
+  ]
+}
