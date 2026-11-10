@@ -1,0 +1,56 @@
+name: HDA Performance Test (MTU comparison)
+
+# manual only. Defaults = gentle ramp for comparing against the July 2026
+# baselines (results/baseline_2026-07): same stage points 5, 30, 55, 80, 105, 130
+# as the July 5->800 ramps, ~9 min of load instead of up to 90.
+# Compare: python results/compare_runs.py results/baseline_2026-07/*_vu800.json <downloaded perf_results.json>
+on:
+  workflow_dispatch:
+    inputs:
+      vu_max:
+        description: "max VUs (July baseline went up to 800)"
+        default: "130"
+      vu_step:
+        description: "VU step (keep 25 to match the July stage points)"
+        default: "25"
+      label:
+        description: "label for the artifact, e.g. after_mtu"
+        default: "after_mtu"
+
+jobs:
+  performance:
+    name: Performance
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - run: pip install requests opentelemetry-sdk opentelemetry-exporter-otlp-proto-http locust
+
+      - name: Configure environment
+        run: |
+          echo "PYTHONPATH=$GITHUB_WORKSPACE/scripts"                          >> $GITHUB_ENV
+          echo "HDA_URL=https://dev.hda.eodchosting.eu"                        >> $GITHUB_ENV
+          echo "VU_MAX=${{ inputs.vu_max }}"                                   >> $GITHUB_ENV
+          echo "VU_STEP=${{ inputs.vu_step }}"                                 >> $GITHUB_ENV
+          echo "SPAWN_RATE=25"                                                 >> $GITHUB_ENV
+          echo "OTEL_ENDPOINT=https://otel.observability.eodc.eu/v1/metrics"   >> $GITHUB_ENV
+          echo "OTEL_API_KEY=${{ secrets.OTEL_API_KEY }}"                      >> $GITHUB_ENV
+
+      - name: Run performance test
+        run: python scripts/perf_test.py
+
+      # if: always() — results are written after every stage, upload them even
+      # if the run was killed mid-ramp.
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hda-perf-${{ inputs.label }}-${{ github.run_id }}
+          path: perf_results.json
+          if-no-files-found: warn
+          retention-days: 90

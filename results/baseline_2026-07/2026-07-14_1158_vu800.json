@@ -1,0 +1,1794 @@
+{
+  "target": "https://dev.hda.eodchosting.eu",
+  "timestamp": 1784030314.4695644,
+  "config": {
+    "vu_start": 5,
+    "vu_step": 25,
+    "vu_max": 800,
+    "stage_secs": 90,
+    "warmup_secs": 15,
+    "error_rate_threshold": 0.05,
+    "p95_threshold_secs": 5.0,
+    "full_download_p95_threshold_secs": 60.0
+  },
+  "breakpoint": {
+    "vus": 530,
+    "confirmed_at_vus": 555,
+    "reasons": [
+      "GET_tif_range_tile: p95=5.10s > 5.0s"
+    ]
+  },
+  "stages": {
+    "5": {
+      "HEAD_tif": {
+        "p50": 0.1,
+        "p90": 0.11,
+        "p95": 0.11,
+        "p99": 0.13,
+        "rps": 1.0405154701562045,
+        "err": 0.0,
+        "num_requests": 78,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.22,
+        "p90": 0.51,
+        "p95": 0.65,
+        "p99": 1.1,
+        "rps": 2.774707920416545,
+        "err": 0.019230769230769232,
+        "num_requests": 208,
+        "num_failures": 4,
+        "throughput_mbps": 0.6742418719741267,
+        "error_types": {
+          "GET GET_tif_range_tile: 404 Client Error: Not Found for url: GET_tif_range_tile": 4
+        }
+      },
+      "GET_zarray": {
+        "p50": 0.11,
+        "p90": 0.11,
+        "p95": 0.11,
+        "p99": 0.11,
+        "rps": 2.0676909983873295,
+        "err": 0.0,
+        "num_requests": 155,
+        "num_failures": 0,
+        "throughput_mbps": 0.0006554580464887835,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.26,
+        "p90": 0.41,
+        "p95": 0.42,
+        "p99": 0.86,
+        "rps": 0.9738157605308068,
+        "err": 0.0,
+        "num_requests": 73,
+        "num_failures": 0,
+        "throughput_mbps": 142.24242493221274,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.25,
+        "p90": 0.3,
+        "p95": 0.32,
+        "p99": 0.49,
+        "rps": 0.8670962251301704,
+        "err": 0.03076923076923077,
+        "num_requests": 65,
+        "num_failures": 2,
+        "throughput_mbps": 2.6662807123701957,
+        "error_types": {
+          "GET GET_tif_range_chunk: status 404": 2
+        }
+      }
+    },
+    "30": {
+      "GET_zarray": {
+        "p50": 0.18,
+        "p90": 0.47,
+        "p95": 0.53,
+        "p99": 0.67,
+        "rps": 7.543431631127583,
+        "err": 0.0,
+        "num_requests": 566,
+        "num_failures": 0,
+        "throughput_mbps": 0.002391267827067444,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 0.2,
+        "p90": 0.52,
+        "p95": 0.61,
+        "p99": 0.68,
+        "rps": 3.425197754769945,
+        "err": 0.0,
+        "num_requests": 257,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.43,
+        "p90": 1.0,
+        "p95": 1.2,
+        "p99": 1.3,
+        "rps": 3.8250262864551527,
+        "err": 0.006968641114982578,
+        "num_requests": 287,
+        "num_failures": 2,
+        "throughput_mbps": 709.141180685289,
+        "error_types": {
+          "GET GET_tif_full: status 404": 2
+        }
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.46,
+        "p90": 1.1,
+        "p95": 1.2,
+        "p99": 1.6,
+        "rps": 11.12856079857161,
+        "err": 0.010778443113772455,
+        "num_requests": 835,
+        "num_failures": 9,
+        "throughput_mbps": 2.6838516444776475,
+        "error_types": {
+          "GET GET_tif_range_tile: 404 Client Error: Not Found for url: GET_tif_range_tile": 9
+        }
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.43,
+        "p90": 0.97,
+        "p95": 1.1,
+        "p99": 1.3,
+        "rps": 3.6517672560582293,
+        "err": 0.01824817518248175,
+        "num_requests": 274,
+        "num_failures": 5,
+        "throughput_mbps": 10.553551740531907,
+        "error_types": {
+          "GET GET_tif_range_chunk: status 404": 5
+        }
+      }
+    },
+    "55": {
+      "GET_zarray": {
+        "p50": 0.45,
+        "p90": 0.66,
+        "p95": 0.72,
+        "p99": 0.85,
+        "rps": 8.622151510155051,
+        "err": 0.0,
+        "num_requests": 652,
+        "num_failures": 0,
+        "throughput_mbps": 0.002733222028719151,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 0.46,
+        "p90": 0.64,
+        "p95": 0.69,
+        "p99": 0.85,
+        "rps": 3.6630919759401066,
+        "err": 0.0,
+        "num_requests": 277,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.99,
+        "p90": 1.4,
+        "p95": 1.7,
+        "p99": 2.1,
+        "rps": 12.496830026221662,
+        "err": 0.015873015873015872,
+        "num_requests": 945,
+        "num_failures": 15,
+        "throughput_mbps": 2.9849732086358687,
+        "error_types": {
+          "GET GET_tif_range_tile: 404 Client Error: Not Found for url: GET_tif_range_tile": 15
+        }
+      },
+      "GET_tif_full": {
+        "p50": 0.91,
+        "p90": 1.3,
+        "p95": 1.4,
+        "p99": 1.7,
+        "rps": 4.588783088993563,
+        "err": 0.020172910662824207,
+        "num_requests": 347,
+        "num_failures": 7,
+        "throughput_mbps": 678.343814027908,
+        "error_types": {
+          "GET GET_tif_full: status 404": 7
+        }
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.98,
+        "p90": 1.3,
+        "p95": 1.4,
+        "p99": 1.7,
+        "rps": 3.927575151098237,
+        "err": 0.010101010101010102,
+        "num_requests": 297,
+        "num_failures": 3,
+        "throughput_mbps": 11.560789501386047,
+        "error_types": {
+          "GET GET_tif_range_chunk: status 404": 3
+        }
+      }
+    },
+    "80": {
+      "GET_zarray": {
+        "p50": 0.58,
+        "p90": 0.83,
+        "p95": 0.92,
+        "p99": 0.95,
+        "rps": 8.02293515713746,
+        "err": 0.0,
+        "num_requests": 609,
+        "num_failures": 0,
+        "throughput_mbps": 0.002543270444812575,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 0.59,
+        "p90": 0.84,
+        "p95": 0.92,
+        "p99": 0.99,
+        "rps": 3.9390108571167497,
+        "err": 0.0,
+        "num_requests": 299,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 1.2,
+        "p90": 1.7,
+        "p95": 1.8,
+        "p99": 1.9,
+        "rps": 4.110272198730522,
+        "err": 0.016025641025641024,
+        "num_requests": 312,
+        "num_failures": 5,
+        "throughput_mbps": 11.87065290336165,
+        "error_types": {
+          "GET GET_tif_range_chunk: status 404": 5
+        }
+      },
+      "GET_tif_range_tile": {
+        "p50": 1.2,
+        "p90": 1.8,
+        "p95": 1.9,
+        "p99": 2.7,
+        "rps": 12.19907710264251,
+        "err": 0.014038876889848811,
+        "num_requests": 926,
+        "num_failures": 13,
+        "throughput_mbps": 2.9669411122739597,
+        "error_types": {
+          "GET GET_tif_range_tile: 404 Client Error: Not Found for url: GET_tif_range_tile": 13
+        }
+      },
+      "GET_tif_full": {
+        "p50": 1.2,
+        "p90": 1.7,
+        "p95": 1.9,
+        "p99": 2.1,
+        "rps": 4.334229337763915,
+        "err": 0.0182370820668693,
+        "num_requests": 329,
+        "num_failures": 6,
+        "throughput_mbps": 694.9260818590078,
+        "error_types": {
+          "GET GET_tif_full: status 404": 6
+        }
+      }
+    },
+    "105": {
+      "GET_zarray": {
+        "p50": 0.81,
+        "p90": 0.97,
+        "p95": 1.0,
+        "p99": 1.2,
+        "rps": 6.4433101173641925,
+        "err": 0.0,
+        "num_requests": 488,
+        "num_failures": 0,
+        "throughput_mbps": 0.002042529307204449,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 0.83,
+        "p90": 1.0,
+        "p95": 1.1,
+        "p99": 1.2,
+        "rps": 3.5121321541370394,
+        "err": 0.0,
+        "num_requests": 266,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 1.7,
+        "p90": 2.3,
+        "p95": 2.7,
+        "p99": 3.6,
+        "rps": 10.602413984105423,
+        "err": 0.024906600249066,
+        "num_requests": 803,
+        "num_failures": 20,
+        "throughput_mbps": 2.548955103151235,
+        "error_types": {
+          "GET GET_tif_range_tile: 404 Client Error: Not Found for url: GET_tif_range_tile": 17,
+          "GET GET_tif_range_tile: Remote end closed connection without response": 3
+        }
+      },
+      "GET_tif_full": {
+        "p50": 1.5,
+        "p90": 1.9,
+        "p95": 2.1,
+        "p99": 2.7,
+        "rps": 3.617760188847928,
+        "err": 0.010948905109489052,
+        "num_requests": 274,
+        "num_failures": 3,
+        "throughput_mbps": 666.7051056072077,
+        "error_types": {
+          "GET GET_tif_full: status 404": 3
+        }
+      },
+      "GET_tif_range_chunk": {
+        "p50": 1.6,
+        "p90": 2.0,
+        "p95": 2.2,
+        "p99": 2.7,
+        "rps": 3.710184719219955,
+        "err": 0.03914590747330961,
+        "num_requests": 281,
+        "num_failures": 11,
+        "throughput_mbps": 10.591354821295724,
+        "error_types": {
+          "GET GET_tif_range_chunk: status 404": 11
+        }
+      }
+    },
+    "130": {
+      "GET_zarray": {
+        "p50": 0.91,
+        "p90": 1.0,
+        "p95": 1.1,
+        "p99": 1.2,
+        "rps": 7.882780280445827,
+        "err": 0.0,
+        "num_requests": 599,
+        "num_failures": 0,
+        "throughput_mbps": 0.002498841348901327,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 0.91,
+        "p90": 1.0,
+        "p95": 1.1,
+        "p99": 1.1,
+        "rps": 3.8558507882648203,
+        "err": 0.0,
+        "num_requests": 293,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 1.9,
+        "p90": 2.4,
+        "p95": 2.8,
+        "p99": 4.0,
+        "rps": 11.172755355757106,
+        "err": 0.023557126030624265,
+        "num_requests": 849,
+        "num_failures": 20,
+        "throughput_mbps": 2.6884739198943324,
+        "error_types": {
+          "GET GET_tif_range_tile: 404 Client Error: Not Found for url: GET_tif_range_tile": 19,
+          "GET GET_tif_range_tile: Remote end closed connection without response": 1
+        }
+      },
+      "GET_tif_range_chunk": {
+        "p50": 1.8,
+        "p90": 2.0,
+        "p95": 2.2,
+        "p99": 3.3,
+        "rps": 4.092728993687232,
+        "err": 0.022508038585209004,
+        "num_requests": 311,
+        "num_failures": 7,
+        "throughput_mbps": 11.472280319050775,
+        "error_types": {
+          "GET GET_tif_range_chunk: status 404": 7
+        }
+      },
+      "GET_tif_full": {
+        "p50": 1.8,
+        "p90": 2.0,
+        "p95": 2.2,
+        "p99": 3.2,
+        "rps": 3.8953304891685554,
+        "err": 0.010135135135135136,
+        "num_requests": 296,
+        "num_failures": 3,
+        "throughput_mbps": 576.8582667963345,
+        "error_types": {
+          "GET GET_tif_full: status 404": 3
+        }
+      }
+    },
+    "155": {
+      "GET_zarray": {
+        "p50": 0.89,
+        "p90": 1.2,
+        "p95": 1.2,
+        "p99": 1.4,
+        "rps": 9.302929944097821,
+        "err": 0.0,
+        "num_requests": 711,
+        "num_failures": 0,
+        "throughput_mbps": 0.0029490287922790096,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 0.89,
+        "p90": 1.2,
+        "p95": 1.2,
+        "p99": 1.3,
+        "rps": 4.86735575134232,
+        "err": 0.0,
+        "num_requests": 372,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 1.7,
+        "p90": 2.7,
+        "p95": 3.4,
+        "p99": 5.0,
+        "rps": 13.97402135062795,
+        "err": 0.014044943820224719,
+        "num_requests": 1068,
+        "num_failures": 15,
+        "throughput_mbps": 3.369815255909339,
+        "error_types": {
+          "GET GET_tif_range_tile: 404 Client Error: Not Found for url: GET_tif_range_tile": 12,
+          "GET GET_tif_range_tile: Remote end closed connection without response": 3
+        }
+      },
+      "GET_tif_full": {
+        "p50": 1.6,
+        "p90": 2.3,
+        "p95": 2.4,
+        "p99": 3.7,
+        "rps": 4.658007116875984,
+        "err": 0.03651685393258427,
+        "num_requests": 356,
+        "num_failures": 13,
+        "throughput_mbps": 451.76820220145026,
+        "error_types": {
+          "GET GET_tif_full: status 404": 13
+        }
+      },
+      "GET_tif_range_chunk": {
+        "p50": 1.6,
+        "p90": 2.3,
+        "p95": 2.4,
+        "p99": 3.5,
+        "rps": 5.0767043858086565,
+        "err": 0.002577319587628866,
+        "num_requests": 388,
+        "num_failures": 1,
+        "throughput_mbps": 15.02572439772312,
+        "error_types": {
+          "GET GET_tif_range_chunk: status 404": 1
+        }
+      }
+    },
+    "180": {
+      "GET_zarray": {
+        "p50": 1.0,
+        "p90": 1.2,
+        "p95": 1.3,
+        "p99": 1.3,
+        "rps": 9.228650241897506,
+        "err": 0.0,
+        "num_requests": 708,
+        "num_failures": 0,
+        "throughput_mbps": 0.0029254821266815095,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 1.0,
+        "p90": 1.2,
+        "p95": 1.2,
+        "p99": 1.3,
+        "rps": 5.005369622724071,
+        "err": 0.0,
+        "num_requests": 384,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 1.9,
+        "p90": 2.3,
+        "p95": 2.5,
+        "p99": 3.4,
+        "rps": 4.3014895195284995,
+        "err": 0.012121212121212121,
+        "num_requests": 330,
+        "num_failures": 4,
+        "throughput_mbps": 481.22043692385415,
+        "error_types": {
+          "GET GET_tif_full: status 404": 4
+        }
+      },
+      "GET_tif_range_tile": {
+        "p50": 2.0,
+        "p90": 2.7,
+        "p95": 3.5,
+        "p99": 4.3,
+        "rps": 14.664168816574428,
+        "err": 0.024,
+        "num_requests": 1125,
+        "num_failures": 27,
+        "throughput_mbps": 3.5150354035178952,
+        "error_types": {
+          "GET GET_tif_range_tile: 404 Client Error: Not Found for url: GET_tif_range_tile": 17,
+          "GET GET_tif_range_tile: Remote end closed connection without response": 10
+        }
+      },
+      "GET_tif_range_chunk": {
+        "p50": 2.0,
+        "p90": 2.4,
+        "p95": 2.9,
+        "p99": 3.6,
+        "rps": 4.875021455465633,
+        "err": 0.0053475935828877,
+        "num_requests": 374,
+        "num_failures": 2,
+        "throughput_mbps": 14.19191738052747,
+        "error_types": {
+          "GET GET_tif_range_chunk: status 404": 2
+        }
+      }
+    },
+    "205": {
+      "GET_zarray": {
+        "p50": 0.85,
+        "p90": 1.1,
+        "p95": 1.1,
+        "p99": 1.2,
+        "rps": 11.386366132626456,
+        "err": 0.0,
+        "num_requests": 871,
+        "num_failures": 0,
+        "throughput_mbps": 0.0036094780640425865,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 0.87,
+        "p90": 1.1,
+        "p95": 1.1,
+        "p99": 1.2,
+        "rps": 5.843519702966734,
+        "err": 0.0022371364653243847,
+        "num_requests": 447,
+        "num_failures": 1,
+        "throughput_mbps": 0.0,
+        "error_types": {
+          "HEAD HEAD_tif: Remote end closed connection without response": 1
+        }
+      },
+      "GET_tif_full": {
+        "p50": 1.6,
+        "p90": 2.2,
+        "p95": 2.3,
+        "p99": 3.5,
+        "rps": 4.784626870885514,
+        "err": 0.00819672131147541,
+        "num_requests": 366,
+        "num_failures": 3,
+        "throughput_mbps": 449.46432415105807,
+        "error_types": {
+          "GET GET_tif_full: status 404": 3
+        }
+      },
+      "GET_tif_range_tile": {
+        "p50": 1.7,
+        "p90": 2.6,
+        "p95": 3.1,
+        "p99": 4.4,
+        "rps": 16.60239378695247,
+        "err": 0.023622047244094488,
+        "num_requests": 1270,
+        "num_failures": 30,
+        "throughput_mbps": 4.006323174110463,
+        "error_types": {
+          "GET GET_tif_range_tile: 404 Client Error: Not Found for url: GET_tif_range_tile": 21,
+          "GET GET_tif_range_tile: Remote end closed connection without response": 9
+        }
+      },
+      "GET_tif_range_chunk": {
+        "p50": 1.7,
+        "p90": 2.2,
+        "p95": 2.3,
+        "p99": 3.7,
+        "rps": 5.464409923579631,
+        "err": 0.009569377990430622,
+        "num_requests": 418,
+        "num_failures": 4,
+        "throughput_mbps": 16.631646498876524,
+        "error_types": {
+          "GET GET_tif_range_chunk: status 404": 4
+        }
+      }
+    },
+    "230": {
+      "GET_zarray": {
+        "p50": 1.0,
+        "p90": 1.1,
+        "p95": 1.2,
+        "p99": 1.2,
+        "rps": 10.681091773156778,
+        "err": 0.0,
+        "num_requests": 817,
+        "num_failures": 0,
+        "throughput_mbps": 0.0033859060920906985,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 1.0,
+        "p90": 1.1,
+        "p95": 1.2,
+        "p99": 1.2,
+        "rps": 5.634700800771814,
+        "err": 0.0,
+        "num_requests": 431,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 2.0,
+        "p90": 2.6,
+        "p95": 3.4,
+        "p99": 4.6,
+        "rps": 15.962806676896482,
+        "err": 0.021294021294021293,
+        "num_requests": 1221,
+        "num_failures": 26,
+        "throughput_mbps": 3.863065381054315,
+        "error_types": {
+          "GET GET_tif_range_tile: 404 Client Error: Not Found for url: GET_tif_range_tile": 19,
+          "GET GET_tif_range_tile: Remote end closed connection without response": 7
+        }
+      },
+      "GET_tif_full": {
+        "p50": 1.8,
+        "p90": 2.2,
+        "p95": 2.6,
+        "p99": 3.7,
+        "rps": 4.889508351481806,
+        "err": 0.0213903743315508,
+        "num_requests": 374,
+        "num_failures": 8,
+        "throughput_mbps": 364.12920621428157,
+        "error_types": {
+          "GET GET_tif_full: status 404": 8
+        }
+      },
+      "GET_tif_range_chunk": {
+        "p50": 2.0,
+        "p90": 2.2,
+        "p95": 2.3,
+        "p99": 3.8,
+        "rps": 5.961539594320063,
+        "err": 0.008771929824561403,
+        "num_requests": 456,
+        "num_failures": 4,
+        "throughput_mbps": 17.178146729438563,
+        "error_types": {
+          "GET GET_tif_range_chunk: status 404": 4
+        }
+      }
+    },
+    "255": {
+      "GET_zarray": {
+        "p50": 0.94,
+        "p90": 1.1,
+        "p95": 1.2,
+        "p99": 1.2,
+        "rps": 11.817452252040072,
+        "err": 0.0,
+        "num_requests": 902,
+        "num_failures": 0,
+        "throughput_mbps": 0.003746132363896703,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 0.93,
+        "p90": 1.2,
+        "p95": 1.2,
+        "p99": 1.2,
+        "rps": 5.856320572795911,
+        "err": 0.0,
+        "num_requests": 447,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 1.9,
+        "p90": 2.6,
+        "p95": 3.4,
+        "p99": 4.7,
+        "rps": 17.359339505491235,
+        "err": 0.027169811320754716,
+        "num_requests": 1325,
+        "num_failures": 36,
+        "throughput_mbps": 4.161858293947619,
+        "error_types": {
+          "GET GET_tif_range_tile: 404 Client Error: Not Found for url: GET_tif_range_tile": 23,
+          "GET GET_tif_range_tile: Remote end closed connection without response": 13
+        }
+      },
+      "GET_tif_full": {
+        "p50": 1.8,
+        "p90": 2.3,
+        "p95": 2.4,
+        "p99": 3.8,
+        "rps": 4.847513673231515,
+        "err": 0.016216216216216217,
+        "num_requests": 370,
+        "num_failures": 6,
+        "throughput_mbps": 434.7786690768394,
+        "error_types": {
+          "GET GET_tif_full: status 404": 6
+        }
+      },
+      "GET_tif_range_chunk": {
+        "p50": 1.9,
+        "p90": 2.4,
+        "p95": 3.0,
+        "p99": 4.6,
+        "rps": 6.655505259463809,
+        "err": 0.007874015748031496,
+        "num_requests": 508,
+        "num_failures": 4,
+        "throughput_mbps": 19.267710103318954,
+        "error_types": {
+          "GET GET_tif_range_chunk: status 404": 4
+        }
+      }
+    },
+    "280": {
+      "GET_zarray": {
+        "p50": 1.0,
+        "p90": 1.3,
+        "p95": 1.4,
+        "p99": 1.4,
+        "rps": 10.87288733266094,
+        "err": 0.0,
+        "num_requests": 836,
+        "num_failures": 0,
+        "throughput_mbps": 0.003446705284453518,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 1.0,
+        "p90": 1.3,
+        "p95": 1.3,
+        "p99": 1.4,
+        "rps": 5.696560588164464,
+        "err": 0.0,
+        "num_requests": 438,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 2.1,
+        "p90": 3.3,
+        "p95": 4.4,
+        "p99": 5.5,
+        "rps": 16.6995063817424,
+        "err": 0.0264797507788162,
+        "num_requests": 1284,
+        "num_failures": 34,
+        "throughput_mbps": 3.967420500497051,
+        "error_types": {
+          "GET GET_tif_range_tile: 404 Client Error: Not Found for url: GET_tif_range_tile": 17,
+          "GET GET_tif_range_tile: Remote end closed connection without response": 17
+        }
+      },
+      "GET_tif_range_chunk": {
+        "p50": 2.0,
+        "p90": 2.7,
+        "p95": 3.6,
+        "p99": 4.5,
+        "rps": 5.722572280347863,
+        "err": 0.013636363636363636,
+        "num_requests": 440,
+        "num_failures": 6,
+        "throughput_mbps": 16.735099766870167,
+        "error_types": {
+          "GET GET_tif_range_chunk: status 404": 6
+        }
+      },
+      "GET_tif_full": {
+        "p50": 1.7,
+        "p90": 2.6,
+        "p95": 2.8,
+        "p99": 4.3,
+        "rps": 4.9422215148458815,
+        "err": 0.015789473684210527,
+        "num_requests": 380,
+        "num_failures": 6,
+        "throughput_mbps": 308.3793978309247,
+        "error_types": {
+          "GET GET_tif_full: status 404": 6
+        }
+      }
+    },
+    "305": {
+      "GET_zarray": {
+        "p50": 0.87,
+        "p90": 1.1,
+        "p95": 1.2,
+        "p99": 1.3,
+        "rps": 14.100327525357677,
+        "err": 0.0,
+        "num_requests": 1089,
+        "num_failures": 0,
+        "throughput_mbps": 0.004469803825538384,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 0.81,
+        "p90": 1.1,
+        "p95": 1.2,
+        "p99": 1.3,
+        "rps": 7.004845905618461,
+        "err": 0.0,
+        "num_requests": 541,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 2.0,
+        "p90": 2.7,
+        "p95": 3.6,
+        "p99": 4.7,
+        "rps": 19.913961188246194,
+        "err": 0.01495448634590377,
+        "num_requests": 1538,
+        "num_failures": 23,
+        "throughput_mbps": 4.8397727120905465,
+        "error_types": {
+          "GET GET_tif_range_tile: 404 Client Error: Not Found for url: GET_tif_range_tile": 20,
+          "GET GET_tif_range_tile: Remote end closed connection without response": 3
+        }
+      },
+      "GET_tif_range_chunk": {
+        "p50": 1.6,
+        "p90": 2.3,
+        "p95": 2.8,
+        "p99": 3.8,
+        "rps": 7.186117333859973,
+        "err": 0.009009009009009009,
+        "num_requests": 555,
+        "num_failures": 5,
+        "throughput_mbps": 21.05639830049654,
+        "error_types": {
+          "GET GET_tif_range_chunk: status 404": 5
+        }
+      },
+      "GET_tif_full": {
+        "p50": 1.5,
+        "p90": 2.3,
+        "p95": 3.0,
+        "p99": 4.1,
+        "rps": 5.256871419003872,
+        "err": 0.017241379310344827,
+        "num_requests": 406,
+        "num_failures": 7,
+        "throughput_mbps": 364.66535457273415,
+        "error_types": {
+          "GET GET_tif_full: status 404": 7
+        }
+      }
+    },
+    "330": {
+      "HEAD_tif": {
+        "p50": 0.99,
+        "p90": 1.1,
+        "p95": 1.1,
+        "p99": 1.2,
+        "rps": 7.325446569892307,
+        "err": 0.0,
+        "num_requests": 562,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_zarray": {
+        "p50": 0.99,
+        "p90": 1.1,
+        "p95": 1.1,
+        "p99": 1.2,
+        "rps": 15.680626732349548,
+        "err": 0.0,
+        "num_requests": 1203,
+        "num_failures": 0,
+        "throughput_mbps": 0.004970758674154806,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 2.0,
+        "p90": 2.8,
+        "p95": 3.5,
+        "p99": 4.3,
+        "rps": 23.644768821680863,
+        "err": 0.017640573318632856,
+        "num_requests": 1814,
+        "num_failures": 32,
+        "throughput_mbps": 5.696824377725643,
+        "error_types": {
+          "GET GET_tif_range_tile: 404 Client Error: Not Found for url: GET_tif_range_tile": 19,
+          "GET GET_tif_range_tile: Remote end closed connection without response": 13
+        }
+      },
+      "GET_tif_range_chunk": {
+        "p50": 2.0,
+        "p90": 2.2,
+        "p95": 2.7,
+        "p99": 3.8,
+        "rps": 7.638277028393047,
+        "err": 0.017064846416382253,
+        "num_requests": 586,
+        "num_failures": 10,
+        "throughput_mbps": 22.615631822869496,
+        "error_types": {
+          "GET GET_tif_range_chunk: status 404": 10
+        }
+      },
+      "GET_tif_full": {
+        "p50": 1.9,
+        "p90": 2.2,
+        "p95": 2.4,
+        "p99": 3.0,
+        "rps": 6.3478513870774975,
+        "err": 0.014373716632443531,
+        "num_requests": 487,
+        "num_failures": 7,
+        "throughput_mbps": 414.4219678315273,
+        "error_types": {
+          "GET GET_tif_full: status 404": 7
+        }
+      }
+    },
+    "355": {
+      "GET_zarray": {
+        "p50": 0.85,
+        "p90": 1.2,
+        "p95": 1.2,
+        "p99": 5.1,
+        "rps": 15.570587691588575,
+        "err": 0.0,
+        "num_requests": 1208,
+        "num_failures": 0,
+        "throughput_mbps": 0.004935876298233578,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 0.79,
+        "p90": 1.2,
+        "p95": 1.2,
+        "p99": 4.0,
+        "rps": 7.952858117309727,
+        "err": 0.0,
+        "num_requests": 617,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 1.8,
+        "p90": 3.1,
+        "p95": 4.4,
+        "p99": 7.1,
+        "rps": 24.129255098223354,
+        "err": 0.021367521367521368,
+        "num_requests": 1872,
+        "num_failures": 40,
+        "throughput_mbps": 5.812273245455196,
+        "error_types": {
+          "GET GET_tif_range_tile: 404 Client Error: Not Found for url: GET_tif_range_tile": 25,
+          "GET GET_tif_range_tile: Remote end closed connection without response": 15
+        }
+      },
+      "GET_tif_full": {
+        "p50": 1.4,
+        "p90": 2.5,
+        "p95": 4.1,
+        "p99": 6.5,
+        "rps": 5.954976418471789,
+        "err": 0.023809523809523808,
+        "num_requests": 462,
+        "num_failures": 11,
+        "throughput_mbps": 288.053758161754,
+        "error_types": {
+          "GET GET_tif_full: status 404": 11
+        }
+      },
+      "GET_tif_range_chunk": {
+        "p50": 1.4,
+        "p90": 2.4,
+        "p95": 3.5,
+        "p99": 7.0,
+        "rps": 8.391103135119339,
+        "err": 0.021505376344086023,
+        "num_requests": 651,
+        "num_failures": 14,
+        "throughput_mbps": 23.345222941636038,
+        "error_types": {
+          "GET GET_tif_range_chunk: status 404": 14
+        }
+      }
+    },
+    "380": {
+      "HEAD_tif": {
+        "p50": 1.0,
+        "p90": 1.3,
+        "p95": 1.4,
+        "p99": 3.4,
+        "rps": 7.319467481700234,
+        "err": 0.0,
+        "num_requests": 567,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_zarray": {
+        "p50": 1.0,
+        "p90": 1.3,
+        "p95": 1.4,
+        "p99": 3.7,
+        "rps": 15.348936218239114,
+        "err": 0.0,
+        "num_requests": 1189,
+        "num_failures": 0,
+        "throughput_mbps": 0.004865612781181799,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 2.2,
+        "p90": 3.3,
+        "p95": 4.5,
+        "p99": 6.3,
+        "rps": 23.120222680291214,
+        "err": 0.02400893355667225,
+        "num_requests": 1791,
+        "num_failures": 43,
+        "throughput_mbps": 5.548492762632433,
+        "error_types": {
+          "GET GET_tif_range_tile: 404 Client Error: Not Found for url: GET_tif_range_tile": 32,
+          "GET GET_tif_range_tile: Remote end closed connection without response": 11
+        }
+      },
+      "GET_tif_full": {
+        "p50": 1.9,
+        "p90": 2.5,
+        "p95": 2.8,
+        "p99": 3.9,
+        "rps": 5.189463717184292,
+        "err": 0.03731343283582089,
+        "num_requests": 402,
+        "num_failures": 15,
+        "throughput_mbps": 357.7979045373437,
+        "error_types": {
+          "GET GET_tif_full: status 404": 15
+        }
+      },
+      "GET_tif_range_chunk": {
+        "p50": 2.0,
+        "p90": 2.6,
+        "p95": 3.1,
+        "p99": 5.3,
+        "rps": 8.378014807096035,
+        "err": 0.007704160246533128,
+        "num_requests": 649,
+        "num_failures": 5,
+        "throughput_mbps": 24.002349681340647,
+        "error_types": {
+          "GET GET_tif_range_chunk: status 404": 5
+        }
+      }
+    },
+    "405": {
+      "HEAD_tif": {
+        "p50": 0.91,
+        "p90": 1.2,
+        "p95": 1.2,
+        "p99": 3.9,
+        "rps": 8.711863140249376,
+        "err": 0.0,
+        "num_requests": 675,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_zarray": {
+        "p50": 0.87,
+        "p90": 1.2,
+        "p95": 1.2,
+        "p99": 4.6,
+        "rps": 17.075251754888775,
+        "err": 0.0,
+        "num_requests": 1323,
+        "num_failures": 0,
+        "throughput_mbps": 0.005412854806299741,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 1.7,
+        "p90": 2.3,
+        "p95": 3.2,
+        "p99": 5.6,
+        "rps": 6.169289749687706,
+        "err": 0.03765690376569038,
+        "num_requests": 478,
+        "num_failures": 18,
+        "throughput_mbps": 316.0162207981656,
+        "error_types": {
+          "GET GET_tif_full: status 404": 18
+        }
+      },
+      "GET_tif_range_tile": {
+        "p50": 2.0,
+        "p90": 3.1,
+        "p95": 4.5,
+        "p99": 6.7,
+        "rps": 27.245545317135452,
+        "err": 0.01705352913311227,
+        "num_requests": 2111,
+        "num_failures": 36,
+        "throughput_mbps": 6.616128631367845,
+        "error_types": {
+          "GET GET_tif_range_tile: 404 Client Error: Not Found for url: GET_tif_range_tile": 25,
+          "GET GET_tif_range_tile: Remote end closed connection without response": 11
+        }
+      },
+      "GET_tif_range_chunk": {
+        "p50": 1.8,
+        "p90": 2.4,
+        "p95": 3.4,
+        "p99": 5.9,
+        "rps": 9.163589377151194,
+        "err": 0.011267605633802818,
+        "num_requests": 710,
+        "num_failures": 8,
+        "throughput_mbps": 27.345313418940023,
+        "error_types": {
+          "GET GET_tif_range_chunk: status 404": 8
+        }
+      }
+    },
+    "430": {
+      "GET_zarray": {
+        "p50": 1.1,
+        "p90": 1.2,
+        "p95": 1.3,
+        "p99": 2.5,
+        "rps": 17.675631605770388,
+        "err": 0.0,
+        "num_requests": 1366,
+        "num_failures": 0,
+        "throughput_mbps": 0.0056031752190292125,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 1.0,
+        "p90": 1.2,
+        "p95": 1.4,
+        "p99": 3.2,
+        "rps": 8.553142380244674,
+        "err": 0.0,
+        "num_requests": 661,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 2.2,
+        "p90": 3.5,
+        "p95": 4.4,
+        "p99": 5.4,
+        "rps": 25.568849233530223,
+        "err": 0.02327935222672065,
+        "num_requests": 1976,
+        "num_failures": 46,
+        "throughput_mbps": 6.081141468632509,
+        "error_types": {
+          "GET GET_tif_range_tile: 404 Client Error: Not Found for url: GET_tif_range_tile": 29,
+          "GET GET_tif_range_tile: Remote end closed connection without response": 17
+        }
+      },
+      "GET_tif_range_chunk": {
+        "p50": 2.1,
+        "p90": 2.8,
+        "p95": 3.5,
+        "p99": 4.2,
+        "rps": 8.475504174069988,
+        "err": 0.016793893129770993,
+        "num_requests": 655,
+        "num_failures": 11,
+        "throughput_mbps": 24.1353511755024,
+        "error_types": {
+          "GET GET_tif_range_chunk: status 404": 11
+        }
+      },
+      "GET_tif_full": {
+        "p50": 2.0,
+        "p90": 2.7,
+        "p95": 3.2,
+        "p99": 4.7,
+        "rps": 6.016960978538235,
+        "err": 0.023655913978494623,
+        "num_requests": 465,
+        "num_failures": 11,
+        "throughput_mbps": 326.62646853607316,
+        "error_types": {
+          "GET GET_tif_full: status 404": 11
+        }
+      }
+    },
+    "455": {
+      "GET_zarray": {
+        "p50": 0.95,
+        "p90": 1.3,
+        "p95": 1.3,
+        "p99": 5.1,
+        "rps": 18.254523077561906,
+        "err": 0.0,
+        "num_requests": 1407,
+        "num_failures": 0,
+        "throughput_mbps": 0.005786683815587125,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 0.97,
+        "p90": 1.3,
+        "p95": 1.4,
+        "p99": 5.1,
+        "rps": 9.743530086175545,
+        "err": 0.0,
+        "num_requests": 751,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 2.2,
+        "p90": 3.4,
+        "p95": 4.7,
+        "p99": 7.6,
+        "rps": 28.15374205992135,
+        "err": 0.02903225806451613,
+        "num_requests": 2170,
+        "num_failures": 63,
+        "throughput_mbps": 6.669358976568252,
+        "error_types": {
+          "GET GET_tif_range_tile: 404 Client Error: Not Found for url: GET_tif_range_tile": 44,
+          "GET GET_tif_range_tile: Remote end closed connection without response": 19
+        }
+      },
+      "GET_tif_full": {
+        "p50": 1.9,
+        "p90": 2.6,
+        "p95": 3.2,
+        "p99": 6.6,
+        "rps": 6.435141042267737,
+        "err": 0.03024193548387097,
+        "num_requests": 496,
+        "num_failures": 15,
+        "throughput_mbps": 376.16718548283404,
+        "error_types": {
+          "GET GET_tif_full: status 404": 15
+        }
+      },
+      "GET_tif_range_chunk": {
+        "p50": 1.9,
+        "p90": 2.7,
+        "p95": 3.9,
+        "p99": 7.4,
+        "rps": 9.522970816581692,
+        "err": 0.014986376021798364,
+        "num_requests": 734,
+        "num_failures": 11,
+        "throughput_mbps": 27.162644567804396,
+        "error_types": {
+          "GET GET_tif_range_chunk: status 404": 11
+        }
+      }
+    },
+    "480": {
+      "HEAD_tif": {
+        "p50": 0.95,
+        "p90": 1.3,
+        "p95": 1.4,
+        "p99": 4.4,
+        "rps": 9.62166731522512,
+        "err": 0.0013351134846461949,
+        "num_requests": 749,
+        "num_failures": 1,
+        "throughput_mbps": 0.0,
+        "error_types": {
+          "HEAD HEAD_tif: Remote end closed connection without response": 1
+        }
+      },
+      "GET_zarray": {
+        "p50": 0.94,
+        "p90": 1.3,
+        "p95": 1.4,
+        "p99": 4.3,
+        "rps": 18.999260292680844,
+        "err": 0.0,
+        "num_requests": 1479,
+        "num_failures": 0,
+        "throughput_mbps": 0.006022765512779828,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 2.1,
+        "p90": 3.7,
+        "p95": 5.1,
+        "p99": 7.5,
+        "rps": 28.32546919902722,
+        "err": 0.024489795918367346,
+        "num_requests": 2205,
+        "num_failures": 54,
+        "throughput_mbps": 6.760716809489266,
+        "error_types": {
+          "GET GET_tif_range_tile: 404 Client Error: Not Found for url: GET_tif_range_tile": 44,
+          "GET GET_tif_range_tile: Remote end closed connection without response": 10
+        }
+      },
+      "GET_tif_range_chunk": {
+        "p50": 1.8,
+        "p90": 2.7,
+        "p95": 3.9,
+        "p99": 7.5,
+        "rps": 9.223440764127686,
+        "err": 0.01532033426183844,
+        "num_requests": 718,
+        "num_failures": 11,
+        "throughput_mbps": 26.397361074964522,
+        "error_types": {
+          "GET GET_tif_range_chunk: status 404": 11
+        }
+      },
+      "GET_tif_full": {
+        "p50": 1.8,
+        "p90": 2.6,
+        "p95": 3.4,
+        "p99": 6.7,
+        "rps": 6.62854517310569,
+        "err": 0.015503875968992248,
+        "num_requests": 516,
+        "num_failures": 8,
+        "throughput_mbps": 274.74515696139775,
+        "error_types": {
+          "GET GET_tif_full: status 404": 8
+        }
+      }
+    },
+    "505": {
+      "GET_zarray": {
+        "p50": 1.0,
+        "p90": 1.3,
+        "p95": 1.3,
+        "p99": 4.8,
+        "rps": 19.842551202040468,
+        "err": 0.0,
+        "num_requests": 1541,
+        "num_failures": 0,
+        "throughput_mbps": 0.006290088731046829,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 1.0,
+        "p90": 1.3,
+        "p95": 1.3,
+        "p99": 5.0,
+        "rps": 10.030725104730386,
+        "err": 0.0,
+        "num_requests": 779,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 2.2,
+        "p90": 4.0,
+        "p95": 5.0,
+        "p99": 7.7,
+        "rps": 29.86039989456966,
+        "err": 0.02328589909443726,
+        "num_requests": 2319,
+        "num_failures": 54,
+        "throughput_mbps": 7.229691680340946,
+        "error_types": {
+          "GET GET_tif_range_tile: 404 Client Error: Not Found for url: GET_tif_range_tile": 32,
+          "GET GET_tif_range_tile: Remote end closed connection without response": 22
+        }
+      },
+      "GET_tif_full": {
+        "p50": 1.9,
+        "p90": 2.8,
+        "p95": 3.8,
+        "p99": 6.4,
+        "rps": 7.300925718077187,
+        "err": 0.029982363315696647,
+        "num_requests": 567,
+        "num_failures": 17,
+        "throughput_mbps": 323.63827570307507,
+        "error_types": {
+          "GET GET_tif_full: status 404": 17
+        }
+      },
+      "GET_tif_range_chunk": {
+        "p50": 2.0,
+        "p90": 2.8,
+        "p95": 3.8,
+        "p99": 6.5,
+        "rps": 10.04360151693158,
+        "err": 0.016666666666666666,
+        "num_requests": 780,
+        "num_failures": 13,
+        "throughput_mbps": 28.48488999896004,
+        "error_types": {
+          "GET GET_tif_range_chunk: status 404": 13
+        }
+      }
+    },
+    "530": {
+      "HEAD_tif": {
+        "p50": 1.1,
+        "p90": 1.4,
+        "p95": 3.7,
+        "p99": 13.0,
+        "rps": 9.367148575970168,
+        "err": 0.0,
+        "num_requests": 736,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_zarray": {
+        "p50": 1.1,
+        "p90": 1.4,
+        "p95": 1.5,
+        "p99": 12.0,
+        "rps": 18.708842943853462,
+        "err": 0.0,
+        "num_requests": 1470,
+        "num_failures": 0,
+        "throughput_mbps": 0.005930703213201547,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 2.2,
+        "p90": 3.1,
+        "p95": 3.9,
+        "p99": 16.0,
+        "rps": 9.214423327448916,
+        "err": 0.016574585635359115,
+        "num_requests": 724,
+        "num_failures": 12,
+        "throughput_mbps": 26.49614935526611,
+        "error_types": {
+          "GET GET_tif_range_chunk: status 404": 12
+        }
+      },
+      "GET_tif_range_tile": {
+        "p50": 2.5,
+        "p90": 4.5,
+        "p95": 6.0,
+        "p99": 17.0,
+        "rps": 28.86507197051677,
+        "err": 0.029982363315696647,
+        "num_requests": 2268,
+        "num_failures": 68,
+        "throughput_mbps": 6.8989262313741975,
+        "error_types": {
+          "GET GET_tif_range_tile: Remote end closed connection without response": 26,
+          "GET GET_tif_range_tile: 404 Client Error: Not Found for url: GET_tif_range_tile": 42
+        }
+      },
+      "GET_tif_full": {
+        "p50": 2.2,
+        "p90": 3.0,
+        "p95": 3.9,
+        "p99": 15.0,
+        "rps": 5.536290258895412,
+        "err": 0.04367816091954023,
+        "num_requests": 435,
+        "num_failures": 19,
+        "throughput_mbps": 319.08173554990316,
+        "error_types": {
+          "GET GET_tif_full: status 404": 19
+        }
+      }
+    },
+    "555": {
+      "GET_zarray": {
+        "p50": 1.1,
+        "p90": 1.3,
+        "p95": 1.5,
+        "p99": 11.0,
+        "rps": 20.100765950766107,
+        "err": 0.0,
+        "num_requests": 1580,
+        "num_failures": 0,
+        "throughput_mbps": 0.006371942806392856,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 1.2,
+        "p90": 1.3,
+        "p95": 1.5,
+        "p99": 11.0,
+        "rps": 9.058066681611056,
+        "err": 0.0,
+        "num_requests": 712,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 2.5,
+        "p90": 4.6,
+        "p95": 5.1,
+        "p99": 14.0,
+        "rps": 30.99080117472547,
+        "err": 0.024630541871921183,
+        "num_requests": 2436,
+        "num_failures": 60,
+        "throughput_mbps": 7.465588066360963,
+        "error_types": {
+          "GET GET_tif_range_tile: 404 Client Error: Not Found for url: GET_tif_range_tile": 31,
+          "GET GET_tif_range_tile: Remote end closed connection without response": 29
+        }
+      },
+      "GET_tif_full": {
+        "p50": 2.3,
+        "p90": 3.4,
+        "p95": 3.7,
+        "p99": 13.0,
+        "rps": 5.966619766398294,
+        "err": 0.019189765458422176,
+        "num_requests": 469,
+        "num_failures": 9,
+        "throughput_mbps": 303.2424701562828,
+        "error_types": {
+          "GET GET_tif_full: status 404": 9
+        }
+      },
+      "GET_tif_range_chunk": {
+        "p50": 2.3,
+        "p90": 3.4,
+        "p95": 4.2,
+        "p99": 12.0,
+        "rps": 9.26161874187198,
+        "err": 0.013736263736263736,
+        "num_requests": 728,
+        "num_failures": 10,
+        "throughput_mbps": 25.813528335054755,
+        "error_types": {
+          "GET GET_tif_range_chunk: status 404": 10
+        }
+      }
+    }
+  },
+  "stage_meta": {
+    "5": {
+      "measured_secs": 75.03642988204956,
+      "wall_secs": 91.03796863555908,
+      "total_requests": 579,
+      "total_failures": 6,
+      "total_rps": 7.723826374621057,
+      "peak_rss_mb": 66.79296875
+    },
+    "30": {
+      "measured_secs": 75.05670094490051,
+      "wall_secs": 91.05908060073853,
+      "total_requests": 2219,
+      "total_failures": 16,
+      "total_rps": 29.57398372698252,
+      "peak_rss_mb": 93.41796875
+    },
+    "55": {
+      "measured_secs": 75.6225323677063,
+      "wall_secs": 91.74568843841553,
+      "total_requests": 2518,
+      "total_failures": 25,
+      "total_rps": 33.29843175240862,
+      "peak_rss_mb": 132.2421875
+    },
+    "80": {
+      "measured_secs": 76.02792263031006,
+      "wall_secs": 92.15781283378601,
+      "total_requests": 2475,
+      "total_failures": 24,
+      "total_rps": 32.60552465339116,
+      "peak_rss_mb": 175.87109375
+    },
+    "105": {
+      "measured_secs": 75.76311492919922,
+      "wall_secs": 91.85570931434631,
+      "total_requests": 2112,
+      "total_failures": 34,
+      "total_rps": 27.88580116367454,
+      "peak_rss_mb": 229.25390625
+    },
+    "130": {
+      "measured_secs": 76.14927673339844,
+      "wall_secs": 92.23748135566711,
+      "total_requests": 2348,
+      "total_failures": 30,
+      "total_rps": 30.89944590732354,
+      "peak_rss_mb": 260.09375
+    },
+    "155": {
+      "measured_secs": 76.46215510368347,
+      "wall_secs": 92.47074460983276,
+      "total_requests": 2895,
+      "total_failures": 29,
+      "total_rps": 37.87901854875273,
+      "peak_rss_mb": 308.78125
+    },
+    "180": {
+      "measured_secs": 76.76572346687317,
+      "wall_secs": 92.84944868087769,
+      "total_requests": 2921,
+      "total_failures": 33,
+      "total_rps": 38.07469965619014,
+      "peak_rss_mb": 341.67578125
+    },
+    "205": {
+      "measured_secs": 76.56839656829834,
+      "wall_secs": 92.7212028503418,
+      "total_requests": 3372,
+      "total_failures": 38,
+      "total_rps": 44.081316417010804,
+      "peak_rss_mb": 392.33203125
+    },
+    "230": {
+      "measured_secs": 76.60483479499817,
+      "wall_secs": 92.67258214950562,
+      "total_requests": 3299,
+      "total_failures": 38,
+      "total_rps": 43.12964719662695,
+      "peak_rss_mb": 440.26171875
+    },
+    "255": {
+      "measured_secs": 76.46643233299255,
+      "wall_secs": 92.54604864120483,
+      "total_requests": 3552,
+      "total_failures": 46,
+      "total_rps": 46.53613126302254,
+      "peak_rss_mb": 502.80859375
+    },
+    "280": {
+      "measured_secs": 76.93995594978333,
+      "wall_secs": 93.06464338302612,
+      "total_requests": 3378,
+      "total_failures": 46,
+      "total_rps": 43.93374809776155,
+      "peak_rss_mb": 545.75390625
+    },
+    "305": {
+      "measured_secs": 77.3144690990448,
+      "wall_secs": 93.36812353134155,
+      "total_requests": 4129,
+      "total_failures": 35,
+      "total_rps": 53.462123372086175,
+      "peak_rss_mb": 580.71875
+    },
+    "330": {
+      "measured_secs": 76.75040769577026,
+      "wall_secs": 92.82603907585144,
+      "total_requests": 4652,
+      "total_failures": 49,
+      "total_rps": 60.63697053939326,
+      "peak_rss_mb": 599.3671875
+    },
+    "355": {
+      "measured_secs": 77.64145064353943,
+      "wall_secs": 93.71011447906494,
+      "total_requests": 4810,
+      "total_failures": 65,
+      "total_rps": 61.99878046071278,
+      "peak_rss_mb": 685.48828125
+    },
+    "380": {
+      "measured_secs": 77.57328367233276,
+      "wall_secs": 93.66376447677612,
+      "total_requests": 4598,
+      "total_failures": 63,
+      "total_rps": 59.356104904510886,
+      "peak_rss_mb": 718.27734375
+    },
+    "405": {
+      "measured_secs": 77.4993908405304,
+      "wall_secs": 93.51677298545837,
+      "total_requests": 5297,
+      "total_failures": 62,
+      "total_rps": 68.3655393391125,
+      "peak_rss_mb": 748.421875
+    },
+    "430": {
+      "measured_secs": 77.3254873752594,
+      "wall_secs": 93.47507643699646,
+      "total_requests": 5123,
+      "total_failures": 68,
+      "total_rps": 66.2900883721535,
+      "peak_rss_mb": 784.65625
+    },
+    "455": {
+      "measured_secs": 77.12006616592407,
+      "wall_secs": 93.25527262687683,
+      "total_requests": 5558,
+      "total_failures": 89,
+      "total_rps": 72.10990708250823,
+      "peak_rss_mb": 840.984375
+    },
+    "480": {
+      "measured_secs": 77.91410040855408,
+      "wall_secs": 94.14242053031921,
+      "total_requests": 5667,
+      "total_failures": 74,
+      "total_rps": 72.79838274416656,
+      "peak_rss_mb": 879.43359375
+    },
+    "505": {
+      "measured_secs": 77.76178193092346,
+      "wall_secs": 93.95698070526123,
+      "total_requests": 5986,
+      "total_failures": 84,
+      "total_rps": 77.07820343634927,
+      "peak_rss_mb": 917.68359375
+    },
+    "530": {
+      "measured_secs": 78.62218499183655,
+      "wall_secs": 94.94569063186646,
+      "total_requests": 5633,
+      "total_failures": 99,
+      "total_rps": 71.69177707668472,
+      "peak_rss_mb": 959.21875
+    },
+    "555": {
+      "measured_secs": 78.77924680709839,
+      "wall_secs": 94.90966129302979,
+      "total_requests": 5925,
+      "total_failures": 79,
+      "total_rps": 75.37787231537291,
+      "peak_rss_mb": 983.8046875
+    }
+  }
+}

@@ -1,0 +1,2119 @@
+{
+  "target": "https://dev.hda.eodchosting.eu",
+  "timestamp": 1784015776.4748962,
+  "config": {
+    "vu_start": 5,
+    "vu_step": 10,
+    "vu_max": 300,
+    "stage_secs": 90,
+    "warmup_secs": 15,
+    "error_rate_threshold": 0.05,
+    "p95_threshold_secs": 5.0,
+    "full_download_p95_threshold_secs": 60.0
+  },
+  "breakpoint": null,
+  "stages": {
+    "5": {
+      "GET_zarray": {
+        "p50": 0.12,
+        "p90": 0.15,
+        "p95": 0.22,
+        "p99": 0.28,
+        "rps": 1.135705350378873,
+        "err": 0.0,
+        "num_requests": 85,
+        "num_failures": 0,
+        "throughput_mbps": 0.0003600185960701027,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.13,
+        "p90": 0.25,
+        "p95": 0.35,
+        "p99": 0.49,
+        "rps": 1.6567936876115323,
+        "err": 0.0,
+        "num_requests": 124,
+        "num_failures": 0,
+        "throughput_mbps": 0.43431852444523755,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 0.12,
+        "p90": 0.16,
+        "p95": 0.23,
+        "p99": 0.27,
+        "rps": 0.6279782525624357,
+        "err": 0.0,
+        "num_requests": 47,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.13,
+        "p90": 0.14,
+        "p95": 0.24,
+        "p99": 0.28,
+        "rps": 0.6279782525624357,
+        "err": 0.0,
+        "num_requests": 47,
+        "num_failures": 0,
+        "throughput_mbps": 90.94406426602845,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.13,
+        "p90": 0.14,
+        "p95": 0.16,
+        "p99": 0.34,
+        "rps": 0.5478108160651034,
+        "err": 0.0,
+        "num_requests": 41,
+        "num_failures": 0,
+        "throughput_mbps": 2.2976850970651275,
+        "error_types": {}
+      }
+    },
+    "15": {
+      "HEAD_tif": {
+        "p50": 0.13,
+        "p90": 0.29,
+        "p95": 0.34,
+        "p99": 0.43,
+        "rps": 1.4681031753593607,
+        "err": 0.0,
+        "num_requests": 110,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_zarray": {
+        "p50": 0.13,
+        "p90": 0.27,
+        "p95": 0.32,
+        "p99": 0.39,
+        "rps": 3.069670275751391,
+        "err": 0.0,
+        "num_requests": 230,
+        "num_failures": 0,
+        "throughput_mbps": 0.000973085477413191,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.14,
+        "p90": 0.43,
+        "p95": 0.5,
+        "p99": 0.76,
+        "rps": 4.938165226208759,
+        "err": 0.0,
+        "num_requests": 370,
+        "num_failures": 0,
+        "throughput_mbps": 1.294510385059269,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.13,
+        "p90": 0.26,
+        "p95": 0.32,
+        "p99": 0.45,
+        "rps": 1.5214887453724284,
+        "err": 0.0,
+        "num_requests": 114,
+        "num_failures": 0,
+        "throughput_mbps": 6.381586330670558,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.13,
+        "p90": 0.32,
+        "p95": 0.37,
+        "p99": 0.49,
+        "rps": 1.5481815303789623,
+        "err": 0.0,
+        "num_requests": 116,
+        "num_failures": 0,
+        "throughput_mbps": 213.17676101275885,
+        "error_types": {}
+      }
+    },
+    "25": {
+      "HEAD_tif": {
+        "p50": 0.13,
+        "p90": 0.27,
+        "p95": 0.35,
+        "p99": 0.46,
+        "rps": 2.227747819737269,
+        "err": 0.0,
+        "num_requests": 167,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_zarray": {
+        "p50": 0.14,
+        "p90": 0.31,
+        "p95": 0.39,
+        "p99": 0.52,
+        "rps": 4.842350051285202,
+        "err": 0.0,
+        "num_requests": 363,
+        "num_failures": 0,
+        "throughput_mbps": 0.001535024966257409,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.17,
+        "p90": 0.44,
+        "p95": 0.53,
+        "p99": 0.71,
+        "rps": 7.723748428909454,
+        "err": 0.0,
+        "num_requests": 579,
+        "num_failures": 0,
+        "throughput_mbps": 2.02473430814804,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.15,
+        "p90": 0.35,
+        "p95": 0.42,
+        "p99": 0.64,
+        "rps": 2.334466278167797,
+        "err": 0.0,
+        "num_requests": 175,
+        "num_failures": 0,
+        "throughput_mbps": 9.791461248384305,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.14,
+        "p90": 0.32,
+        "p95": 0.36,
+        "p99": 0.56,
+        "rps": 2.467864351205957,
+        "err": 0.0,
+        "num_requests": 185,
+        "num_failures": 0,
+        "throughput_mbps": 338.75434814564153,
+        "error_types": {}
+      }
+    },
+    "35": {
+      "GET_zarray": {
+        "p50": 0.16,
+        "p90": 0.43,
+        "p95": 0.5,
+        "p99": 0.77,
+        "rps": 7.054470623090043,
+        "err": 0.0,
+        "num_requests": 529,
+        "num_failures": 0,
+        "throughput_mbps": 0.002236267187519544,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.23,
+        "p90": 0.67,
+        "p95": 0.79,
+        "p99": 0.99,
+        "rps": 9.534870501908092,
+        "err": 0.0,
+        "num_requests": 715,
+        "num_failures": 0,
+        "throughput_mbps": 2.4995090928521946,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 0.16,
+        "p90": 0.43,
+        "p95": 0.49,
+        "p99": 0.59,
+        "rps": 3.0004837243766724,
+        "err": 0.0,
+        "num_requests": 225,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.16,
+        "p90": 0.42,
+        "p95": 0.61,
+        "p99": 0.84,
+        "rps": 2.7471095432070864,
+        "err": 0.0,
+        "num_requests": 206,
+        "num_failures": 0,
+        "throughput_mbps": 11.522212545511655,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.16,
+        "p90": 0.39,
+        "p95": 0.5,
+        "p99": 0.72,
+        "rps": 2.9738127579377687,
+        "err": 0.0,
+        "num_requests": 223,
+        "num_failures": 0,
+        "throughput_mbps": 465.18658356437675,
+        "error_types": {}
+      }
+    },
+    "45": {
+      "HEAD_tif": {
+        "p50": 0.18,
+        "p90": 0.58,
+        "p95": 0.73,
+        "p99": 1.1,
+        "rps": 3.3398910321436897,
+        "err": 0.0,
+        "num_requests": 250,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_zarray": {
+        "p50": 0.21,
+        "p90": 0.68,
+        "p95": 0.82,
+        "p99": 1.1,
+        "rps": 6.532826858873057,
+        "err": 0.0,
+        "num_requests": 489,
+        "num_failures": 0,
+        "throughput_mbps": 0.0020709061142627594,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.34,
+        "p90": 1.0,
+        "p95": 1.2,
+        "p99": 1.4,
+        "rps": 9.979594404045345,
+        "err": 0.0,
+        "num_requests": 747,
+        "num_failures": 0,
+        "throughput_mbps": 2.616090795454063,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.27,
+        "p90": 0.68,
+        "p95": 0.83,
+        "p99": 1.1,
+        "rps": 3.1127784419579188,
+        "err": 0.0,
+        "num_requests": 233,
+        "num_failures": 0,
+        "throughput_mbps": 13.055939070217866,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.19,
+        "p90": 0.63,
+        "p95": 0.84,
+        "p99": 1.1,
+        "rps": 3.2330145191150916,
+        "err": 0.0,
+        "num_requests": 242,
+        "num_failures": 0,
+        "throughput_mbps": 476.48826953906513,
+        "error_types": {}
+      }
+    },
+    "55": {
+      "HEAD_tif": {
+        "p50": 0.26,
+        "p90": 0.79,
+        "p95": 1.1,
+        "p99": 1.6,
+        "rps": 3.385811228736758,
+        "err": 0.0,
+        "num_requests": 254,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_zarray": {
+        "p50": 0.28,
+        "p90": 0.94,
+        "p95": 1.2,
+        "p99": 1.6,
+        "rps": 6.744962526538581,
+        "err": 0.0,
+        "num_requests": 506,
+        "num_failures": 0,
+        "throughput_mbps": 0.00213815312091273,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.44,
+        "p90": 1.4,
+        "p95": 1.6,
+        "p99": 2.2,
+        "rps": 10.250743444482547,
+        "err": 0.0,
+        "num_requests": 769,
+        "num_failures": 0,
+        "throughput_mbps": 2.687170889510433,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.28,
+        "p90": 0.87,
+        "p95": 1.1,
+        "p99": 1.6,
+        "rps": 3.279171504997018,
+        "err": 0.0,
+        "num_requests": 246,
+        "num_failures": 0,
+        "throughput_mbps": 13.753842160095012,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.25,
+        "p90": 1.0,
+        "p95": 1.2,
+        "p99": 1.7,
+        "rps": 3.1058819539199396,
+        "err": 0.0,
+        "num_requests": 233,
+        "num_failures": 0,
+        "throughput_mbps": 466.9018747135286,
+        "error_types": {}
+      }
+    },
+    "65": {
+      "GET_zarray": {
+        "p50": 0.27,
+        "p90": 1.3,
+        "p95": 1.4,
+        "p99": 1.8,
+        "rps": 6.454209815308571,
+        "err": 0.0,
+        "num_requests": 484,
+        "num_failures": 0,
+        "throughput_mbps": 0.002045984511452817,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.38,
+        "p90": 1.8,
+        "p95": 2.0,
+        "p99": 2.3,
+        "rps": 9.427946982279256,
+        "err": 0.0,
+        "num_requests": 707,
+        "num_failures": 0,
+        "throughput_mbps": 2.4714797337226133,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 0.21,
+        "p90": 1.4,
+        "p95": 1.6,
+        "p99": 1.7,
+        "rps": 3.280445484640307,
+        "err": 0.0,
+        "num_requests": 246,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.25,
+        "p90": 1.3,
+        "p95": 1.6,
+        "p99": 1.9,
+        "rps": 3.067083176696222,
+        "err": 0.0,
+        "num_requests": 230,
+        "num_failures": 0,
+        "throughput_mbps": 12.86427923634967,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.22,
+        "p90": 1.2,
+        "p95": 1.5,
+        "p99": 1.7,
+        "rps": 3.3337860616263284,
+        "err": 0.0,
+        "num_requests": 250,
+        "num_failures": 0,
+        "throughput_mbps": 436.24588282330296,
+        "error_types": {}
+      }
+    },
+    "75": {
+      "GET_zarray": {
+        "p50": 0.27,
+        "p90": 1.4,
+        "p95": 1.8,
+        "p99": 2.3,
+        "rps": 6.2306676716200595,
+        "err": 0.0,
+        "num_requests": 467,
+        "num_failures": 0,
+        "throughput_mbps": 0.0019751216519035587,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.44,
+        "p90": 2.0,
+        "p95": 2.7,
+        "p99": 3.3,
+        "rps": 9.939716092841422,
+        "err": 0.0,
+        "num_requests": 745,
+        "num_failures": 0,
+        "throughput_mbps": 2.605636935441822,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 0.22,
+        "p90": 1.6,
+        "p95": 1.9,
+        "p99": 2.5,
+        "rps": 3.001927679046067,
+        "err": 0.0,
+        "num_requests": 225,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.27,
+        "p90": 1.7,
+        "p95": 2.3,
+        "p99": 2.6,
+        "rps": 3.2020561909824714,
+        "err": 0.0,
+        "num_requests": 240,
+        "num_failures": 0,
+        "throughput_mbps": 13.430397090062543,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.26,
+        "p90": 1.2,
+        "p95": 1.6,
+        "p99": 2.2,
+        "rps": 3.12200478620791,
+        "err": 0.0,
+        "num_requests": 234,
+        "num_failures": 0,
+        "throughput_mbps": 409.54236790922215,
+        "error_types": {}
+      }
+    },
+    "85": {
+      "HEAD_tif": {
+        "p50": 0.18,
+        "p90": 1.8,
+        "p95": 2.4,
+        "p99": 3.4,
+        "rps": 2.9063916165719816,
+        "err": 0.0,
+        "num_requests": 218,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_zarray": {
+        "p50": 0.21,
+        "p90": 1.6,
+        "p95": 2.4,
+        "p99": 3.3,
+        "rps": 6.772692390910856,
+        "err": 0.0,
+        "num_requests": 508,
+        "num_failures": 0,
+        "throughput_mbps": 0.002146943487918741,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.27,
+        "p90": 2.2,
+        "p95": 3.0,
+        "p99": 4.4,
+        "rps": 9.612423649304581,
+        "err": 0.0,
+        "num_requests": 721,
+        "num_failures": 0,
+        "throughput_mbps": 2.5198391851233,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.21,
+        "p90": 1.7,
+        "p95": 2.5,
+        "p99": 3.5,
+        "rps": 3.1330368343780535,
+        "err": 0.0,
+        "num_requests": 235,
+        "num_failures": 0,
+        "throughput_mbps": 13.140908926579208,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.21,
+        "p90": 1.1,
+        "p95": 1.8,
+        "p99": 2.6,
+        "rps": 2.999716118021541,
+        "err": 0.0,
+        "num_requests": 225,
+        "num_failures": 0,
+        "throughput_mbps": 414.33818925455535,
+        "error_types": {}
+      }
+    },
+    "95": {
+      "HEAD_tif": {
+        "p50": 0.17,
+        "p90": 0.23,
+        "p95": 0.3,
+        "p99": 0.78,
+        "rps": 3.5068224138130932,
+        "err": 0.0,
+        "num_requests": 263,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_zarray": {
+        "p50": 0.21,
+        "p90": 0.29,
+        "p95": 0.33,
+        "p99": 0.62,
+        "rps": 6.933641274459347,
+        "err": 0.0,
+        "num_requests": 520,
+        "num_failures": 0,
+        "throughput_mbps": 0.002197964284003613,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.22,
+        "p90": 0.43,
+        "p95": 0.54,
+        "p99": 0.71,
+        "rps": 10.080447699021667,
+        "err": 0.0,
+        "num_requests": 756,
+        "num_failures": 0,
+        "throughput_mbps": 2.642528881612336,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.2,
+        "p90": 0.28,
+        "p95": 0.32,
+        "p99": 0.41,
+        "rps": 3.386817084062835,
+        "err": 0.0,
+        "num_requests": 254,
+        "num_failures": 0,
+        "throughput_mbps": 14.205340442953085,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.22,
+        "p90": 0.31,
+        "p95": 0.41,
+        "p99": 0.66,
+        "rps": 3.2134760522013517,
+        "err": 0.0,
+        "num_requests": 241,
+        "num_failures": 0,
+        "throughput_mbps": 410.6333944353304,
+        "error_types": {}
+      }
+    },
+    "105": {
+      "HEAD_tif": {
+        "p50": 0.17,
+        "p90": 0.22,
+        "p95": 0.23,
+        "p99": 0.26,
+        "rps": 3.837556353407836,
+        "err": 0.0,
+        "num_requests": 288,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_zarray": {
+        "p50": 0.2,
+        "p90": 0.27,
+        "p95": 0.29,
+        "p99": 0.31,
+        "rps": 6.875621799855706,
+        "err": 0.0,
+        "num_requests": 516,
+        "num_failures": 0,
+        "throughput_mbps": 0.0021795721105542587,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.22,
+        "p90": 0.38,
+        "p95": 0.44,
+        "p99": 0.62,
+        "rps": 10.273458154435561,
+        "err": 0.0,
+        "num_requests": 771,
+        "num_failures": 0,
+        "throughput_mbps": 2.6931254144363557,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.2,
+        "p90": 0.26,
+        "p95": 0.28,
+        "p99": 0.36,
+        "rps": 3.451135748377186,
+        "err": 0.0,
+        "num_requests": 259,
+        "num_failures": 0,
+        "throughput_mbps": 14.475112473961424,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.22,
+        "p90": 0.3,
+        "p95": 0.34,
+        "p99": 0.51,
+        "rps": 3.157989082491865,
+        "err": 0.0,
+        "num_requests": 237,
+        "num_failures": 0,
+        "throughput_mbps": 402.77993292989123,
+        "error_types": {}
+      }
+    },
+    "115": {
+      "HEAD_tif": {
+        "p50": 0.17,
+        "p90": 0.24,
+        "p95": 0.26,
+        "p99": 0.41,
+        "rps": 4.170766101616256,
+        "err": 0.0,
+        "num_requests": 313,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.23,
+        "p90": 0.42,
+        "p95": 0.51,
+        "p99": 0.68,
+        "rps": 11.139809779396773,
+        "err": 0.0,
+        "num_requests": 836,
+        "num_failures": 0,
+        "throughput_mbps": 2.9202342948101876,
+        "error_types": {}
+      },
+      "GET_zarray": {
+        "p50": 0.23,
+        "p90": 0.3,
+        "p95": 0.33,
+        "p99": 0.42,
+        "rps": 7.568674586958573,
+        "err": 0.0,
+        "num_requests": 568,
+        "num_failures": 0,
+        "throughput_mbps": 0.002399269844065868,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.2,
+        "p90": 0.28,
+        "p95": 0.31,
+        "p99": 0.38,
+        "rps": 3.997539394520373,
+        "err": 0.0,
+        "num_requests": 300,
+        "num_failures": 0,
+        "throughput_mbps": 16.766895472594378,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.24,
+        "p90": 0.32,
+        "p95": 0.35,
+        "p99": 0.53,
+        "rps": 3.411233616657385,
+        "err": 0.0,
+        "num_requests": 256,
+        "num_failures": 0,
+        "throughput_mbps": 385.97817222356616,
+        "error_types": {}
+      }
+    },
+    "125": {
+      "GET_zarray": {
+        "p50": 0.24,
+        "p90": 0.3,
+        "p95": 0.34,
+        "p99": 0.48,
+        "rps": 6.490881854084905,
+        "err": 0.0,
+        "num_requests": 487,
+        "num_failures": 0,
+        "throughput_mbps": 0.0020576095477449147,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 0.18,
+        "p90": 0.23,
+        "p95": 0.26,
+        "p99": 0.39,
+        "rps": 3.0655088838594007,
+        "err": 0.0,
+        "num_requests": 230,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.29,
+        "p90": 0.46,
+        "p95": 0.56,
+        "p99": 0.74,
+        "rps": 9.63636053491455,
+        "err": 0.0,
+        "num_requests": 723,
+        "num_failures": 0,
+        "throughput_mbps": 2.5261140960646395,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.22,
+        "p90": 0.29,
+        "p95": 0.35,
+        "p99": 0.45,
+        "rps": 3.5719842646709536,
+        "err": 0.0,
+        "num_requests": 268,
+        "num_failures": 0,
+        "throughput_mbps": 14.98198788924644,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.25,
+        "p90": 0.32,
+        "p95": 0.36,
+        "p99": 0.53,
+        "rps": 3.252105076789973,
+        "err": 0.0,
+        "num_requests": 244,
+        "num_failures": 0,
+        "throughput_mbps": 400.81308558255125,
+        "error_types": {}
+      }
+    },
+    "135": {
+      "GET_zarray": {
+        "p50": 0.25,
+        "p90": 0.31,
+        "p95": 0.33,
+        "p99": 0.38,
+        "rps": 6.571406466290016,
+        "err": 0.0,
+        "num_requests": 493,
+        "num_failures": 0,
+        "throughput_mbps": 0.002083135849813935,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 0.17,
+        "p90": 0.23,
+        "p95": 0.25,
+        "p99": 0.26,
+        "rps": 3.1990619714190744,
+        "err": 0.0,
+        "num_requests": 240,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.24,
+        "p90": 0.45,
+        "p95": 0.52,
+        "p99": 0.69,
+        "rps": 9.25062086735349,
+        "err": 0.0,
+        "num_requests": 694,
+        "num_failures": 0,
+        "throughput_mbps": 2.4249947566515133,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.25,
+        "p90": 0.34,
+        "p95": 0.39,
+        "p99": 0.66,
+        "rps": 2.6258967015398236,
+        "err": 0.0,
+        "num_requests": 197,
+        "num_failures": 0,
+        "throughput_mbps": 337.3732006158375,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.21,
+        "p90": 0.27,
+        "p95": 0.3,
+        "p99": 0.37,
+        "rps": 3.239050246061813,
+        "err": 0.0,
+        "num_requests": 243,
+        "num_failures": 0,
+        "throughput_mbps": 13.585561403258046,
+        "error_types": {}
+      }
+    },
+    "145": {
+      "GET_zarray": {
+        "p50": 0.25,
+        "p90": 0.31,
+        "p95": 0.33,
+        "p99": 0.37,
+        "rps": 6.465911614744644,
+        "err": 0.0,
+        "num_requests": 485,
+        "num_failures": 0,
+        "throughput_mbps": 0.002049693981874052,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 0.17,
+        "p90": 0.22,
+        "p95": 0.23,
+        "p99": 0.28,
+        "rps": 3.639574991392346,
+        "err": 0.0,
+        "num_requests": 273,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.25,
+        "p90": 0.44,
+        "p95": 0.54,
+        "p99": 0.71,
+        "rps": 10.372122136641924,
+        "err": 0.0,
+        "num_requests": 778,
+        "num_failures": 0,
+        "throughput_mbps": 2.7189895853878605,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.22,
+        "p90": 0.29,
+        "p95": 0.31,
+        "p99": 0.4,
+        "rps": 3.732897427069073,
+        "err": 0.0,
+        "num_requests": 280,
+        "num_failures": 0,
+        "throughput_mbps": 15.656906609945521,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.25,
+        "p90": 0.34,
+        "p95": 0.44,
+        "p99": 0.58,
+        "rps": 3.1862945895339587,
+        "err": 0.0,
+        "num_requests": 239,
+        "num_failures": 0,
+        "throughput_mbps": 307.96586886603603,
+        "error_types": {}
+      }
+    },
+    "155": {
+      "HEAD_tif": {
+        "p50": 0.17,
+        "p90": 0.22,
+        "p95": 0.24,
+        "p99": 0.27,
+        "rps": 3.158496130650988,
+        "err": 0.0,
+        "num_requests": 237,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_zarray": {
+        "p50": 0.27,
+        "p90": 0.32,
+        "p95": 0.34,
+        "p99": 0.65,
+        "rps": 5.970490576082881,
+        "err": 0.0,
+        "num_requests": 448,
+        "num_failures": 0,
+        "throughput_mbps": 0.0018926455126182732,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.28,
+        "p90": 0.52,
+        "p95": 0.62,
+        "p99": 0.78,
+        "rps": 9.355545500915586,
+        "err": 0.0,
+        "num_requests": 702,
+        "num_failures": 0,
+        "throughput_mbps": 2.452500119792015,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.23,
+        "p90": 0.3,
+        "p95": 0.33,
+        "p99": 0.5,
+        "rps": 3.4117089006187893,
+        "err": 0.0,
+        "num_requests": 256,
+        "num_failures": 0,
+        "throughput_mbps": 14.30974428870099,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.27,
+        "p90": 0.36,
+        "p95": 0.49,
+        "p99": 0.72,
+        "rps": 2.558781675464092,
+        "err": 0.0,
+        "num_requests": 192,
+        "num_failures": 0,
+        "throughput_mbps": 240.98702685399618,
+        "error_types": {}
+      }
+    },
+    "165": {
+      "GET_zarray": {
+        "p50": 0.27,
+        "p90": 0.34,
+        "p95": 0.37,
+        "p99": 0.54,
+        "rps": 7.116681927771191,
+        "err": 0.0,
+        "num_requests": 534,
+        "num_failures": 0,
+        "throughput_mbps": 0.0022559881711034678,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.29,
+        "p90": 0.53,
+        "p95": 0.64,
+        "p99": 0.77,
+        "rps": 10.701677131086642,
+        "err": 0.0,
+        "num_requests": 803,
+        "num_failures": 0,
+        "throughput_mbps": 2.805380449851577,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 0.18,
+        "p90": 0.23,
+        "p95": 0.25,
+        "p99": 0.32,
+        "rps": 3.5450138441706684,
+        "err": 0.0,
+        "num_requests": 266,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.23,
+        "p90": 0.29,
+        "p95": 0.33,
+        "p99": 0.38,
+        "rps": 3.6249765624602324,
+        "err": 0.0,
+        "num_requests": 272,
+        "num_failures": 0,
+        "throughput_mbps": 15.204253695833202,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.26,
+        "p90": 0.35,
+        "p95": 0.4,
+        "p99": 0.67,
+        "rps": 2.3988815486869184,
+        "err": 0.0,
+        "num_requests": 180,
+        "num_failures": 0,
+        "throughput_mbps": 211.45150097603036,
+        "error_types": {}
+      }
+    },
+    "175": {
+      "HEAD_tif": {
+        "p50": 0.19,
+        "p90": 0.27,
+        "p95": 0.32,
+        "p99": 0.54,
+        "rps": 3.3044425299285116,
+        "err": 0.0,
+        "num_requests": 248,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_zarray": {
+        "p50": 0.28,
+        "p90": 0.38,
+        "p95": 0.46,
+        "p99": 1.6,
+        "rps": 6.648858154977126,
+        "err": 0.0,
+        "num_requests": 499,
+        "num_failures": 0,
+        "throughput_mbps": 0.002107688035127749,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.31,
+        "p90": 0.62,
+        "p95": 0.75,
+        "p99": 1.1,
+        "rps": 10.126517430426084,
+        "err": 0.0,
+        "num_requests": 760,
+        "num_failures": 0,
+        "throughput_mbps": 2.6546057852816154,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.24,
+        "p90": 0.34,
+        "p95": 0.42,
+        "p99": 0.79,
+        "rps": 3.357739990088649,
+        "err": 0.0,
+        "num_requests": 252,
+        "num_failures": 0,
+        "throughput_mbps": 14.08338227138878,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.28,
+        "p90": 0.38,
+        "p95": 0.46,
+        "p99": 0.67,
+        "rps": 2.611575547846727,
+        "err": 0.0,
+        "num_requests": 196,
+        "num_failures": 0,
+        "throughput_mbps": 241.70238572718316,
+        "error_types": {}
+      }
+    },
+    "185": {
+      "HEAD_tif": {
+        "p50": 0.19,
+        "p90": 0.25,
+        "p95": 0.29,
+        "p99": 0.73,
+        "rps": 3.4928557833532135,
+        "err": 0.0,
+        "num_requests": 262,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_zarray": {
+        "p50": 0.28,
+        "p90": 0.37,
+        "p95": 0.4,
+        "p99": 0.45,
+        "rps": 7.025706098576884,
+        "err": 0.0,
+        "num_requests": 527,
+        "num_failures": 0,
+        "throughput_mbps": 0.0022271488332488722,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.31,
+        "p90": 0.61,
+        "p95": 0.71,
+        "p99": 1.2,
+        "rps": 10.411909796942213,
+        "err": 0.0,
+        "num_requests": 781,
+        "num_failures": 0,
+        "throughput_mbps": 2.7294196818096195,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.25,
+        "p90": 0.33,
+        "p95": 0.38,
+        "p99": 0.63,
+        "rps": 3.546181825847156,
+        "err": 0.0,
+        "num_requests": 266,
+        "num_failures": 0,
+        "throughput_mbps": 14.873764616878029,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.29,
+        "p90": 0.41,
+        "p95": 0.56,
+        "p99": 0.77,
+        "rps": 2.213030763498601,
+        "err": 0.0,
+        "num_requests": 166,
+        "num_failures": 0,
+        "throughput_mbps": 130.4830786751262,
+        "error_types": {}
+      }
+    },
+    "195": {
+      "GET_zarray": {
+        "p50": 0.29,
+        "p90": 0.37,
+        "p95": 0.41,
+        "p99": 0.59,
+        "rps": 8.570779287270966,
+        "err": 0.0,
+        "num_requests": 643,
+        "num_failures": 0,
+        "throughput_mbps": 0.0027169370340648963,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 0.19,
+        "p90": 0.26,
+        "p95": 0.28,
+        "p99": 0.45,
+        "rps": 3.9721496541318,
+        "err": 0.0,
+        "num_requests": 298,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.31,
+        "p90": 0.61,
+        "p95": 0.73,
+        "p99": 1.0,
+        "rps": 12.329659161315153,
+        "err": 0.0,
+        "num_requests": 925,
+        "num_failures": 0,
+        "throughput_mbps": 3.2321461711837993,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.25,
+        "p90": 0.34,
+        "p95": 0.49,
+        "p99": 0.59,
+        "rps": 3.998808376642752,
+        "err": 0.0,
+        "num_requests": 300,
+        "num_failures": 0,
+        "throughput_mbps": 16.7722179693862,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.29,
+        "p90": 0.43,
+        "p95": 0.47,
+        "p99": 0.71,
+        "rps": 2.745848418628023,
+        "err": 0.0,
+        "num_requests": 206,
+        "num_failures": 0,
+        "throughput_mbps": 165.34643012110473,
+        "error_types": {}
+      }
+    },
+    "205": {
+      "GET_zarray": {
+        "p50": 0.31,
+        "p90": 0.4,
+        "p95": 0.44,
+        "p99": 0.64,
+        "rps": 7.658479540795214,
+        "err": 0.0,
+        "num_requests": 575,
+        "num_failures": 0,
+        "throughput_mbps": 0.0024277380144320827,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.34,
+        "p90": 0.64,
+        "p95": 0.74,
+        "p99": 1.1,
+        "rps": 11.734122565983624,
+        "err": 0.0,
+        "num_requests": 881,
+        "num_failures": 0,
+        "throughput_mbps": 3.076029825937211,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 0.19,
+        "p90": 0.26,
+        "p95": 0.3,
+        "p99": 0.52,
+        "rps": 3.5428792310461334,
+        "err": 0.0,
+        "num_requests": 266,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.26,
+        "p90": 0.35,
+        "p95": 0.41,
+        "p99": 0.66,
+        "rps": 3.889175697238613,
+        "err": 0.0,
+        "num_requests": 292,
+        "num_failures": 0,
+        "throughput_mbps": 16.312385183630703,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.3,
+        "p90": 0.45,
+        "p95": 0.54,
+        "p99": 0.77,
+        "rps": 2.14437427142266,
+        "err": 0.0,
+        "num_requests": 161,
+        "num_failures": 0,
+        "throughput_mbps": 68.13494960618468,
+        "error_types": {}
+      }
+    },
+    "215": {
+      "GET_zarray": {
+        "p50": 0.3,
+        "p90": 0.39,
+        "p95": 0.42,
+        "p99": 0.58,
+        "rps": 8.445786641635372,
+        "err": 0.0,
+        "num_requests": 634,
+        "num_failures": 0,
+        "throughput_mbps": 0.002677314365398413,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 0.19,
+        "p90": 0.25,
+        "p95": 0.28,
+        "p99": 0.47,
+        "rps": 4.356107621158938,
+        "err": 0.0,
+        "num_requests": 327,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.33,
+        "p90": 0.65,
+        "p95": 0.74,
+        "p99": 1.0,
+        "rps": 12.615394242316558,
+        "err": 0.0,
+        "num_requests": 947,
+        "num_failures": 0,
+        "throughput_mbps": 3.3070499082578317,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.25,
+        "p90": 0.34,
+        "p95": 0.41,
+        "p99": 0.6,
+        "rps": 4.356107621158938,
+        "err": 0.0,
+        "num_requests": 327,
+        "num_failures": 0,
+        "throughput_mbps": 18.27083961985742,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.31,
+        "p90": 0.43,
+        "p95": 0.49,
+        "p99": 0.78,
+        "rps": 2.3712145460742846,
+        "err": 0.0,
+        "num_requests": 178,
+        "num_failures": 0,
+        "throughput_mbps": 61.173985055634404,
+        "error_types": {}
+      }
+    },
+    "225": {
+      "HEAD_tif": {
+        "p50": 0.19,
+        "p90": 0.27,
+        "p95": 0.32,
+        "p99": 0.52,
+        "rps": 3.653401419339498,
+        "err": 0.0,
+        "num_requests": 273,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_zarray": {
+        "p50": 0.33,
+        "p90": 0.42,
+        "p95": 0.5,
+        "p99": 0.63,
+        "rps": 7.146213765301435,
+        "err": 0.0,
+        "num_requests": 534,
+        "num_failures": 0,
+        "throughput_mbps": 0.002265349763600555,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.37,
+        "p90": 0.71,
+        "p95": 0.8,
+        "p99": 1.0,
+        "rps": 10.812997607422396,
+        "err": 0.0,
+        "num_requests": 808,
+        "num_failures": 0,
+        "throughput_mbps": 2.8345624448001367,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.27,
+        "p90": 0.34,
+        "p95": 0.39,
+        "p99": 0.6,
+        "rps": 3.3188408498029136,
+        "err": 0.0,
+        "num_requests": 248,
+        "num_failures": 0,
+        "throughput_mbps": 13.92022745169176,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.34,
+        "p90": 0.49,
+        "p95": 0.57,
+        "p99": 0.8,
+        "rps": 2.181334913378528,
+        "err": 0.0,
+        "num_requests": 163,
+        "num_failures": 0,
+        "throughput_mbps": 31.219007882753715,
+        "error_types": {}
+      }
+    },
+    "235": {
+      "HEAD_tif": {
+        "p50": 0.2,
+        "p90": 0.28,
+        "p95": 0.32,
+        "p99": 0.45,
+        "rps": 4.470712663744009,
+        "err": 0.0,
+        "num_requests": 334,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_zarray": {
+        "p50": 0.34,
+        "p90": 0.45,
+        "p95": 0.52,
+        "p99": 0.66,
+        "rps": 8.312313066422243,
+        "err": 0.0,
+        "num_requests": 621,
+        "num_failures": 0,
+        "throughput_mbps": 0.002635003242055851,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.38,
+        "p90": 0.69,
+        "p95": 0.76,
+        "p99": 1.0,
+        "rps": 13.050733075300624,
+        "err": 0.0,
+        "num_requests": 975,
+        "num_failures": 0,
+        "throughput_mbps": 3.4211713712916065,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.27,
+        "p90": 0.39,
+        "p95": 0.5,
+        "p99": 0.75,
+        "rps": 3.8549857699349537,
+        "err": 0.0,
+        "num_requests": 288,
+        "num_failures": 0,
+        "throughput_mbps": 16.168982234781257,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.35,
+        "p90": 0.45,
+        "p95": 0.51,
+        "p99": 0.76,
+        "rps": 2.248741699128723,
+        "err": 0.0,
+        "num_requests": 168,
+        "num_failures": 0,
+        "throughput_mbps": 35.60474715434908,
+        "error_types": {}
+      }
+    },
+    "245": {
+      "GET_zarray": {
+        "p50": 0.36,
+        "p90": 0.45,
+        "p95": 0.5,
+        "p99": 0.73,
+        "rps": 9.176166931329439,
+        "err": 0.0,
+        "num_requests": 688,
+        "num_failures": 0,
+        "throughput_mbps": 0.002908844917231432,
+        "error_types": {}
+      },
+      "HEAD_tif": {
+        "p50": 0.21,
+        "p90": 0.29,
+        "p95": 0.32,
+        "p99": 0.53,
+        "rps": 4.614758369534863,
+        "err": 0.0,
+        "num_requests": 346,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.38,
+        "p90": 0.71,
+        "p95": 0.78,
+        "p99": 1.1,
+        "rps": 13.950974724085164,
+        "err": 0.0,
+        "num_requests": 1046,
+        "num_failures": 0,
+        "throughput_mbps": 3.6571643180705813,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.29,
+        "p90": 0.38,
+        "p95": 0.45,
+        "p99": 0.82,
+        "rps": 4.974869571781803,
+        "err": 0.0,
+        "num_requests": 373,
+        "num_failures": 0,
+        "throughput_mbps": 20.866115344402704,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.36,
+        "p90": 0.48,
+        "p95": 0.53,
+        "p99": 0.76,
+        "rps": 2.6808278389494435,
+        "err": 0.0,
+        "num_requests": 201,
+        "num_failures": 0,
+        "throughput_mbps": 38.36769169335944,
+        "error_types": {}
+      }
+    },
+    "255": {
+      "HEAD_tif": {
+        "p50": 0.22,
+        "p90": 0.29,
+        "p95": 0.34,
+        "p99": 0.53,
+        "rps": 5.498731412539485,
+        "err": 0.0,
+        "num_requests": 413,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_zarray": {
+        "p50": 0.38,
+        "p90": 0.49,
+        "p95": 0.54,
+        "p99": 0.66,
+        "rps": 10.478212159003812,
+        "err": 0.0,
+        "num_requests": 787,
+        "num_failures": 0,
+        "throughput_mbps": 0.0033215932544042085,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.4,
+        "p90": 0.75,
+        "p95": 0.86,
+        "p99": 1.1,
+        "rps": 15.377808187610423,
+        "err": 0.0,
+        "num_requests": 1155,
+        "num_failures": 0,
+        "throughput_mbps": 4.031200149532947,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.3,
+        "p90": 0.41,
+        "p95": 0.47,
+        "p99": 0.77,
+        "rps": 4.659941875033462,
+        "err": 0.0,
+        "num_requests": 350,
+        "num_failures": 0,
+        "throughput_mbps": 19.54521284622035,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.4,
+        "p90": 0.54,
+        "p95": 0.6,
+        "p99": 0.88,
+        "rps": 3.0755616375220844,
+        "err": 0.0,
+        "num_requests": 231,
+        "num_failures": 0,
+        "throughput_mbps": 44.01707523994285,
+        "error_types": {}
+      }
+    },
+    "265": {
+      "HEAD_tif": {
+        "p50": 0.22,
+        "p90": 0.3,
+        "p95": 0.31,
+        "p99": 0.52,
+        "rps": 4.269054381800006,
+        "err": 0.0,
+        "num_requests": 320,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_zarray": {
+        "p50": 0.41,
+        "p90": 0.51,
+        "p95": 0.59,
+        "p99": 0.71,
+        "rps": 10.272412106206266,
+        "err": 0.0,
+        "num_requests": 770,
+        "num_failures": 0,
+        "throughput_mbps": 0.0032563546376673863,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.41,
+        "p90": 0.73,
+        "p95": 0.79,
+        "p99": 1.1,
+        "rps": 15.275210209878148,
+        "err": 0.0,
+        "num_requests": 1145,
+        "num_failures": 0,
+        "throughput_mbps": 4.004304705258297,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.3,
+        "p90": 0.44,
+        "p95": 0.61,
+        "p99": 0.79,
+        "rps": 5.269614002534383,
+        "err": 0.0,
+        "num_requests": 395,
+        "num_failures": 0,
+        "throughput_mbps": 22.102363089285973,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.43,
+        "p90": 0.56,
+        "p95": 0.64,
+        "p99": 0.83,
+        "rps": 2.761544553226879,
+        "err": 0.0,
+        "num_requests": 207,
+        "num_failures": 0,
+        "throughput_mbps": 39.522899783525816,
+        "error_types": {}
+      }
+    },
+    "275": {
+      "HEAD_tif": {
+        "p50": 0.23,
+        "p90": 0.31,
+        "p95": 0.33,
+        "p99": 0.55,
+        "rps": 5.52044074334866,
+        "err": 0.0,
+        "num_requests": 414,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_zarray": {
+        "p50": 0.42,
+        "p90": 0.53,
+        "p95": 0.58,
+        "p99": 0.77,
+        "rps": 10.614180752911915,
+        "err": 0.0,
+        "num_requests": 796,
+        "num_failures": 0,
+        "throughput_mbps": 0.003364695298673077,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.43,
+        "p90": 0.75,
+        "p95": 0.92,
+        "p99": 1.1,
+        "rps": 15.721255160405965,
+        "err": 0.0,
+        "num_requests": 1179,
+        "num_failures": 0,
+        "throughput_mbps": 4.121232712769461,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.31,
+        "p90": 0.43,
+        "p95": 0.57,
+        "p99": 0.77,
+        "rps": 5.400431161971515,
+        "err": 0.0,
+        "num_requests": 405,
+        "num_failures": 0,
+        "throughput_mbps": 22.65105002438177,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.44,
+        "p90": 0.61,
+        "p95": 0.66,
+        "p99": 0.87,
+        "rps": 3.040242728221001,
+        "err": 0.0,
+        "num_requests": 228,
+        "num_failures": 0,
+        "throughput_mbps": 43.511595177657036,
+        "error_types": {}
+      }
+    },
+    "285": {
+      "HEAD_tif": {
+        "p50": 0.24,
+        "p90": 0.3,
+        "p95": 0.33,
+        "p99": 0.54,
+        "rps": 6.022153757609673,
+        "err": 0.0,
+        "num_requests": 452,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_zarray": {
+        "p50": 0.45,
+        "p90": 0.56,
+        "p95": 0.61,
+        "p99": 0.83,
+        "rps": 11.777840534794139,
+        "err": 0.0,
+        "num_requests": 884,
+        "num_failures": 0,
+        "throughput_mbps": 0.003733575449529742,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.45,
+        "p90": 0.76,
+        "p95": 0.86,
+        "p99": 1.2,
+        "rps": 16.787419766788027,
+        "err": 0.0,
+        "num_requests": 1260,
+        "num_failures": 0,
+        "throughput_mbps": 4.400721367344881,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.32,
+        "p90": 0.44,
+        "p95": 0.54,
+        "p99": 0.81,
+        "rps": 5.382633004589176,
+        "err": 0.0,
+        "num_requests": 404,
+        "num_failures": 0,
+        "throughput_mbps": 22.5763991416804,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.47,
+        "p90": 0.62,
+        "p95": 0.74,
+        "p99": 0.95,
+        "rps": 3.1709570670599607,
+        "err": 0.0,
+        "num_requests": 238,
+        "num_failures": 0,
+        "throughput_mbps": 45.382363370828244,
+        "error_types": {}
+      }
+    },
+    "295": {
+      "HEAD_tif": {
+        "p50": 0.25,
+        "p90": 0.32,
+        "p95": 0.35,
+        "p99": 0.55,
+        "rps": 6.102857502449478,
+        "err": 0.0,
+        "num_requests": 458,
+        "num_failures": 0,
+        "throughput_mbps": 0.0,
+        "error_types": {}
+      },
+      "GET_zarray": {
+        "p50": 0.49,
+        "p90": 0.63,
+        "p95": 0.69,
+        "p99": 0.86,
+        "rps": 11.672714349663194,
+        "err": 0.0,
+        "num_requests": 876,
+        "num_failures": 0,
+        "throughput_mbps": 0.0037002504488432325,
+        "error_types": {}
+      },
+      "GET_tif_range_tile": {
+        "p50": 0.48,
+        "p90": 0.8,
+        "p95": 0.93,
+        "p99": 1.1,
+        "rps": 17.53572155725658,
+        "err": 0.0,
+        "num_requests": 1316,
+        "num_failures": 0,
+        "throughput_mbps": 4.596884191905469,
+        "error_types": {}
+      },
+      "GET_tif_range_chunk": {
+        "p50": 0.35,
+        "p90": 0.48,
+        "p95": 0.53,
+        "p99": 0.79,
+        "rps": 6.062882453306796,
+        "err": 0.0,
+        "num_requests": 455,
+        "num_failures": 0,
+        "throughput_mbps": 25.429572125434508,
+        "error_types": {}
+      },
+      "GET_tif_full": {
+        "p50": 0.53,
+        "p90": 0.69,
+        "p95": 0.79,
+        "p99": 0.89,
+        "rps": 2.9981286857011624,
+        "err": 0.0,
+        "num_requests": 225,
+        "num_failures": 0,
+        "throughput_mbps": 42.908863970570124,
+        "error_types": {}
+      }
+    }
+  },
+  "stage_meta": {
+    "5": {
+      "measured_secs": 75.04496884346008,
+      "wall_secs": 91.04664778709412,
+      "total_requests": 344,
+      "total_failures": 0,
+      "total_rps": 4.5962663591803805,
+      "peak_rss_mb": 69.265625
+    },
+    "15": {
+      "measured_secs": 75.00317335128784,
+      "wall_secs": 91.00660181045532,
+      "total_requests": 940,
+      "total_failures": 0,
+      "total_rps": 12.545608953070902,
+      "peak_rss_mb": 89.33984375
+    },
+    "25": {
+      "measured_secs": 75.02146673202515,
+      "wall_secs": 91.02299356460571,
+      "total_requests": 1469,
+      "total_failures": 0,
+      "total_rps": 19.59617692930568,
+      "peak_rss_mb": 107.875
+    },
+    "35": {
+      "measured_secs": 75.01668500900269,
+      "wall_secs": 91.01902198791504,
+      "total_requests": 1898,
+      "total_failures": 0,
+      "total_rps": 25.310747150519664,
+      "peak_rss_mb": 120.40234375
+    },
+    "45": {
+      "measured_secs": 75.02157044410706,
+      "wall_secs": 91.02681112289429,
+      "total_requests": 1961,
+      "total_failures": 0,
+      "total_rps": 26.1981052561351,
+      "peak_rss_mb": 144.17578125
+    },
+    "55": {
+      "measured_secs": 75.04434156417847,
+      "wall_secs": 91.04808640480042,
+      "total_requests": 2008,
+      "total_failures": 0,
+      "total_rps": 26.766570658674844,
+      "peak_rss_mb": 159.5625
+    },
+    "65": {
+      "measured_secs": 75.05268287658691,
+      "wall_secs": 91.05452847480774,
+      "total_requests": 1917,
+      "total_failures": 0,
+      "total_rps": 25.563471520550685,
+      "peak_rss_mb": 177.40234375
+    },
+    "75": {
+      "measured_secs": 75.0149393081665,
+      "wall_secs": 91.04258418083191,
+      "total_requests": 1911,
+      "total_failures": 0,
+      "total_rps": 25.49637242069793,
+      "peak_rss_mb": 194.41796875
+    },
+    "85": {
+      "measured_secs": 75.06446170806885,
+      "wall_secs": 91.06642031669617,
+      "total_requests": 1907,
+      "total_failures": 0,
+      "total_rps": 25.424260609187012,
+      "peak_rss_mb": 221.015625
+    },
+    "95": {
+      "measured_secs": 75.03868651390076,
+      "wall_secs": 91.03985714912415,
+      "total_requests": 2034,
+      "total_failures": 0,
+      "total_rps": 27.12120452355829,
+      "peak_rss_mb": 261.1328125
+    },
+    "105": {
+      "measured_secs": 75.08531904220581,
+      "wall_secs": 91.09006810188293,
+      "total_requests": 2071,
+      "total_failures": 0,
+      "total_rps": 27.595761138568154,
+      "peak_rss_mb": 284.4921875
+    },
+    "115": {
+      "measured_secs": 75.08370542526245,
+      "wall_secs": 91.08540439605713,
+      "total_requests": 2273,
+      "total_failures": 0,
+      "total_rps": 30.28802347914936,
+      "peak_rss_mb": 305.02734375
+    },
+    "125": {
+      "measured_secs": 75.05263328552246,
+      "wall_secs": 91.05436134338379,
+      "total_requests": 1952,
+      "total_failures": 0,
+      "total_rps": 26.016840614319783,
+      "peak_rss_mb": 336.6640625
+    },
+    "135": {
+      "measured_secs": 75.08502697944641,
+      "wall_secs": 91.09240198135376,
+      "total_requests": 1867,
+      "total_failures": 0,
+      "total_rps": 24.886036252664216,
+      "peak_rss_mb": 356.22265625
+    },
+    "145": {
+      "measured_secs": 75.08511686325073,
+      "wall_secs": 91.09217143058777,
+      "total_requests": 2055,
+      "total_failures": 0,
+      "total_rps": 27.396800759381943,
+      "peak_rss_mb": 378.83984375
+    },
+    "155": {
+      "measured_secs": 75.08048582077026,
+      "wall_secs": 91.09403276443481,
+      "total_requests": 1835,
+      "total_failures": 0,
+      "total_rps": 24.455022783732336,
+      "peak_rss_mb": 401.1171875
+    },
+    "165": {
+      "measured_secs": 75.10859704017639,
+      "wall_secs": 91.12992882728577,
+      "total_requests": 2055,
+      "total_failures": 0,
+      "total_rps": 27.387231014175654,
+      "peak_rss_mb": 414.16015625
+    },
+    "175": {
+      "measured_secs": 75.10959792137146,
+      "wall_secs": 91.11195373535156,
+      "total_requests": 1955,
+      "total_failures": 0,
+      "total_rps": 26.0491336532671,
+      "peak_rss_mb": 434.97265625
+    },
+    "185": {
+      "measured_secs": 75.07284641265869,
+      "wall_secs": 91.07442092895508,
+      "total_requests": 2002,
+      "total_failures": 0,
+      "total_rps": 26.689684268218066,
+      "peak_rss_mb": 464.1015625
+    },
+    "195": {
+      "measured_secs": 75.11977338790894,
+      "wall_secs": 91.12344336509705,
+      "total_requests": 2372,
+      "total_failures": 0,
+      "total_rps": 31.617244897988694,
+      "peak_rss_mb": 484.640625
+    },
+    "205": {
+      "measured_secs": 75.1160933971405,
+      "wall_secs": 91.11763763427734,
+      "total_requests": 2175,
+      "total_failures": 0,
+      "total_rps": 28.969031306486244,
+      "peak_rss_mb": 510.6953125
+    },
+    "215": {
+      "measured_secs": 75.19233989715576,
+      "wall_secs": 91.19480729103088,
+      "total_requests": 2413,
+      "total_failures": 0,
+      "total_rps": 32.144610672344086,
+      "peak_rss_mb": 528.77734375
+    },
+    "225": {
+      "measured_secs": 75.16200160980225,
+      "wall_secs": 91.16451692581177,
+      "total_requests": 2026,
+      "total_failures": 0,
+      "total_rps": 27.112788555244773,
+      "peak_rss_mb": 548.453125
+    },
+    "235": {
+      "measured_secs": 75.120769739151,
+      "wall_secs": 91.12251281738281,
+      "total_requests": 2386,
+      "total_failures": 0,
+      "total_rps": 31.93748627453055,
+      "peak_rss_mb": 573.703125
+    },
+    "245": {
+      "measured_secs": 75.16056442260742,
+      "wall_secs": 91.1620864868164,
+      "total_requests": 2654,
+      "total_failures": 0,
+      "total_rps": 35.39759743568071,
+      "peak_rss_mb": 587.80859375
+    },
+    "255": {
+      "measured_secs": 75.13679051399231,
+      "wall_secs": 91.1382737159729,
+      "total_requests": 2936,
+      "total_failures": 0,
+      "total_rps": 39.09025527170927,
+      "peak_rss_mb": 606.265625
+    },
+    "265": {
+      "measured_secs": 75.14890575408936,
+      "wall_secs": 91.15056014060974,
+      "total_requests": 2837,
+      "total_failures": 0,
+      "total_rps": 37.84783525364568,
+      "peak_rss_mb": 630.0234375
+    },
+    "275": {
+      "measured_secs": 75.12977004051208,
+      "wall_secs": 91.1322193145752,
+      "total_requests": 3022,
+      "total_failures": 0,
+      "total_rps": 40.29655054685905,
+      "peak_rss_mb": 652.8046875
+    },
+    "285": {
+      "measured_secs": 75.1348762512207,
+      "wall_secs": 91.13689374923706,
+      "total_requests": 3238,
+      "total_failures": 0,
+      "total_rps": 43.141004130840976,
+      "peak_rss_mb": 671.77734375
+    },
+    "295": {
+      "measured_secs": 75.13289952278137,
+      "wall_secs": 91.13474607467651,
+      "total_requests": 3330,
+      "total_failures": 0,
+      "total_rps": 44.37230454837721,
+      "peak_rss_mb": 693.15234375
+    }
+  }
+}

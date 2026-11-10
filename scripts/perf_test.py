@@ -408,6 +408,8 @@ def write_results(all_stages, stage_meta, breakpoint_info, stage_secs, soak_mode
                 "breakpoint": breakpoint_info,
                 "stages": all_stages,
                 "stage_meta": stage_meta,
+                "data_file_paths": SIG0_PATHS if TASK_MODE == "sig0_only" else DATA_FILE_PATHS,
+                "dropped_paths": DROPPED_PATHS,
                 "error_samples": _error_samples,
             },
             f,
@@ -415,8 +417,40 @@ def write_results(all_stages, stage_meta, breakpoint_info, stage_secs, soak_mode
         )
 
 
+DROPPED_PATHS = []
+
+
+def precheck_paths(paths):
+    # files disappear or become restricted over time (Nov 2026: 11x 404, 15x 403
+    # out of 72). A missing file counts as a request failure and would end the
+    # ramp with a fake "breakpoint", so drop every path that doesn't return 200
+    # once before the ramp starts (in place). Used and dropped paths go into the
+    # results JSON so runs with a different file set are recognisable.
+    import requests
+    kept = []
+    s = requests.Session()
+    for p in paths:
+        try:
+            st = s.head(HDA_URL + p, allow_redirects=True, timeout=30).status_code
+        except Exception as e:
+            st = type(e).__name__
+        if st == 200:
+            kept.append(p)
+        else:
+            DROPPED_PATHS.append({"path": p, "status": st})
+    log.info("Path precheck: %d of %d paths return 200, %d dropped",
+             len(kept), len(paths), len(paths) - len(kept))
+    for d in DROPPED_PATHS:
+        log.info("  dropped (%s): %s", d["status"], d["path"])
+    if not kept:
+        raise SystemExit("no usable paths left after precheck")
+    paths[:] = kept
+
+
 def main():
     setup_logging("INFO")
+    if os.environ.get("PRECHECK_PATHS", "1") == "1":
+        precheck_paths(SIG0_PATHS if TASK_MODE == "sig0_only" else DATA_FILE_PATHS)
     env = Environment(user_classes=[ACTIVE_USER_CLASS])
     log.info("TASK_MODE=%s -> using %s", TASK_MODE, ACTIVE_USER_CLASS.__name__)
     env.create_local_runner()
